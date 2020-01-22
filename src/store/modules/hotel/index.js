@@ -1,16 +1,15 @@
-  
 // import actions from './actions';
-import getters from './getters';
+import getters from "./getters";
 // import mutations from './mutations';
 
 const state = {
-  hotelState: ['def'],
+  hotelState: ["def"]
 };
 
 export default {
   namespaced: true,
   state,
   // actions,
-  getters,
+  getters
   // mutations,
 };

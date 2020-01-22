@@ -1,7 +1,7 @@
-import axiosInstance from './axiosInstance';
-import { ObjectToFormData } from '../helpers';
-import { errorHandlerException } from './responseHandlers/errorHandler';
-import { REQUEST_TYPE } from './constants';
+import axiosInstance from "./axiosInstance";
+import { ObjectToFormData } from "../helpers";
+import { errorHandlerException } from "./responseHandlers/errorHandler";
+import { REQUEST_TYPE } from "./constants";
 
 /**
  * Requests to API
@@ -34,7 +34,7 @@ const request = (
       }
     }
 
-    reqOptions.headers = { 'Content-Type': 'multipart/form-data' };
+    reqOptions.headers = { "Content-Type": "multipart/form-data" };
   }
 
   req = axiosInstance(url, reqOptions);

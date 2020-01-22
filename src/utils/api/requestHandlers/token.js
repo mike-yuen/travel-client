@@ -1,4 +1,4 @@
-import { AUTH_INFO } from '../../constants/storage.const';
+import { AUTH_INFO } from "../../constants";
 
 export const setTokenHeader = async (config, appStorage) => {
   // Get token from storage
@@ -19,7 +19,7 @@ export const setTokenHeader = async (config, appStorage) => {
   }
   return {
     ...config,
-    validateStatus: (status) => status >= 200 && status < 500
+    validateStatus: status => status >= 200 && status < 500
   };
 };
 
