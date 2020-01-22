@@ -1,4 +1,4 @@
-# travel-client
+# Travel-Client
 
 ## Project setup
 ```
