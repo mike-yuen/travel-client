@@ -1,6 +1,6 @@
-export const BASE_API_URL = process.env.VUE_APP_BASE_API;
-
 export const API_URL = {
+  // auth
+  AUTH: "auth/login/",
   // hotel
   HOTEL: "profiles/full-profile/",
   // user
