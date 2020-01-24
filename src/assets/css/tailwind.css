@@ -1,3 +1,14 @@
 @tailwind base;
+
+@font-face {
+  font-family: "Ciutadella";
+  src: url("../fonts/Ciutadella.eot") format("embedded-opentype"),
+    url("../fonts/Ciutadella.woff2") format("woff2"),
+    url("../fonts/Ciutadella.woff") format("woff"),
+    url("../fonts/Ciutadella.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 @tailwind components;
 @tailwind utilities;

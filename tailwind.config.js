@@ -27,6 +27,7 @@ module.exports = {
         900: "#1a202c"
       },
       red: {
+        0: "#e40000",
         100: "#fff5f5",
         200: "#fed7d7",
         300: "#feb2b2",
@@ -139,6 +140,7 @@ module.exports = {
       "10": "2.5rem",
       "12": "3rem",
       "16": "4rem",
+      "18": "4.5rem",
       "20": "5rem",
       "24": "6rem",
       "32": "8rem",
@@ -172,6 +174,7 @@ module.exports = {
       none: "0",
       sm: "0.125rem",
       default: "0.25rem",
+      md: "0.375rem",
       lg: "0.5rem",
       full: "9999px"
     },
@@ -196,7 +199,9 @@ module.exports = {
       outline: "0 0 0 3px rgba(66, 153, 225, 0.5)",
       none: "none"
     },
-    container: {},
+    container: {
+      center: true
+    },
     cursor: {
       auto: "auto",
       default: "default",
@@ -246,7 +251,8 @@ module.exports = {
         '"Liberation Mono"',
         '"Courier New"',
         "monospace"
-      ]
+      ],
+      ciuta: ["Ciutadella"]
     },
     fontSize: {
       xs: "0.75rem",
@@ -279,6 +285,7 @@ module.exports = {
     }),
     inset: {
       "0": "0",
+      "100": "100%",
       auto: "auto"
     },
     letterSpacing: {
