@@ -164,7 +164,8 @@ module.exports = {
     backgroundSize: {
       auto: "auto",
       cover: "cover",
-      contain: "contain"
+      contain: "contain",
+      "100-100": "100% 100%"
     },
     borderColor: theme => ({
       ...theme("colors"),
@@ -421,6 +422,129 @@ module.exports = {
       "30": "30",
       "40": "40",
       "50": "50"
+    },
+    animations: {
+      "three-bounce": {
+        "0%": {
+          transform: "scale(0)"
+        },
+        "40%": {
+          transform: "scale(1)"
+        },
+        "80%": {
+          transform: "scale(0)"
+        },
+        "100%": {
+          transform: "scale(0)"
+        }
+      }
+    },
+    animationDuration: {
+      default: "1s",
+      "0s": "0s",
+      "1s": "1s",
+      "1.4s": "1.4s",
+      "2s": "2s",
+      "3s": "3s",
+      "4s": "4s",
+      "5s": "5s"
+    },
+    animationTimingFunction: {
+      default: "ease",
+      linear: "linear",
+      ease: "ease",
+      "ease-in": "ease-in",
+      "ease-out": "ease-out",
+      "ease-in-out": "ease-in-out"
+    },
+    animationDelay: {
+      default: "0s",
+      ".32s": "-.32s",
+      ".16s": "-.16s",
+      "0s": "0s",
+      "1s": "1s",
+      "2s": "2s",
+      "3s": "3s",
+      "4s": "4s",
+      "5s": "5s"
+    },
+    animationIterationCount: {
+      default: "infinite",
+      once: "1",
+      infinite: "infinite"
+    },
+    animationDirection: {
+      default: "normal",
+      normal: "normal",
+      reverse: "reverse",
+      alternate: "alternate",
+      "alternate-reverse": "alternate-reverse"
+    },
+    animationFillMode: {
+      default: "none",
+      none: "none",
+      forwards: "forwards",
+      backwards: "backwards",
+      both: "both"
+    },
+    animationPlayState: {
+      running: "running",
+      paused: "paused"
+    },
+    transform: {
+      none: "none"
+    },
+    transformOrigin: {
+      t: "top",
+      tr: "top right",
+      r: "right",
+      br: "bottom right",
+      b: "bottom",
+      bl: "bottom left",
+      l: "left",
+      tl: "top left"
+    },
+    translate: {
+      "1/2": "50%",
+      full: "100%",
+      "right-up": ["100%", "-100%"],
+      "3d": ["40px", "-60px", "-130px"]
+    },
+    scale: {
+      "90": "0.9",
+      "100": "1",
+      "110": "1.1",
+      "-100": "-1",
+      "stretched-x": ["2", "0.5"],
+      "stretched-y": ["0.5", "2"],
+      "3d": ["0.5", "1", "2"]
+    },
+    rotate: {
+      "90": "90deg",
+      "180": "180deg",
+      "270": "270deg",
+      "3d": ["0", "1", "0.5", "45deg"]
+    },
+    skew: {
+      "-5": "-5deg",
+      "5": "5deg"
+    },
+    perspective: {
+      none: "none",
+      "250": "250px",
+      "500": "500px",
+      "750": "750px",
+      "1000": "1000px"
+    },
+    perspectiveOrigin: {
+      t: "top",
+      tr: "top right",
+      r: "right",
+      br: "bottom right",
+      b: "bottom",
+      bl: "bottom left",
+      l: "left",
+      tl: "top left"
     }
   },
   variants: {
@@ -489,8 +613,33 @@ module.exports = {
     whitespace: ["responsive"],
     width: ["responsive"],
     wordBreak: ["responsive"],
-    zIndex: ["responsive"]
+    zIndex: ["responsive"],
+    // all the following default to ['responsive']
+    animations: ["responsive"],
+    animationDuration: ["responsive"],
+    animationTimingFunction: ["responsive"],
+    animationDelay: ["responsive"],
+    animationIterationCount: ["responsive"],
+    animationDirection: ["responsive"],
+    animationFillMode: ["responsive"],
+    animationPlayState: ["responsive"],
+    // all the following default to ['responsive']
+    transform: ["responsive"],
+    transformOrigin: ["responsive"],
+    translate: ["responsive"],
+    scale: ["responsive"],
+    rotate: ["responsive"],
+    skew: ["responsive"],
+    perspective: ["responsive"],
+    perspectiveOrigin: ["responsive"],
+    transformStyle: ["responsive"],
+    backfaceVisibility: ["responsive"],
+    transformBox: ["responsive"]
   },
   corePlugins: {},
-  plugins: []
+  plugins: [
+    require("tailwindcss-animations", "tailwindcss-transforms")({
+      "3d": false
+    })
+  ]
 };

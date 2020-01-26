@@ -12,7 +12,6 @@ const StyledButton = styled.button`
   line-height: 24px;
   letter-spacing: 1.5px;
   color: #fff;
-  font-weight: 700;
   height: 48px;
   width: 100%;
   text-align: center;
