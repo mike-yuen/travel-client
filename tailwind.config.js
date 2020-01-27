@@ -177,6 +177,7 @@ module.exports = {
       default: "0.25rem",
       md: "0.375rem",
       lg: "0.5rem",
+      "2": "2rem",
       full: "9999px"
     },
     borderWidth: {
@@ -328,6 +329,7 @@ module.exports = {
       "2xl": "42rem",
       "3xl": "48rem",
       "4xl": "56rem",
+      "5lg": "62rem",
       "5xl": "64rem",
       "6xl": "72rem",
       full: "100%"
@@ -436,6 +438,14 @@ module.exports = {
         },
         "100%": {
           transform: "scale(0)"
+        }
+      },
+      pulse: {
+        "50%": {
+          opacity: 1.0
+        },
+        "100%": {
+          opacity: 0.25
         }
       }
     },

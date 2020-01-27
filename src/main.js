@@ -9,9 +9,11 @@ import {
   localize
 } from "vee-validate";
 import * as rules from "vee-validate/dist/rules";
+import VueAgile from "vue-agile";
 import "@/assets/css/tailwind.css";
 
 Vue.config.productionTip = false;
+Vue.use(VueAgile);
 
 Vue.component("ValidationProvider", ValidationProvider);
 Vue.component("ValidationObserver", ValidationObserver);
