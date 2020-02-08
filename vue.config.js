@@ -1,4 +1,4 @@
 module.exports = {
   runtimeCompiler: true,
-  transpileDependencies: ["vuex-persist"]
+  transpileDependencies: ["vue-agile", "vuex-persist"]
 };

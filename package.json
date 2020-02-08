@@ -12,6 +12,8 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.4.4",
+    "lodash": "^4.17.15",
+    "lodash.throttle": "^4.1.1",
     "tailwindcss": "^1.1.4",
     "tailwindcss-animations": "^1.0.0",
     "tailwindcss-transforms": "^2.2.0",

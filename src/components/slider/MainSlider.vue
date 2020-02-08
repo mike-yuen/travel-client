@@ -63,7 +63,7 @@
                     <source :srcset="slide.path" media="(min-width: 60em)" />
                     <source :srcset="slide.path" media="(min-width: 48em)" />
                     <img
-                      :srcset="slide.path"
+                      :src="slide.path"
                       :alt="slide.title"
                       class="absolute top-0 right-0 w-auto block min-w-full min-h-full h-auto object-cover"
                     />
