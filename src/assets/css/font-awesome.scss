@@ -16,6 +16,25 @@
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: 'FontAwesome-Free';
+  src: url('../fonts/fontawesome-free/fontawesome-webfont.eot?v=5.0.0');
+  src: url('../fonts/fontawesome-free/fontawesome-webfont.eot?#iefix&v=5.0.0') format('embedded-opentype'),
+  url('../fonts/fontawesome-free/fontawesome-webfont.woff2?v=5.0.0') format('woff2'),
+  url('../fonts/fontawesome-free/fontawesome-webfont.woff?v=5.0.0') format('woff'),
+  url('../fonts/fontawesome-free/fontawesome-webfont.ttf?v=5.0.0') format('truetype'),
+  url('../fonts/fontawesome-free/fontawesome-webfont.svg?v=5.0.0#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.faf {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome-Free;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 .fa {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;
@@ -208,6 +227,9 @@
 }
 .fa-user:before {
   content: "\f007";
+}
+.fa-user-check:before {
+  content: "\f4fc";
 }
 .fa-film:before {
   content: "\f008";
@@ -840,6 +862,9 @@
 .fa-paste:before,
 .fa-clipboard:before {
   content: "\f0ea";
+}
+.fa-clipboard-list-check:before {
+  content: "\f737";
 }
 .fa-lightbulb-o:before {
   content: "\f0eb";

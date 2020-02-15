@@ -306,7 +306,8 @@ module.exports = {
       snug: "1.375",
       normal: "1.5",
       relaxed: "1.625",
-      loose: "2"
+      loose: "2",
+      "6": "1.5rem"
     },
     listStyleType: {
       none: "none",

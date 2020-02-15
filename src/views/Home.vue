@@ -1,8 +1,8 @@
 <template>
   <div id="home">
-    <NavigatorTop class="z-20" />
-    <MenuDesktop class="z-10" />
-    <main class="block relative bg-white min-h-screen pb-20 outline-none">
+    <NavigatorTop class="z-30" />
+    <MenuDesktop class="hidden lg:block z-20" />
+    <main class="block relative bg-white min-h-screen pb-20 outline-none z-10">
       <MainSlider />
       <SearchTabs />
     </main>

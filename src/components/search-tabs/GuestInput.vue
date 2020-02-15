@@ -1,129 +1,44 @@
 <template>
-  <div>
-    <div class="widget-form__group">
-      <label class="widget-form__label" for="guestSelector">Guests</label
-      ><input
-        type="text"
-        class="qfa1-input qfa1-people-selector__input"
-        value="2 Adults"
-        id="guestSelector"
-        autocomplete="off"
-        aria-required="false"
-        aria-haspopup="false"
-        aria-expanded="false"
-        aria-invalid="false"
-        aria-label="Guests, Select the number of guests. You can navigate to the adults, children and infants fields by using the tab and shift tab keys when the guest selector is expanded. The guest selector can be expanded or collapsed by using the space key. Text field is disabled"
-      />
-      <div
-        class="qfa1-arrow-icon__dropdown qfa1-arrow-icon"
-        tabindex="-1"
-        role="button"
-      ></div>
-      <div class="form-validation-message widget-form__element--hidden">
-        <div class="form-validation-message__container">
-          <div>
-            <span
-              class="qfa1-border-triangle__outer"
-              style="border-bottom-color: rgb(252, 235, 205); left: 20px; border-bottom-width: 10px; border-right-width: 10px; border-left-width: 10px; margin-left: -10px; z-index: 0;"
-            ></span
-            ><span
-              class="qfa1-border-triangle__inner"
-              style="border-bottom-color: rgb(252, 235, 205); left: 20px; border-bottom-width: 10px; border-right-width: 10px; border-left-width: 10px; margin-left: -10px; z-index: 1;"
-            ></span>
-          </div>
-          <div class="form-validation-message__text"></div>
-        </div>
-      </div>
-    </div>
-    <span
-      class="widget-form__element--aria-hidden"
-      role="status"
-      aria-live="polite"
-    ></span>
-    <div
-      class="qfa1-dropdown-list__items-container-father widget-form__element--hidden"
-    >
-      <div class="qfa1-dropdown-list__items-container">
-        <div class="widget-form__group">
-          <div class="qfa1-dropdown">
-            <div class="qfa1-numberpicker__group widget-form__group">
-              <label
-                class="widget-form__label"
-                for="number-picker-input-16wai50gn6z"
-                >Adults</label
-              ><!-- react-empty: 190 --><input
-                type="number"
-                class="qfa1-input qfa1-numberpicker__input"
-                value="2"
-                aria-label="Adults (thirteen years old and above). Select the number of adults between one to nine. Press up and down arrow keys to increase and decrease the number of adults selected"
-                id="number-picker-input-16wai50gn6z"
-                aria-valuemin="1"
-                aria-valuemax="9"
-                aria-valuenow="2"
-                role="spinbutton"
-              />
-              <div class="qfa1-numberpicker__minus-icon" tabindex="-1"></div>
-              <div class="qfa1-numberpicker__plus-icon" tabindex="-1"></div>
-              <span
-                class="widget-form__element--aria-hidden"
-                role="status"
-                aria-live="polite"
-              ></span>
-            </div>
-            <div class="qfa1-numberpicker__group widget-form__group">
-              <label
-                class="widget-form__label"
-                for="number-picker-input-14gpd6fa4qqi"
-                >Children (3 - 12yrs)</label
-              ><!-- react-empty: 211 --><input
-                type="number"
-                class="qfa1-input qfa1-numberpicker__input"
-                value="0"
-                aria-label="Children (three to twelve years old inclusive). Select the number of children between zero to nine. Press up and down arrow keys to increase and decrease the number of children selected"
-                id="number-picker-input-14gpd6fa4qqi"
-                aria-valuemin="0"
-                aria-valuemax="9"
-                aria-valuenow="0"
-                role="spinbutton"
-              />
-              <div
-                class="qfa1-numberpicker__minus-icon qfa1-numberpicker__minus-icon--disabled"
-                tabindex="-1"
-              ></div>
-              <div class="qfa1-numberpicker__plus-icon" tabindex="-1"></div>
-              <span
-                class="widget-form__element--aria-hidden"
-                role="status"
-                aria-live="polite"
-              ></span>
-            </div>
-            <div class="qfa1-numberpicker__group widget-form__group">
-              <label
-                class="widget-form__label"
-                for="number-picker-input-fl7o7tj5ee"
-                >Infants (0 - 2yrs)</label
-              ><!-- react-empty: 232 --><input
-                type="number"
-                class="qfa1-input qfa1-numberpicker__input"
-                value="0"
-                aria-label="Infants (zero to two years old inclusive). Select the number of infants between zero to nine. Press up and down arrow keys to increase and decrease the number of infants selected"
-                id="number-picker-input-fl7o7tj5ee"
-                aria-valuemin="0"
-                aria-valuemax="9"
-                aria-valuenow="0"
-                role="spinbutton"
-              />
-              <div
-                class="qfa1-numberpicker__minus-icon qfa1-numberpicker__minus-icon--disabled"
-                tabindex="-1"
-              ></div>
-              <div class="qfa1-numberpicker__plus-icon" tabindex="-1"></div>
-              <span
-                class="widget-form__element--aria-hidden"
-                role="status"
-                aria-live="polite"
-              ></span>
-            </div>
+  <div
+    :id="id"
+    v-show="isExpanded"
+    v-click-outside="{ handler: 'onBlurInput' }"
+  >
+    <Input
+      :id="id"
+      :label="label"
+      :placeholder="placeholder"
+      type="text"
+      :value="valueInput"
+      @focus="onFocusInput($event)"
+      :disabled="true"
+    />
+    <div class="relative w-full z-10" v-show="isExpanded && isFocusedInput">
+      <div class="box-content absolute w-full">
+        <div class="relative w-full">
+          <styled-dropdown>
+            <!-- <span class="text-gray-0">{{ dataValue.children }}</span> -->
+            <InputNumber
+              id="adults-quantity"
+              label="Adults"
+              v-model="dataValue.adults"
+              :min="1"
+              :max="9"
+            />
+            <InputNumber
+              id="children-quantity"
+              label="Children (3 - 12yrs)"
+              v-model="dataValue.children"
+              :min="0"
+              :max="9"
+            />
+            <InputNumber
+              id="infants-quantity"
+              label="Infants (0 - 2yrs)"
+              v-model="dataValue.infants"
+              :min="0"
+              :max="9"
+            />
             <div class="qfa1-people-selector__button">
               <div class="widget-form__group">
                 <button
@@ -135,9 +50,98 @@
                 </button>
               </div>
             </div>
-          </div>
+          </styled-dropdown>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+import styled from "vue-styled-components";
+import Input from "@/components/core-ui/field/Input";
+import InputNumber from "@/components/core-ui/field/InputNumber";
+
+const StyledDropdown = styled.div`
+  background-color: #f4f5f6;
+  border-bottom: 2px solid #dadada;
+  border-left: 2px solid #dadada;
+  border-right: 2px solid #dadada;
+  padding: 0 15px 15px;
+  position: relative;
+  user-select: none;
+  width: 100%;
+`;
+export default {
+  name: "GuestInput",
+  components: {
+    Input,
+    InputNumber,
+    "styled-dropdown": StyledDropdown
+  },
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    label: {
+      type: String
+    },
+    placeholder: {
+      type: String
+    },
+    value: {},
+    errors: {
+      type: Array
+    },
+    isExpanded: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      isFocusedInput: false
+    };
+  },
+  computed: {
+    dataValue: {
+      get() {
+        return this.$props.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
+    },
+    valueInput() {
+      const dataValue = this.dataValue;
+      const adults = dataValue.adults === 1 ? "Adult" : "Adults";
+      const children = dataValue.children === 1 ? "Child" : "Children";
+      const infants = dataValue.infants === 1 ? "Infant" : "Infants";
+
+      const adultsAmount =
+        dataValue.adults > 0
+          ? String(this.dataValue.adults) + " " + adults
+          : "";
+      const childrenAmount =
+        dataValue.children > 0
+          ? ", " + String(this.dataValue.children) + " " + children
+          : "";
+      const infantsAmount =
+        dataValue.infants > 0
+          ? ", " + String(this.dataValue.infants) + " " + infants
+          : "";
+
+      return adultsAmount + childrenAmount + infantsAmount;
+    }
+  },
+  methods: {
+    onFocusInput() {
+      this.isFocusedInput = true;
+    },
+    onBlurInput() {
+      this.isFocusedInput = false;
+    }
+  }
+};
+</script>

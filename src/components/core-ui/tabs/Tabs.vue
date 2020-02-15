@@ -16,13 +16,11 @@
               hover:border-red-0 hover:opacity-100 hover:font-bold 
             "
           >
-            <span
-              :class="[
-                'rs-tabs__navigation__icon',
-                `rs-tabs__navigation__icon--${tab.icon}`
-              ]"
+            <i
+              :class="'fa fa-' + tab.icon"
+              class="text-base mr-2"
               v-show="tab.icon"
-            ></span>
+            />
             {{ tab.name }}
           </a>
         </li>
@@ -220,5 +218,6 @@ export default {
   max-height: 65rem;
   transition: max-height 0.45s 0.05s;
   padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 </style>

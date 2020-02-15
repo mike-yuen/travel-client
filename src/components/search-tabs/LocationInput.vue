@@ -1,26 +1,17 @@
 <template>
   <div :id="id" v-click-outside="{ handler: 'onBlurInput' }">
-    <div class="relative w-full">
-      <label
-        class="block text-white text-base pb-1"
-        :for="id"
-        v-show="isExpanded"
-      >
-        {{ label }}
-      </label>
-      <styled-input
-        :id="id"
-        :name="id"
-        :placeholder="placeholder"
-        type="text"
-        class="w-full text-lg rounded-0"
-        autocomplete="off"
-        :errors="errors"
-        :value="valueInput"
-        @focus="onFocusInput()"
-      />
-    </div>
-    <div class="relative w-full" v-show="isExpanded && isFocusedInput">
+    <Input
+      :id="id"
+      :label="label"
+      :showLabel="isExpanded"
+      :placeholder="placeholder"
+      type="text"
+      :value="valueInput"
+      icon="times"
+      @focus="onFocusInput($event)"
+      @keyup="onKeyupInput($event)"
+    />
+    <div class="relative w-full z-10" v-show="isExpanded && isFocusedInput">
       <div class="box-content absolute w-full">
         <div class="relative w-full">
           <ul
@@ -54,28 +45,7 @@
 
 <script>
 import styled from "vue-styled-components";
-const inputProps = { errors: Array };
-const StyledInput = styled("input", inputProps)`
-  height: 48px;
-  color: #323232;
-  font-size: 1rem;
-  line-height: 25.5px;
-  padding: 10.5px 14px 12px;
-  border: 2px solid #fff;
-  &::placeholder {
-    font-size: 1.125rem;
-  }
-  &:focus {
-    outline: none;
-    border-color: #90e2df;
-    box-shadow: inset 0 0 0 1px #8de2e0;
-  }
-  ${props =>
-    props.errors &&
-    props.errors.length > 0 &&
-    `border-color: #ed710b!important;
-    box-shadow: none!important;`}
-`;
+import Input from "@/components/core-ui/field/Input";
 const StyledItem = styled.li`
   background-color: #f4f5f6;
   border-left: 3px solid transparent;
@@ -96,10 +66,10 @@ const StyledItem = styled.li`
   }
 `;
 export default {
-  name: "Input",
+  name: "LocationInput",
   components: {
-    "styled-input": StyledInput,
-    "styled-item": StyledItem
+    "styled-item": StyledItem,
+    Input
   },
   props: {
     id: {
@@ -139,8 +109,12 @@ export default {
     }
   },
   methods: {
-    onFocusInput() {
-      this.isFocusedInput = true;
+    isValidKeyword(keyword) {
+      const validKeywordLength = keyword.replace(/\s/g, "").length;
+      return validKeywordLength > 2;
+    },
+    onFocusInput(keyword) {
+      this.isFocusedInput = !!this.isValidKeyword(keyword);
     },
     onBlurInput() {
       this.isFocusedInput = false;
@@ -149,6 +123,9 @@ export default {
       this.dataValue = item;
       this.valueInput = item + ", VietNam";
       this.isFocusedInput = false;
+    },
+    onKeyupInput(keyword) {
+      this.isFocusedInput = !!this.isValidKeyword(keyword);
     }
   }
 };

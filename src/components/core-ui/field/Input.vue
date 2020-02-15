@@ -1,7 +1,7 @@
 <template>
-  <div class="relative">
-    <div class="flex justify-between">
-      <label class="text-sm" :for="id">
+  <div class="relative w-full">
+    <div class="flex justify-between" v-if="label">
+      <label class="block text-base pb-1" :for="id" v-show="showLabel">
         {{ label }}
       </label>
       <a
@@ -17,17 +17,25 @@
       :id="id"
       :name="id"
       :type="type"
-      class="w-full text-xl rounded-0"
+      :placeholder="placeholder"
+      class="w-full text-lg rounded-0 placeholder-gray-600"
       autocomplete="off"
       v-model="dataValue"
       :errors="errors"
+      @focus="$emit('focus', $event.target.value)"
+      @blur="$emit('blur', $event.target.value)"
+      @change="$emit('change', $event.target.value)"
+      @keyup="$emit('keyup', $event.target.value)"
+      @keydown="onKeyDown($event)"
     />
+    <styled-icon :class="'fa fa-' + icon" v-if="icon && showIcon" />
   </div>
 </template>
 
 <script>
 import styled from "vue-styled-components";
 const inputProps = { errors: Array };
+const iconProps = { iconName: String };
 const StyledInput = styled("input", inputProps)`
   height: 48px;
   color: #323232;
@@ -46,21 +54,40 @@ const StyledInput = styled("input", inputProps)`
     box-shadow: none!important;`}
 `;
 
+const StyledIcon = styled("i", iconProps)`
+  position: absolute;
+  right: 20px;
+  color: #323232;
+  margin-top: 15px;
+  cursor: pointer;
+  &:hover {
+    color: #8de2e0;
+  }
+`;
+
 export default {
   name: "Input",
   components: {
-    "styled-input": StyledInput
+    "styled-input": StyledInput,
+    "styled-icon": StyledIcon
   },
   props: {
     id: {
       type: String,
       required: true
     },
+    label: {
+      type: String
+    },
+    showLabel: {
+      type: Boolean,
+      default: true
+    },
     type: {
       type: String,
       required: true
     },
-    label: {
+    placeholder: {
       type: String
     },
     value: {},
@@ -69,6 +96,17 @@ export default {
     },
     action: {
       type: Object
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    icon: {
+      type: String
+    },
+    showIcon: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {
@@ -78,6 +116,17 @@ export default {
       },
       set(val) {
         this.$emit("input", val);
+      }
+    }
+  },
+  methods: {
+    onKeyDown(e) {
+      if (this.$props.disabled) {
+        if (e.keyCode !== 13 || e.keyCode !== 27) {
+          e.preventDefault();
+        }
+      } else {
+        this.$emit("keydown", e.target.value);
       }
     }
   }

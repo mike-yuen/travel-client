@@ -2,7 +2,7 @@
   <nav class="relative" style="background-color: #323232">
     <div class="max-w-5lg mx-auto">
       <ul
-        class="relative table w-full m-0 p-0 border-0 border-t border-transparent"
+        class="relative table w-full m-0 p-0 border-0 border-t border-transparent px-3"
       >
         <li
           class="table-cell w-auto h-16"
