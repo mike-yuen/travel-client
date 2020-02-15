@@ -1,5 +1,6 @@
 import About from "@/views/About.vue";
 import Home from "@/views/Home.vue";
+import Hotels from "@/views/Hotels.vue";
 
 const routes = [
   {
@@ -11,6 +12,11 @@ const routes = [
     path: "/",
     name: "home",
     component: Home
+  },
+  {
+    path: "/hotels",
+    name: "hotels",
+    component: Hotels
   },
   {
     path: "*",
