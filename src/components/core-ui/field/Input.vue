@@ -16,26 +16,32 @@
     <styled-input
       :id="id"
       :name="id"
+      :ref="id"
       :type="type"
       :placeholder="placeholder"
       class="w-full text-lg rounded-0 placeholder-gray-600"
       autocomplete="off"
       v-model="dataValue"
       :errors="errors"
+      @click="$emit('click', $event.target.value)"
       @focus="$emit('focus', $event.target.value)"
       @blur="$emit('blur', $event.target.value)"
       @change="$emit('change', $event.target.value)"
       @keyup="$emit('keyup', $event.target.value)"
-      @keydown="onKeyDown($event)"
+      @keypress="onKeyPress($event)"
     />
-    <styled-icon :class="'fa fa-' + icon" v-if="icon && showIcon" />
+    <styled-icon
+      :class="'fa fa-' + icon.code"
+      v-if="icon.code"
+      v-show="icon.isShown"
+      @click="actionOnIcon"
+    />
   </div>
 </template>
 
 <script>
 import styled from "vue-styled-components";
 const inputProps = { errors: Array };
-const iconProps = { iconName: String };
 const StyledInput = styled("input", inputProps)`
   height: 48px;
   color: #323232;
@@ -54,11 +60,12 @@ const StyledInput = styled("input", inputProps)`
     box-shadow: none!important;`}
 `;
 
-const StyledIcon = styled("i", iconProps)`
+const StyledIcon = styled.i`
   position: absolute;
   right: 20px;
   color: #323232;
-  margin-top: 15px;
+  font-weight: bold !important;
+  margin-top: 16px;
   cursor: pointer;
   &:hover {
     color: #8de2e0;
@@ -97,16 +104,18 @@ export default {
     action: {
       type: Object
     },
-    disabled: {
+    disableKeyPress: {
       type: Boolean,
       default: false
     },
     icon: {
-      type: String
-    },
-    showIcon: {
-      type: Boolean,
-      default: true
+      type: Object,
+      default() {
+        return {
+          code: String,
+          isShown: Boolean
+        };
+      }
     }
   },
   computed: {
@@ -120,14 +129,20 @@ export default {
     }
   },
   methods: {
-    onKeyDown(e) {
-      if (this.$props.disabled) {
-        if (e.keyCode !== 13 || e.keyCode !== 27) {
+    onKeyPress(e) {
+      if (this.$props.disableKeyPress) {
+        if (e.keyCode !== 13 && e.keyCode !== 27) {
           e.preventDefault();
+        } else {
+          this.$emit("keypress", e.target.value);
         }
       } else {
-        this.$emit("keydown", e.target.value);
+        this.$emit("keypress", e.target.value);
       }
+    },
+    async actionOnIcon() {
+      await this.$emit("actionOnIcon");
+      this.$refs[this.$props.id].$el.focus();
     }
   }
 };

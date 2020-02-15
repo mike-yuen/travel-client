@@ -1,15 +1,18 @@
 <template>
   <div
     class="login-ribbon flex items-center justify-center w-20 h-20 ml-5 -mb-2 z-10"
+    v-click-outside="{ handler: 'closeLoginWidget' }"
   >
-    <a
+    <div
       class="flex items-center justify-center w-20 h-20 text-white border-0 bg-red-0 text-base rounded-b-md cursor-pointer overflow-hidden"
       @click="toggleLoginWidget()"
     >
-      <span class="font-bold" v-if="stateLoginWidget">Log in</span>
-      <span v-else>Close</span>
-    </a>
-    <LoginWidget v-show="!stateLoginWidget" />
+      <span class="font-bold" v-if="!stateLoginWidget">Log in</span>
+      <span class="font-bold text-center" v-else
+        ><i class="fa fa-times block"></i>Close</span
+      >
+    </div>
+    <LoginWidget v-show="stateLoginWidget" />
   </div>
 </template>
 
@@ -23,12 +26,15 @@ export default {
   },
   data() {
     return {
-      stateLoginWidget: true
+      stateLoginWidget: false
     };
   },
   methods: {
     toggleLoginWidget() {
       this.stateLoginWidget = !this.stateLoginWidget;
+    },
+    closeLoginWidget() {
+      this.stateLoginWidget = false;
     }
   }
 };

@@ -2,7 +2,7 @@
   <div
     :id="id"
     v-show="isExpanded"
-    v-click-outside="{ handler: 'onBlurInput' }"
+    v-click-outside="{ handler: 'onCloseSelector' }"
   >
     <Input
       :id="id"
@@ -10,14 +10,15 @@
       :placeholder="placeholder"
       type="text"
       :value="valueInput"
-      @focus="onFocusInput($event)"
-      :disabled="true"
+      :disableKeyPress="true"
+      :icon="{ code: iconCode, isShown: true }"
+      @click="onOpenSelector($event)"
+      @actionOnIcon="toggleInput"
     />
-    <div class="relative w-full z-10" v-show="isExpanded && isFocusedInput">
+    <div class="relative w-full z-10" v-show="isOpenSelector">
       <div class="box-content absolute w-full">
         <div class="relative w-full">
           <styled-dropdown>
-            <!-- <span class="text-gray-0">{{ dataValue.children }}</span> -->
             <InputNumber
               id="adults-quantity"
               label="Adults"
@@ -101,7 +102,7 @@ export default {
   },
   data() {
     return {
-      isFocusedInput: false
+      isOpenSelector: false
     };
   },
   computed: {
@@ -133,14 +134,23 @@ export default {
           : "";
 
       return adultsAmount + childrenAmount + infantsAmount;
+    },
+    iconCode() {
+      if (this.isOpenSelector) {
+        return "chevron-up";
+      }
+      return "chevron-down";
     }
   },
   methods: {
-    onFocusInput() {
-      this.isFocusedInput = true;
+    toggleInput() {
+      this.isOpenSelector = !this.isOpenSelector;
     },
-    onBlurInput() {
-      this.isFocusedInput = false;
+    onOpenSelector() {
+      this.isOpenSelector = true;
+    },
+    onCloseSelector() {
+      this.isOpenSelector = false;
     }
   }
 };

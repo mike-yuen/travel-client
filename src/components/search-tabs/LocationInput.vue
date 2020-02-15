@@ -1,5 +1,5 @@
 <template>
-  <div :id="id" v-click-outside="{ handler: 'onBlurInput' }">
+  <div :id="id" v-click-outside="{ handler: 'onCloseSelector' }">
     <Input
       :id="id"
       :label="label"
@@ -7,11 +7,12 @@
       :placeholder="placeholder"
       type="text"
       :value="valueInput"
-      icon="times"
-      @focus="onFocusInput($event)"
+      :icon="{ code: 'times', isShown: hasKeyword }"
+      @click="onClickInput($event)"
       @keyup="onKeyupInput($event)"
+      @actionOnIcon="clearKeyword"
     />
-    <div class="relative w-full z-10" v-show="isExpanded && isFocusedInput">
+    <div class="relative w-full z-10" v-show="isExpanded && isOpenSelector">
       <div class="box-content absolute w-full">
         <div class="relative w-full">
           <ul
@@ -95,7 +96,7 @@ export default {
     return {
       cities: ["Ha Noi City", "Ho Chi Minh City"],
       valueInput: "",
-      isFocusedInput: false
+      isOpenSelector: false
     };
   },
   computed: {
@@ -106,6 +107,9 @@ export default {
       set(val) {
         this.$emit("input", val);
       }
+    },
+    hasKeyword() {
+      return this.valueInput.replace(/\s/g, "").length > 0;
     }
   },
   methods: {
@@ -113,19 +117,24 @@ export default {
       const validKeywordLength = keyword.replace(/\s/g, "").length;
       return validKeywordLength > 2;
     },
-    onFocusInput(keyword) {
-      this.isFocusedInput = !!this.isValidKeyword(keyword);
+    onClickInput(keyword) {
+      this.isOpenSelector = !!this.isValidKeyword(keyword);
     },
-    onBlurInput() {
-      this.isFocusedInput = false;
+    onCloseSelector() {
+      this.isOpenSelector = false;
     },
     selectItem(item) {
       this.dataValue = item;
       this.valueInput = item + ", VietNam";
-      this.isFocusedInput = false;
+      this.isOpenSelector = false;
     },
     onKeyupInput(keyword) {
-      this.isFocusedInput = !!this.isValidKeyword(keyword);
+      this.valueInput = keyword;
+      this.isOpenSelector = !!this.isValidKeyword(keyword);
+    },
+    clearKeyword() {
+      this.valueInput = "";
+      this.isOpenSelector = false;
     }
   }
 };

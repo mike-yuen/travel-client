@@ -8,7 +8,6 @@
       type="text"
       :value="value"
       @focus="onFocusInput($event)"
-      icon="calendar"
     />
     <DatePicker />
   </div>

@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       mock: [
-        { name: "Home", path: "/" },
+        { name: "Hotels", path: "hotels" },
         { name: "Destinations", path: "destinations" },
         { name: "Hotel Deals", path: "hotel-deals" },
         { name: "Book", path: "book" },

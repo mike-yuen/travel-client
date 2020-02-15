@@ -85,16 +85,17 @@
           >aasdkjahshdkasjdhsdsakjhdkasjhdkjas</Tab
         >
       </Tabs>
-      <span
-        class="absolute text-white"
+      <div
+        class="lg:block hidden absolute text-white font-bold text-center top-0 right-auto cursor-pointer outline-none"
         tabindex="0"
         aria-hidden="false"
-        style="
-      top: 0;
-      right: auto;
-      left: calc(100% + 2.5rem);"
-        >Close</span
+        style="left: calc(100% + 2.5rem)"
+        v-if="isExpanded"
+        @click="onCollapseTabs"
       >
+        <i class="fa fa-times"></i>
+        Close
+      </div>
     </tabs-wrapper>
   </div>
 </template>
