@@ -1,7 +1,7 @@
 <template>
   <div>
-    <NavigatorTop />
-    <MenuDesktop />
+    <NavigatorTop class="z-30" />
+    <MenuDesktop class="hidden lg:block z-20" />
     <HotelCard />
   </div>
 </template>

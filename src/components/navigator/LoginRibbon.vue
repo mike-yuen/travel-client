@@ -1,7 +1,7 @@
 <template>
   <div
     class="login-ribbon flex items-center justify-center w-20 h-20 ml-5 -mb-2 z-10"
-    v-click-outside="{ handler: 'closeLoginWidget' }"
+    v-click-outside="closeLoginWidget"
   >
     <div
       class="flex items-center justify-center w-20 h-20 text-white border-0 bg-red-0 text-base rounded-b-md cursor-pointer overflow-hidden"

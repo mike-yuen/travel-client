@@ -5,7 +5,7 @@
       style="background: rgba(0,0,0,0.7)"
       v-show="isExpanded"
     ></div>
-    <tabs-wrapper ref="button" v-click-outside="{ handler: 'onCollapseTabs' }">
+    <tabs-wrapper ref="button" v-click-outside="onCollapseTabs">
       <Tabs :isExpanded="isExpanded" @onExpandTabs="onExpandTabs">
         <Tab name="Book a hotel" icon="briefcase" :selected="true">
           <div class="block relative text-white">
@@ -40,24 +40,16 @@
                       v-model="locationData"
                     />
                   </div>
-                  <div class="w-full xl:w-1/3 pt-1 px-4">
-                    <DateInput
-                      id="checkin-input"
-                      label="Check-in date"
+                  <div class="w-full xl:w-2/3 pt-1">
+                    <DatePicker
+                      showYear
                       :isExpanded="isExpanded"
-                      v-model="date.checkin"
-                    />
-                  </div>
-                  <div class="w-full xl:w-1/3 pt-1 px-4">
-                    <DateInput
-                      id="checkout-input"
-                      label="Check-out date"
-                      :isExpanded="isExpanded"
-                      v-model="date.checkout"
+                      :maxNight="21"
+                      :checkIn="dateData.checkIn"
+                      :checkOut="dateData.checkOut"
                     />
                   </div>
                 </div>
-
                 <div class="flex w-full">
                   <div class="w-full xl:w-1/2 pt-5 px-4">
                     <GuestInput
@@ -104,8 +96,8 @@
 import Tabs from "../core-ui/tabs/Tabs";
 import Tab from "../core-ui/tabs/Tab";
 import Button from "../core-ui/button/Button";
+import DatePicker from "../core-ui/datepicker/DatePicker";
 import LocationInput from "./LocationInput";
-import DateInput from "./DateInput";
 import GuestInput from "./GuestInput";
 
 import styled from "vue-styled-components";
@@ -124,8 +116,8 @@ export default {
     Tab,
     Button,
     LocationInput,
-    DateInput,
     GuestInput,
+    DatePicker,
     "tabs-wrapper": TabsWrapper
   },
   data() {
@@ -137,9 +129,17 @@ export default {
         children: 0,
         infants: 0
       },
-      date: {
-        checkin: "Sun 9 Feb 2020",
-        checkout: "Mon 10 Feb 2020"
+      dateData: {
+        checkIn: new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          new Date().getDate()
+        ),
+        checkOut: new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          new Date().getDate() + 1
+        )
       }
     };
   },

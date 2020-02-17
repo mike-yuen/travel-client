@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="datepicker__wrapper"
-    v-if="show"
-    v-click-outside="{ handler: 'clickOutside' }"
-  >
+  <div id="datepicker" v-if="show" v-click-outside="clickOutside">
     <div
       class="datepicker__close-button -hide-on-desktop"
       v-if="isOpen"
@@ -11,45 +7,47 @@
     >
       ＋
     </div>
-    <div
-      class="datepicker__dummy-wrapper"
-      :class="`${isOpen ? 'datepicker__dummy-wrapper--is-active' : ''}`"
-    >
-      <date-input
-        :i18n="i18n"
-        :input-date="formatDate(checkIn)"
-        input-date-type="check-in"
-        :is-open="isOpen"
-        :show-datepicker="showDatepicker"
-        :toggle-datepicker="toggleDatepicker"
-        :single-day-selection="singleDaySelection"
-      ></date-input>
-      <date-input
-        v-if="!singleDaySelection"
+    <div class="datepicker__dummy-wrapper lg:flex w-full">
+      <div class="w-full xl:w-1/2 px-4">
+        <Input
+          id="checkin"
+          :i18n="i18n"
+          type="text"
+          label="Check-in date"
+          :showLabel="isExpanded"
+          :value="formatDate(checkIn)"
+          input-date-type="check-in"
+          @click="toggleDatepicker"
+          @enter="toggleDatepicker"
+        />
+      </div>
+      <div class="w-full xl:w-1/2 px-4">
+        <Input
+          id="checkout"
+          :i18n="i18n"
+          type="text"
+          label="Check-out date"
+          :showLabel="isExpanded"
+          :value="formatDate(checkOut)"
+          input-date-type="check-in"
+          @click="toggleDatepicker"
+          @enter="toggleDatepicker"
+          v-if="!singleDaySelection"
+        />
+      </div>
+      <!-- <date-input
+        
         :i18n="i18n"
         :input-date="formatDate(checkOut)"
         input-date-type="check-out"
-        :is-open="isOpen"
-        :showDatepicker="showDatepicker"
-        :toggle-datepicker="toggleDatepicker"
-        :single-day-selection="singleDaySelection"
-      ></date-input>
+        @click="toggleDatepicker"
+        @enter="toggleDatepicker"
+      ></date-input> -->
     </div>
-    <div
-      class="datepicker__clear-button"
-      tabindex="0"
-      @click="clearSelection"
-      v-if="showClearSelectionButton"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 68">
-        <path d="M6.5 6.5l55 55M61.5 6.5l-55 55"></path>
-      </svg>
-    </div>
-    <div
-      class="datepicker"
+    <datepicker
       :class="`${isOpen ? 'datepicker--open' : 'datepicker--closed'}`"
     >
-      <div class="-hide-on-desktop">
+      <!-- <div class="-hide-on-desktop">
         <div
           class="datepicker__dummy-wrapper datepicker__dummy-wrapper--no-border"
           @click="toggleDatepicker"
@@ -83,9 +81,10 @@
             type="button"
           ></div>
         </div>
-      </div>
-      <div class="datepicker__inner">
-        <div class="datepicker__header">
+      </div> -->
+      <div class="datepicker__inner pt-10 pb-8 px-6 md:px-8">
+        <!-- width: calc(100% - 30px); -->
+        <div class="datepicker__header hidden">
           <span
             class="datepicker__month-button datepicker__month-button--prev -hide-up-to-tablet"
             @click="renderPreviousMonth"
@@ -99,25 +98,30 @@
             :tabindex="isOpen ? 0 : -1"
           ></span>
         </div>
-        <div class="datepicker__months" v-if="screenSize == 'desktop'">
-          <div class="datepicker__month" v-for="n in [0, 1]" v-bind:key="n">
+        <div class="flex" v-if="screenSize == 'desktop'">
+          <div
+            class="md:w-1/2 border-box py-0 px-4"
+            v-for="n in [0, 1]"
+            v-bind:key="n"
+          >
             <p
-              class="datepicker__month-name"
+              class="text-base font-bold uppercase text-gray-0 tracking-wider mb-5 text-center"
               v-text="getMonth(months[activeMonthIndex + n].days[15].date)"
             ></p>
-            <div class="datepicker__week-row -hide-up-to-tablet">
+            <div
+              class="flex border-b border-gray-400 text-gray-0 text-base pb-3 mb-3 -hide-up-to-tablet"
+            >
               <div
-                class="datepicker__week-name"
+                class="w-1/7 text-center"
                 v-for="(dayName, index) in i18n['day-names']"
                 :key="index"
                 v-text="dayName"
               ></div>
             </div>
+
             <div
-              class="square"
-              v-for="(day, index) in months[activeMonthIndex + n].days"
-              :key="index"
-              @mouseover="hoveringDate = day.date"
+              class="date-outer flex flex-wrap"
+              style="margin-bottom: 2px;  margin-right: 2px;"
             >
               <Day
                 :is-open="isOpen"
@@ -134,6 +138,9 @@
                 :checkIn="checkIn"
                 :checkOut="checkOut"
                 :currentDateStyle="currentDateStyle"
+                @mouseover="hoveringDate = day.date"
+                v-for="(day, index) in months[activeMonthIndex + n].days"
+                :key="index"
               ></Day>
             </div>
           </div>
@@ -198,21 +205,23 @@
           </div>
         </div>
       </div>
-    </div>
+    </datepicker>
   </div>
 </template>
 
 <script>
-import throttle from "lodash.throttle";
-// import { directive as onClickOutside } from "vue-on-click-outside";
-import fecha from "fecha";
 import Day from "./Day.vue";
-import DateInput from "./DateInput.vue";
+import Input from "../field/Input";
 import Helpers from "./helpers.js";
+
+import fecha from "fecha";
+import throttle from "lodash.throttle";
+import styled from "vue-styled-components";
+
 const defaulti18n = {
   night: "Night",
   nights: "Nights",
-  "day-names": ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"],
+  "day-names": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   "check-in": "Check-in",
   "check-out": "Check-out",
   "month-names": [
@@ -230,18 +239,36 @@ const defaulti18n = {
     "December"
   ]
 };
+const Datepicker = styled.div`
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background-color: #f4f5f6;
+  margin-top: 9px;
+  padding: 0 15px;
+  box-sizing: border-box;
+  z-index: 1000;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+  @media (min-width: 768px) {
+    padding-left: 26px;
+    padding-right: 26px;
+    margin-left: 15px;
+    margin-right: 15px;
+    width: calc(100% - 30px);
+  }
+`;
+
 export default {
   name: "HotelDatePicker",
-  // directives: {
-  //   "on-click-outside": onClickOutside
-  // },
   components: {
     Day,
-    DateInput
+    Input,
+    datepicker: Datepicker
   },
   props: {
     currentDateStyle: {
-      default: () => ({ border: "1px solid #00c690" })
+      default: () => ({ borderColor: "#90e2df" })
     },
     value: {
       type: String
@@ -322,13 +349,9 @@ export default {
       default: false,
       type: Boolean
     },
-    closeDatepickerOnClickOutside: {
-      default: true,
-      type: Boolean
-    },
-    displayClearButton: {
-      default: true,
-      type: Boolean
+    isExpanded: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -348,13 +371,6 @@ export default {
       sortedDisabledDates: null,
       screenSize: this.handleWindowResize()
     };
-  },
-  computed: {
-    showClearSelectionButton() {
-      return Boolean(
-        (this.checkIn || this.checkOut) && this.displayClearButton
-      );
-    }
   },
   watch: {
     isOpen(value) {
@@ -430,29 +446,14 @@ export default {
         this.show = true;
       });
     },
-    clearSelection() {
-      (this.hoveringDate = null), (this.checkIn = null);
-      this.checkOut = null;
-      this.nextDisabledDate = null;
-      this.show = true;
-      this.parseDisabledDates();
-      this.reRender();
-    },
     hideDatepicker() {
       this.isOpen = false;
-      console.log("run hide func");
-    },
-    showDatepicker() {
-      this.isOpen = true;
     },
     toggleDatepicker() {
       this.isOpen = !this.isOpen;
-      console.log("this.isOpen", this.isOpen);
     },
     clickOutside() {
-      if (this.closeDatepickerOnClickOutside) {
-        this.hideDatepicker();
-      }
+      this.hideDatepicker();
     },
     handleDayClick(event) {
       if (this.checkIn == null && this.singleDaySelection == false) {
@@ -632,20 +633,13 @@ $extra-small-screen: "(max-width: 23em)";
     @content;
   }
 }
-.square {
-  width: calc(100% / 7);
-  float: left;
-  @include device($desktop) {
-    cursor: pointer;
-  }
-}
-.datepicker__wrapper {
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-}
+// .datepicker__wrapper {
+//   *,
+//   *::before,
+//   *::after {
+//     box-sizing: border-box;
+//   }
+// }
 /* =============================================================
      * BASE STYLES
      * ============================================================*/
@@ -693,6 +687,7 @@ $extra-small-screen: "(max-width: 23em)";
     max-height: 0;
   }
   &--open {
+    border: 2px solid #dadada;
     box-shadow: 0 15px 30px 10px rgba($black, 0.08);
     max-height: 900px;
     @include device($up-to-tablet) {
@@ -708,10 +703,10 @@ $extra-small-screen: "(max-width: 23em)";
     }
   }
   &__wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    height: 48px;
+    // position: relative;
+    // display: inline-block;
+    // width: 100%;
+    // height: 48px;
     // background: $white url("calendar_icon.regular.svg") no-repeat 17px center /
     //   16px;
   }
@@ -733,22 +728,22 @@ $extra-small-screen: "(max-width: 23em)";
       color: $primary-text-color;
     }
   }
-  &__dummy-wrapper {
-    background: #fff;
-    border: solid 1px $light-gray;
-    cursor: pointer;
-    display: block;
-    float: left;
-    width: 100%;
-    height: 100%;
-    &--no-border.datepicker__dummy-wrapper {
-      margin-top: 15px;
-      border: 0;
-    }
-    &--is-active {
-      border: 1px solid $primary-color;
-    }
-  }
+  // &__dummy-wrapper {
+  //   background: #fff;
+  //   border: solid 1px $light-gray;
+  //   cursor: pointer;
+  //   display: block;
+  //   float: left;
+  //   width: 100%;
+  //   height: 100%;
+  //   &--no-border.datepicker__dummy-wrapper {
+  //     margin-top: 15px;
+  //     border: 0;
+  //   }
+  //   &--is-active {
+  //     border: 1px solid $primary-color;
+  //   }
+  // }
   &__input {
     color: $primary-text-color;
     padding-top: 0;
@@ -877,17 +872,17 @@ $extra-small-screen: "(max-width: 23em)";
       pointer-events: none;
     }
   }
-  &__inner {
-    padding: 20px;
-    float: left;
-    @include device($up-to-tablet) {
-      padding: 0;
-    }
-  }
+  // &__inner {
+  //   padding: 20px;
+  //   float: left;
+  //   @include device($up-to-tablet) {
+  //     padding: 0;
+  //   }
+  // }
   &__months {
-    @include device($desktop) {
-      width: 650px;
-    }
+    // @include device($desktop) {
+    //   width: 650px;
+    // }
     @include device($up-to-tablet) {
       margin-top: 92px;
       height: calc(100% - 92px);
@@ -939,20 +934,20 @@ $extra-small-screen: "(max-width: 23em)";
     height: 2.5em;
     vertical-align: middle;
   }
-  &__month-name {
-    font-size: 16px;
-    font-weight: 500;
-    margin-top: -40px;
-    padding-bottom: 17px;
-    pointer-events: none;
-    text-align: center;
-    @include device($up-to-tablet) {
-      margin-top: -25px;
-      margin-bottom: 0;
-      position: absolute;
-      width: 100%;
-    }
-  }
+  // &__month-name {
+  //   font-size: 16px;
+  //   font-weight: 500;
+  //   margin-top: -40px;
+  //   padding-bottom: 17px;
+  //   pointer-events: none;
+  //   text-align: center;
+  //   @include device($up-to-tablet) {
+  //     margin-top: -25px;
+  //     margin-bottom: 0;
+  //     position: absolute;
+  //     width: 100%;
+  //   }
+  // }
   &__week-days {
     height: 2em;
     vertical-align: middle;
@@ -1027,9 +1022,10 @@ $extra-small-screen: "(max-width: 23em)";
     border-radius: 2px;
     color: $white;
     font-size: 11px;
-    margin-left: 5px;
-    margin-top: -22px;
-    padding: 5px 10px;
+    text-align: center;
+    bottom: 100%;
+    width: 100%;
+    padding: 5px 5px;
     position: absolute;
     z-index: 50;
     &:after {

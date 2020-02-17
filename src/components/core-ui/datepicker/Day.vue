@@ -1,28 +1,73 @@
 <template>
-  <div>
+  <day-wrapper @mouseover="$emit('mouseover')">
     <div
       class="datepicker__tooltip"
-      v-if="showTooltip && this.options.hoveringTooltip"
+      v-if="showTooltip && options.hoveringTooltip"
       v-html="tooltipMessageDisplay"
     ></div>
+
     <div
-      class="datepicker__month-day"
-      @click.prevent.stop="dayClicked(date)"
-      @keyup.enter.prevent.stop="dayClicked(date)"
-      v-text="dayNumber"
+      class="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-white border-2 border-transparent text-gray-0 outline-none"
       :class="dayClass"
       :style="isToday ? currentDateStyle : ''"
+      @click.prevent.stop="dayClicked(date)"
+      @keyup.enter.prevent.stop="dayClicked(date)"
       :tabindex="tabIndex"
       ref="day"
-    ></div>
-  </div>
+    >
+      <triangle-right
+        v-if="dayClass == 'cursor-not-allowed bg-cyan-50 border-cyan-100'"
+      />
+      <span class="z-50">{{ dayNumber }}</span>
+    </div>
+  </day-wrapper>
 </template>
 
 <script>
 import fecha from "fecha";
 import Helpers from "./helpers.js";
+import styled from "vue-styled-components";
+
+const DayWrapper = styled.div`
+  background-color: transparent;
+  position: relative
+  width: calc(1/7 * 100%);
+  border: 1px solid transparent;  
+  cursor: pointer;
+  &:before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+  }
+`;
+const TriangleRight = styled.div`
+  height: 0px;
+  overflow: hidden;
+  padding-bottom: 50%;
+  padding-top: 50%;
+  padding-left: 50%;
+  position: absolute;
+  width: 0px;
+  left: 0px;
+  &:after {
+    border-bottom: 500px solid transparent;
+    border-top: 500px solid transparent;
+    border-left: 500px solid #8de2e0;
+    content: "";
+    display: block;
+    height: 0;
+    margin-top: -500px;
+    margin-left: -500px;
+    width: 0;
+  }
+`;
+
 export default {
   name: "Day",
+  components: {
+    "day-wrapper": DayWrapper,
+    "triangle-right": TriangleRight
+  },
   props: {
     isOpen: {
       type: Boolean,
@@ -42,9 +87,6 @@ export default {
     },
     hoveringDate: {
       type: Date
-    },
-    mounseOverFunction: {
-      type: Function
     },
     belongsToThisMonth: {
       type: Boolean
@@ -174,9 +216,9 @@ export default {
             fecha.format(this.date, "YYYYMMDD")
         ) {
           if (this.options.minNights == 0) {
-            return "datepicker__month-day--first-day-selected";
+            return "bg-cyan-50 border-cyan-100";
           } else {
-            return "datepicker__month-day--disabled datepicker__month-day--first-day-selected";
+            return "cursor-not-allowed bg-cyan-50 border-cyan-100";
           }
         }
         if (this.checkOut !== null) {
@@ -189,13 +231,13 @@ export default {
         }
         // Only highlight dates that are not disabled
         if (this.isHighlighted && !this.isDisabled) {
-          return " datepicker__month-day--selected";
+          return "bg-gray-100 hover:border-cyan-100";
         }
         if (this.isDisabled) {
-          return "datepicker__month-day--disabled";
+          return "bg-gray-50";
         }
       } else if (!this.belongsToThisMonth) {
-        return "datepicker__month-day--hidden";
+        return "opacity-0 invisible";
       } else {
         return "datepicker__month-day--valid";
       }

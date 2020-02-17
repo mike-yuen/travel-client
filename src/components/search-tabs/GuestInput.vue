@@ -1,9 +1,5 @@
 <template>
-  <div
-    :id="id"
-    v-show="isExpanded"
-    v-click-outside="{ handler: 'onCloseSelector' }"
-  >
+  <div :id="id" v-show="isExpanded" v-click-outside="onCloseSelector">
     <Input
       :id="id"
       :label="label"

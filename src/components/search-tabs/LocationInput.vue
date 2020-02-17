@@ -1,5 +1,5 @@
 <template>
-  <div :id="id" v-click-outside="{ handler: 'onCloseSelector' }">
+  <div :id="id" v-click-outside="onCloseSelector">
     <Input
       :id="id"
       :label="label"

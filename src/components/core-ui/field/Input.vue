@@ -29,6 +29,7 @@
       @change="$emit('change', $event.target.value)"
       @keyup="$emit('keyup', $event.target.value)"
       @keypress="onKeyPress($event)"
+      @keyup.enter.stop.prevent="$emit('enter')"
     />
     <styled-icon
       :class="'fa fa-' + icon.code"
