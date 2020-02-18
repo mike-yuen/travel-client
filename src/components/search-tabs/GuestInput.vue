@@ -4,10 +4,10 @@
       :id="id"
       :label="label"
       :placeholder="placeholder"
-      type="text"
       :value="valueInput"
       :disableKeyPress="true"
       :icon="{ code: iconCode, isShown: true }"
+      type="text"
       @click="onOpenSelector($event)"
       @actionOnIcon="toggleInput"
     />
@@ -36,16 +36,14 @@
               :min="0"
               :max="9"
             />
-            <div class="qfa1-people-selector__button">
-              <div class="widget-form__group">
-                <button
-                  class="qfa1-submit-button__button"
-                  type="button"
-                  aria-label="Select button. Click this button to confirm you have selected 2 Adults"
-                >
-                  SELECT
-                </button>
-              </div>
+            <div class="relative pt-4">
+              <Button
+                class="uppercase font-bold"
+                type="button"
+                @onClick="onCloseSelector()"
+              >
+                Select
+              </Button>
             </div>
           </styled-dropdown>
         </div>
@@ -58,6 +56,7 @@
 import styled from "vue-styled-components";
 import Input from "@/components/core-ui/field/Input";
 import InputNumber from "@/components/core-ui/field/InputNumber";
+import Button from "@/components/core-ui/button/Button";
 
 const StyledDropdown = styled.div`
   background-color: #f4f5f6;
@@ -74,6 +73,7 @@ export default {
   components: {
     Input,
     InputNumber,
+    Button,
     "styled-dropdown": StyledDropdown
   },
   props: {

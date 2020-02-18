@@ -7,8 +7,8 @@
     >
       ＋
     </div>
-    <div class="datepicker__dummy-wrapper lg:flex w-full">
-      <div class="w-full xl:w-1/2 px-4">
+    <div class="datepicker__dummy-wrapper md:flex w-full">
+      <div class="w-full md:w-1/2 px-4">
         <Input
           id="checkin"
           :i18n="i18n"
@@ -17,11 +17,12 @@
           :showLabel="isExpanded"
           :value="formatDate(checkIn)"
           input-date-type="check-in"
+          :icon="{ code: 'calendar', isShown: true }"
           @click="toggleDatepicker"
           @enter="toggleDatepicker"
         />
       </div>
-      <div class="w-full xl:w-1/2 px-4">
+      <div class="w-full md:w-1/2 px-4">
         <Input
           id="checkout"
           :i18n="i18n"
@@ -29,25 +30,18 @@
           label="Check-out date"
           :showLabel="isExpanded"
           :value="formatDate(checkOut)"
-          input-date-type="check-in"
+          input-date-type="check-out"
+          :icon="{ code: 'calendar', isShown: true }"
           @click="toggleDatepicker"
           @enter="toggleDatepicker"
           v-if="!singleDaySelection"
         />
       </div>
-      <!-- <date-input
-        
-        :i18n="i18n"
-        :input-date="formatDate(checkOut)"
-        input-date-type="check-out"
-        @click="toggleDatepicker"
-        @enter="toggleDatepicker"
-      ></date-input> -->
     </div>
     <datepicker
       :class="`${isOpen ? 'datepicker--open' : 'datepicker--closed'}`"
     >
-      <!-- <div class="-hide-on-desktop">
+      <div class="-hide-on-desktop">
         <div
           class="datepicker__dummy-wrapper datepicker__dummy-wrapper--no-border"
           @click="toggleDatepicker"
@@ -81,9 +75,8 @@
             type="button"
           ></div>
         </div>
-      </div> -->
+      </div>
       <div class="datepicker__inner pt-10 pb-8 px-6 md:px-8">
-        <!-- width: calc(100% - 30px); -->
         <div class="datepicker__header hidden">
           <span
             class="datepicker__month-button datepicker__month-button--prev -hide-up-to-tablet"
@@ -118,7 +111,6 @@
                 v-text="dayName"
               ></div>
             </div>
-
             <div
               class="date-outer flex flex-wrap"
               style="margin-bottom: 2px;  margin-right: 2px;"
@@ -173,11 +165,8 @@
                 ></div>
               </div>
               <div
-                class="square"
-                v-for="(day, index) in months[n].days"
-                @mouseover="hoveringDate = day.date"
-                @focus="hoveringDate = day.date"
-                v-bind:key="index"
+                class="date-outer flex flex-wrap"
+                style="margin-bottom: 2px;  margin-right: 2px;"
               >
                 <Day
                   :is-open="isOpen"
@@ -194,6 +183,9 @@
                   :checkIn="checkIn"
                   :checkOut="checkOut"
                   :currentDateStyle="currentDateStyle"
+                  @mouseover="hoveringDate = day.date"
+                  v-for="(day, index) in months[activeMonthIndex + n].days"
+                  :key="index"
                 ></Day>
               </div>
             </div>
@@ -271,7 +263,7 @@ export default {
       default: () => ({ borderColor: "#90e2df" })
     },
     value: {
-      type: String
+      type: Object
     },
     startingDateValue: {
       default: null,
@@ -282,7 +274,7 @@ export default {
       type: Date
     },
     format: {
-      default: "YYYY-MM-DD",
+      default: "ddd DD MMM YYYY",
       type: String
     },
     startDate: {
@@ -319,12 +311,6 @@ export default {
       },
       type: Array
     },
-    allowedRanges: {
-      default: function() {
-        return [];
-      },
-      type: Array
-    },
     hoveringTooltip: {
       default: true,
       type: [Boolean, Function]
@@ -356,9 +342,9 @@ export default {
   },
   data() {
     return {
+      checkIn: null,
+      checkOut: null,
       hoveringDate: null,
-      checkIn: this.startingDateValue,
-      checkOut: this.endingDateValue,
       months: [],
       activeMonthIndex: 0,
       nextDisabledDate: null,
@@ -371,6 +357,16 @@ export default {
       sortedDisabledDates: null,
       screenSize: this.handleWindowResize()
     };
+  },
+  computed: {
+    dataValue: {
+      get() {
+        return this.$props.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
+    }
   },
   watch: {
     isOpen(value) {
@@ -390,7 +386,7 @@ export default {
       }
     },
     checkIn(newDate) {
-      this.$emit("check-in-changed", newDate);
+      this.dataValue.checkIn = newDate;
     },
     checkOut(newDate) {
       if (this.checkOut !== null && this.checkOut !== null) {
@@ -401,7 +397,7 @@ export default {
         this.reRender();
         this.isOpen = false;
       }
-      this.$emit("check-out-changed", newDate);
+      this.dataValue.checkOut = newDate;
     }
   },
   methods: {
@@ -584,6 +580,10 @@ export default {
     this.parseDisabledDates();
   },
   mounted() {
+    this.$nextTick(() => {
+      this.checkIn = this.dataValue.checkIn;
+      this.checkOut = this.dataValue.checkOut;
+    });
     document.addEventListener("touchstart", this.handleTouchStart, false);
     document.addEventListener("touchmove", this.handleTouchMove, false);
     window.addEventListener("resize", this.handleWindowResize);
@@ -872,17 +872,7 @@ $extra-small-screen: "(max-width: 23em)";
       pointer-events: none;
     }
   }
-  // &__inner {
-  //   padding: 20px;
-  //   float: left;
-  //   @include device($up-to-tablet) {
-  //     padding: 0;
-  //   }
-  // }
   &__months {
-    // @include device($desktop) {
-    //   width: 650px;
-    // }
     @include device($up-to-tablet) {
       margin-top: 92px;
       height: calc(100% - 92px);

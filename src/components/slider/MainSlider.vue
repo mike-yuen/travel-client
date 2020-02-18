@@ -146,18 +146,10 @@ export default {
         navButtons: false,
         speed: "2000",
         autoplay: true,
-        autoplaySpeed: "5000",
+        autoplaySpeed: "10000",
         pauseOnHover: false
       },
       slides: [
-        {
-          title: "Where can I go?",
-          content:
-            "Need travel inspiration? Compare a range of Travel and partner flight prices using our interactive map and see where you can go.",
-          button: "Search Hotels",
-          path: require("@/assets/images/homepagepromotion.1.png"),
-          link: "https://github.com/minhnguyen1505"
-        },
         {
           title: "Where can I go?",
           content:
@@ -172,6 +164,14 @@ export default {
             "Need travel inspiration? Compare a range of Travel and partner flight prices using our interactive map and see where you can go.",
           button: "Search Hotels",
           path: require("@/assets/images/homepagepromotion.3.png"),
+          link: "https://github.com/minhnguyen1505"
+        },
+        {
+          title: "Where can I go?",
+          content:
+            "Need travel inspiration? Compare a range of Travel and partner flight prices using our interactive map and see where you can go.",
+          button: "Search Hotels",
+          path: require("@/assets/images/homepagepromotion.1.png"),
           link: "https://github.com/minhnguyen1505"
         }
       ]

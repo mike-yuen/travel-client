@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="search-tabs">
     <div
       class="overlay fixed top-0 left-0 w-full h-full cursor-pointer"
       style="background: rgba(0,0,0,0.7)"
@@ -28,10 +28,10 @@
                 </span>
               </div>
             </div>
-            <div class="">
-              <form autocomplete="off" novalidate="" class="hotel-form">
-                <div class="flex w-full">
-                  <div class="w-full xl:w-1/3 pt-1 px-4">
+            <form autocomplete="off" novalidate="" class="hotel-form">
+              <div class="search-wrapper">
+                <div class="md:flex w-full">
+                  <div class="w-full md:w-1/3 pt-1 px-4">
                     <LocationInput
                       id="location-input"
                       label="Location"
@@ -40,17 +40,24 @@
                       v-model="locationData"
                     />
                   </div>
-                  <div class="w-full xl:w-2/3 pt-1">
+                  <div class="w-full md:w-2/3 pt-1">
                     <DatePicker
                       showYear
                       :isExpanded="isExpanded"
-                      :maxNight="21"
-                      :checkIn="dateData.checkIn"
-                      :checkOut="dateData.checkOut"
+                      :maxNights="21"
+                      v-model="dateData"
                     />
                   </div>
+                  <div
+                    class="w-full hidden md:block md:w-1/8 pt-1 px-4"
+                    v-if="!isExpanded"
+                  >
+                    <Button class="uppercase font-bold">
+                      <i class="faf fa-chevron-right text-sm" />
+                    </Button>
+                  </div>
                 </div>
-                <div class="flex w-full">
+                <div class="md:flex w-full">
                   <div class="w-full xl:w-1/2 pt-5 px-4">
                     <GuestInput
                       id="guest-input"
@@ -63,8 +70,8 @@
                     <Button class="uppercase font-bold">Find your hotel</Button>
                   </div>
                 </div>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </Tab>
         <Tab name="Manage booking" icon="clipboard-list-check">
@@ -99,6 +106,7 @@ import Button from "../core-ui/button/Button";
 import DatePicker from "../core-ui/datepicker/DatePicker";
 import LocationInput from "./LocationInput";
 import GuestInput from "./GuestInput";
+import fecha from "fecha";
 
 import styled from "vue-styled-components";
 const TabsWrapper = styled.div`
@@ -130,16 +138,8 @@ export default {
         infants: 0
       },
       dateData: {
-        checkIn: new Date(
-          new Date().getFullYear(),
-          new Date().getMonth(),
-          new Date().getDate()
-        ),
-        checkOut: new Date(
-          new Date().getFullYear(),
-          new Date().getMonth(),
-          new Date().getDate() + 1
-        )
+        checkIn: new Date(),
+        checkOut: new Date(new Date().valueOf() + 1000 * 3600 * 24)
       }
     };
   },
@@ -149,6 +149,12 @@ export default {
     },
     onCollapseTabs() {
       this.isExpanded = false;
+    },
+    formatDate(date) {
+      if (date) {
+        return fecha.format(date, "YYYY-MM-DD");
+      }
+      return "";
     }
   }
 };

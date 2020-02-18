@@ -15,9 +15,8 @@
       :tabindex="tabIndex"
       ref="day"
     >
-      <triangle-right
-        v-if="dayClass == 'cursor-not-allowed bg-cyan-50 border-cyan-100'"
-      />
+      <triangle-right v-if="dayClass.includes('checkin')" />
+      <triangle-left v-if="dayClass.includes('checkout')" />
       <span class="z-50">{{ dayNumber }}</span>
     </div>
   </day-wrapper>
@@ -40,15 +39,13 @@ const DayWrapper = styled.div`
     padding-top: 100%;
   }
 `;
-const TriangleRight = styled.div`
+const Triangle = styled.div`
   height: 0px;
   overflow: hidden;
   padding-bottom: 50%;
   padding-top: 50%;
-  padding-left: 50%;
   position: absolute;
   width: 0px;
-  left: 0px;
   &:after {
     border-bottom: 500px solid transparent;
     border-top: 500px solid transparent;
@@ -61,12 +58,29 @@ const TriangleRight = styled.div`
     width: 0;
   }
 `;
+const TriangleRight = Triangle.extend`
+  padding-left: 50%;
+  left: 0px;
+  &:after {
+    border-left: 500px solid #8de2e0;
+    margin-left: -500px;
+  }
+`;
+const TriangleLeft = Triangle.extend`
+  padding-right: 50%;
+  right: 0px;
+  &:after {
+    border-right: 500px solid #8de2e0;
+    margin-right: -500px;
+  }
+`;
 
 export default {
   name: "Day",
   components: {
     "day-wrapper": DayWrapper,
-    "triangle-right": TriangleRight
+    "triangle-right": TriangleRight,
+    "triangle-left": TriangleLeft
   },
   props: {
     isOpen: {
@@ -119,7 +133,6 @@ export default {
     return {
       isHighlighted: false,
       isDisabled: false,
-      allowedCheckoutDays: [],
       currentDate: new Date()
     };
   },
@@ -172,42 +185,6 @@ export default {
         ) {
           return "datepicker__month-day--selected datepicker__month-day--out-of-range";
         }
-        // If the calendar has allowed ranges
-        if (this.options.allowedRanges.length !== 0) {
-          if (
-            !this.isDisabled &&
-            this.checkIn !== null &&
-            this.checkOut == null
-          ) {
-            // If the day is one of the allowed check out days and is not highlighted
-            if (
-              this.allowedCheckoutDays.some(
-                i => this.compareDay(i, this.date) == 0 && !this.isHighlighted
-              )
-            ) {
-              return "datepicker__month-day--allowed-checkout";
-            }
-            // If the day is one of the allowed check out days and is highlighted
-            if (
-              this.allowedCheckoutDays.some(
-                i => this.compareDay(i, this.date) == 0 && this.isHighlighted
-              )
-            ) {
-              return "datepicker__month-day--selected datepicker__month-day--allowed-checkout";
-            }
-            // If the day is not one of the allowed Checkout Days and is highlighted
-            if (
-              !this.allowedCheckoutDays.some(
-                i => this.compareDay(i, this.date) == 0
-              ) &&
-              this.isHighlighted
-            ) {
-              return "datepicker__month-day--out-of-range datepicker__month-day--selected";
-            } else {
-              return "datepicker__month-day--out-of-range";
-            }
-          }
-        }
         // Highlight the selected dates and prevent the user from selecting
         // the same date for checkout and checkin
         if (
@@ -218,7 +195,7 @@ export default {
           if (this.options.minNights == 0) {
             return "bg-cyan-50 border-cyan-100";
           } else {
-            return "cursor-not-allowed bg-cyan-50 border-cyan-100";
+            return "checkin bg-cyan-50 border-cyan-100";
           }
         }
         if (this.checkOut !== null) {
@@ -226,18 +203,18 @@ export default {
             fecha.format(this.checkOut, "YYYYMMDD") ==
             fecha.format(this.date, "YYYYMMDD")
           ) {
-            return "datepicker__month-day--disabled datepicker__month-day--last-day-selected";
+            return "checkout bg-cyan-50 border-cyan-100";
           }
         }
         // Only highlight dates that are not disabled
         if (this.isHighlighted && !this.isDisabled) {
-          return "bg-gray-100 hover:border-cyan-100";
+          return "bg-cyan-50 hover:border-cyan-100";
         }
         if (this.isDisabled) {
           return "bg-gray-50";
         }
       } else if (!this.belongsToThisMonth) {
-        return "opacity-0 invisible";
+        return "hidden";
       } else {
         return "datepicker__month-day--valid";
       }
@@ -256,12 +233,6 @@ export default {
           ? (this.isHighlighted = true)
           : (this.isHighlighted = false);
       }
-      // if (
-      //   this.checkIn !== null &&
-      //   this.checkOut == null &&
-      //   this.allowedCheckoutDays.length !== 0
-      // ) {
-      // }
     },
     activeMonthIndex() {
       this.checkIfDisabled();
@@ -279,9 +250,6 @@ export default {
     },
     nextDisabledDate() {
       this.disableNextDays();
-    },
-    checkIn(date) {
-      this.createAllowedCheckoutDays(date);
     }
   },
   methods: {
@@ -308,14 +276,10 @@ export default {
       if (this.isDisabled || !this.isClickable()) {
         return;
       } else {
-        if (this.options.allowedRanges.length !== 0) {
-          this.createAllowedCheckoutDays(date);
-        }
         let nextDisabledDate =
           (this.options.maxNights
             ? this.addDays(this.date, this.options.maxNights)
             : null) ||
-          this.allowedCheckoutDays[this.allowedCheckoutDays.length - 1] ||
           this.getNextDate(this.sortedDisabledDates, this.date) ||
           this.nextDateByDayOfWeekArray(
             this.options.disabledDaysOfWeek,
@@ -370,13 +334,6 @@ export default {
           ? (this.isHighlighted = true)
           : (this.isHighlighted = false);
       }
-    },
-    createAllowedCheckoutDays(date) {
-      this.allowedCheckoutDays = [];
-      this.options.allowedRanges.forEach(i =>
-        this.allowedCheckoutDays.push(this.addDays(date, i))
-      );
-      this.allowedCheckoutDays.sort((a, b) => a - b);
     },
     disableNextDays() {
       if (
