@@ -2,15 +2,22 @@
   <div class="max-w-full mx-auto p-2">
     <div v-for="(hotel, index) in hotels" :key="index">
       <a :href="hotel.url">
-        <div class="border-solid border-1 shadow-lg rounded mt-6">
+        <div class="border-solid border-2 shadow-lg rounded mt-6">
           <div class="lg:flex">
             <div class="lg:w-1/4">
-              <img :src="hotel.hotelImage" alt="" class="w-100" />
+              <skeleton-box v-if="loading" width="100%" height="100%" />
+              <img v-else :src="hotel.hotelImage" alt class="w-full" />
             </div>
-            <div class="lg:w-3/4">
-              <div class="p-4">
+            <div class="lg:w-3/4 relative">
+              <div class="absolute top-0 right-0 mr-20" v-if="hotel.isDeal">
+                <div class="bg-blue-500 px-5">
+                  <span class="text-white font-bold">Top Deal</span>
+                </div>
+              </div>
+              <div class="p-6">
                 <div class="float-left">
-                  <h3 class="uppercase font-bold text-2xl mb-2">
+                  <skeleton-box v-if="loading" width="100px" height="10px" />
+                  <h3 v-else class="uppercase font-bold text-2xl mb-2">
                     {{ hotel.title }}
                   </h3>
                   <p class="text-gray-500 capitalize mb-3">
@@ -25,11 +32,11 @@
                       </div>
                     </div>
                     <div class="self-center mr-1">
-                      <img :src="hotel.tripadvisorImage" alt="" class="w-100" />
+                      <img :src="hotel.tripadvisorImage" alt class="w-100" />
                     </div>
-                    <span class="text-gray-500 self-center">
-                      {{ hotel.numberOfReviews }} reviews
-                    </span>
+                    <span class="text-gray-500 self-center"
+                      >{{ hotel.numberOfReviews }} reviews</span
+                    >
                   </div>
                   <div class="lg:flex">
                     <div v-for="(icon, index) in hotel.icons" :key="index">
@@ -41,9 +48,9 @@
                     </div>
                   </div>
                 </div>
-                <div class="float-right">
-                  <p class="">
-                    <span class="">{{ hotel.numberOfNights }} night</span>
+                <div class="float-right text-right">
+                  <p class>
+                    <span class>{{ hotel.numberOfNights }} night</span>
                     from (AUD)
                   </p>
                   <p class="line-through text-gray-500">
@@ -68,45 +75,19 @@
 </template>
 
 <script>
+import SkeletonBox from "@/components/skeleton/SkeletonBox.vue";
+
 export default {
   name: "HotelCard",
-  data() {
-    return {
-      hotels: [
-        {
-          title: "Hotel",
-          country: "VietNam",
-          tripadvisorImage:
-            "https://www.tripadvisor.com/img/cdsi/img2/ratings/traveler/4.5-15969-4.svg",
-          hotelImage:
-            "https://i.travelapi.com/hotels/3000000/2060000/2057700/2057692/d1374aea_b.jpg",
-          url: "void:javascript(0)",
-          discount: 300,
-          price: 200,
-          numberOfNights: 1,
-          numberOfReviews: 3000,
-          numberOfRank: 4,
-          points: 90,
-          icons: ["phone", "car"]
-        },
-        {
-          title: "Hotel 2",
-          country: "US",
-          tripadvisorImage:
-            "https://www.tripadvisor.com/img/cdsi/img2/ratings/traveler/4.5-15969-4.svg",
-          hotelImage:
-            "https://i.travelapi.com/hotels/3000000/2060000/2057700/2057692/d1374aea_b.jpg",
-          url: "void:javascript(0)",
-          discount: 300,
-          price: 200,
-          numberOfNights: 2,
-          numberOfReviews: 4000,
-          numberOfRank: 5,
-          points: 90,
-          icons: ["book", "car"]
-        }
-      ]
-    };
+  components: {
+    SkeletonBox
+  },
+  props: {
+    loading: {
+      default: false,
+      type: Boolean
+    },
+    hotels: Array
   }
 };
 </script>

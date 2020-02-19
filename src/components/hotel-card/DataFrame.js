@@ -1,27 +1,7 @@
-<template>
-  <div>
-    <NavigatorTop />
-    <MenuDesktop />
-    <HotelCard v-for="(hotel, index) in hotels" :key="index" :hotel="hotel" :loading="loading" />
-  </div>
-</template>
-
-<script>
-import NavigatorTop from "@/components/navigator/NavigatorTop";
-import MenuDesktop from "@/components/menu/MenuDesktop";
-import HotelCard from "@/components/hotel-card/HotelCard";
-export default {
-  name: "hotels",
-  components: {
-    NavigatorTop,
-    MenuDesktop,
-    HotelCard
-    // DataFrame
-  },
-  data() {
-    return {
-      loading: true,
-      hotels: [
+function fakeApi() {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve([
         {
           title: "Hotel",
           country: "VietNam",
@@ -56,20 +36,32 @@ export default {
           isDeal: false,
           icons: ["book", "car"]
         }
-      ]
+      ]);
+    }, 2000);
+  });
+}
+
+export default {
+  data() {
+    return {
+      data: null,
+      error: null,
+      loading: true
     };
   },
-  methods: {
-    skeletonLoading() {
-      // const self = this;
-      setTimeout(() => {
-        this.loading = !this.loading;
-      }, 2000);
+  async created() {
+    try {
+      this.data = await fakeApi();
+      this.loading = false;
+    } catch (error) {
+      this.error = error;
     }
   },
-
-  mounted() {
-    this.skeletonLoading();
+  render() {
+    return this.$scopedSlots.default({
+      data: this.data,
+      error: this.error,
+      loading: this.loading
+    });
   }
 };
-</script>
