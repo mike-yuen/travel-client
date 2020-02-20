@@ -1,5 +1,11 @@
 <template>
-  <style-skeleton-box :style="{ height, width: computedWidth }" />
+  <style-skeleton-box
+    :style="{
+      height,
+      width: computedWidth,
+      borderRadius: computedBorderRadius
+    }"
+  />
 </template>
 
 <script>
@@ -19,12 +25,12 @@ const styleSkeletonBox = styled.span`
     bottom: 0;
     left: 0;
     transform: translateX(-100%);
-    background-image: linear-gradient(
+    background: linear-gradient(
       90deg,
-      rgba(#fff, 0) 0,
-      rgba(#fff, 0.2) 20%,
-      rgba(#fff, 0.5) 60%,
-      rgba(#fff, 0)
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0.5) 60%,
+      rgba(255, 255, 255, 0) 100%
     );
     animation: shimmer 5s infinite;
     content: "";
@@ -63,6 +69,11 @@ export default {
       // width instead of using a random one.
       default: null,
       type: String
+    },
+    borderRadius: {
+      // The default is null
+      default: null,
+      type: String
     }
   },
   computed: {
@@ -76,6 +87,10 @@ export default {
           Math.random() * (this.maxWidth - this.minWidth) + this.minWidth
         )}%`
       );
+    },
+
+    computedBorderRadius() {
+      return this.borderRadius;
     }
   }
 };
