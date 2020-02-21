@@ -3,7 +3,7 @@
     <div class="border-solid border-1 shadow-lg rounded mt-6">
       <div class="lg:flex">
         <div class="lg:w-1/4">
-          <skeleton-box v-if="loading" width="100%" height="200px" />
+          <skeleton-box v-if="loading" width="100%" height="240px" />
           <slot v-else name="figure" />
         </div>
         <div class="lg:w-3/4 relative">
@@ -19,12 +19,27 @@
               <slot v-else name="country" />
               <div class="lg:flex">
                 <div class="lg:flex self-center">
-                  <skeleton-box v-if="loading" borderRadius="10px" width="100px" class="mr-2" />
+                  <skeleton-box
+                    v-if="loading"
+                    borderRadius="10px"
+                    width="100px"
+                    class="mr-2"
+                  />
                   <slot v-else name="numberOfRank" />
                 </div>
-                <skeleton-box v-if="loading" borderRadius="10px" width="100px" class="mr-2" />
+                <skeleton-box
+                  v-if="loading"
+                  borderRadius="10px"
+                  width="100px"
+                  class="mr-2"
+                />
                 <slot v-else name="tripadvisorImage" />
-                <skeleton-box v-if="loading" borderRadius="10px" width="100px" class="mr-2" />
+                <skeleton-box
+                  v-if="loading"
+                  borderRadius="10px"
+                  width="100px"
+                  class="mr-2"
+                />
                 <slot v-else name="numberOfReviews" />
               </div>
               <div class="lg:flex">
