@@ -104,10 +104,10 @@ export default {
   computed: {},
   methods: {
     handleSubmit() {
-      console.log("aaaaaaaaaaaaaaa");
+      // console.log("aaaaaaaaaaaaaaa");
     },
     handleForgotPassword() {
-      console.log("bbbbbbbbbbbbbbb");
+      // console.log("bbbbbbbbbbbbbbb");
     }
   }
 };

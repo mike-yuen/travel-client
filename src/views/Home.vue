@@ -36,9 +36,7 @@ export default {
   },
   methods: {
     testApi() {
-      apiServices.authenticate().then(resp => {
-        console.log(resp);
-      });
+      apiServices.authenticate()
     }
   }
 };
