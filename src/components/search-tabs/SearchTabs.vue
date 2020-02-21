@@ -6,11 +6,15 @@
       v-show="isExpanded"
     ></div>
     <tabs-wrapper ref="button" v-click-outside="onCollapseTabs">
-      <Tabs :isExpanded="isExpanded" @onExpandTabs="onExpandTabs">
-        <Tab name="Book a hotel" icon="briefcase" :selected="true">
-          <div class="block relative text-white">
-            <div class="flex items-center px-4 mb-4">
-              <div class="w-1/2">
+      <Tabs
+        :isExpanded="isExpanded"
+        :collapsible="true"
+        @onExpandTabs="onExpandTabs"
+      >
+        <Tab name="Book a hotel" icon="briefcase" :selected="isSelectedTab">
+          <div class="block relative text-white bg-gray-0 pt-3 pb-8 md:py-0">
+            <div class="items-center px-4 mb-4 md:mb-6 md:flex">
+              <div class="w-full md:w-1/2">
                 <a
                   class="relative overflow-visible text-lg font-bold border-b-2 border-red-0 leading-normal"
                 >
@@ -18,7 +22,7 @@
                   Hotels and Airbnb
                 </a>
               </div>
-              <div class="w-1/2 flex justify-end">
+              <div class="hidden w-1/2 md:flex justify-end">
                 <span class="hide-mobile-only right">
                   <a href="#" class="text-lg hover:underline">
                     <i class="fa fa-map-marker"></i>
@@ -58,7 +62,7 @@
                   </div>
                 </div>
                 <div class="md:flex w-full">
-                  <div class="w-full xl:w-1/2 pt-5 px-4">
+                  <div class="w-full xl:w-1/2 md:pt-5 pt-2 px-4">
                     <GuestInput
                       id="guest-input"
                       label="Guests"
@@ -66,7 +70,7 @@
                       v-model="guestData"
                     />
                   </div>
-                  <div class="w-full xl:w-1/2 pt-12 px-4">
+                  <div class="w-full xl:w-1/2 md:pt-12 pt-6 px-4">
                     <Button class="uppercase font-bold">Find your hotel</Button>
                   </div>
                 </div>
@@ -111,11 +115,22 @@ import fecha from "fecha";
 import styled from "vue-styled-components";
 const TabsWrapper = styled.div`
   position: absolute;
-  top: 23rem;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: 64.25rem;
-  width: calc(100% - 1.875rem);
+  @media (max-width: 768px) {
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 1.5rem auto;
+    padding: 0;
+    width: calc(100% - 3rem);
+    min-width: 90%;
+  }
+  @media (min-width: 769px) {
+    top: 23rem;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 64.25rem;
+    width: calc(100% - 1.875rem);
+  }
 `;
 export default {
   name: "SearchTabs",
@@ -131,6 +146,7 @@ export default {
   data() {
     return {
       isExpanded: false,
+      isSelectedTab: false,
       locationData: "",
       guestData: {
         adults: 2,
@@ -142,6 +158,13 @@ export default {
         checkOut: new Date(new Date().valueOf() + 1000 * 3600 * 24)
       }
     };
+  },
+  created() {
+    if (window.innerWidth > 768) {
+      this.isSelectedTab = true;
+    } else {
+      this.isSelectedTab = false;
+    }
   },
   methods: {
     onExpandTabs() {

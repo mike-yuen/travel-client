@@ -1,41 +1,48 @@
 <template>
   <header id="header" class="h-auto bg-white relative" role="banner">
     <div class="max-w-5lg mx-auto">
-      <div class="flex items-center relative h-18">
-        <div class="lg:w-1/4 px-3">
+      <div class="flex items-center relative h-16">
+        <div class="w-full md:w-1/5 px-3">
           <div class="flex items-center">
             <router-link to="/" class="block">
               <img
                 alt="Travel"
-                src="@/assets/svg/logo-yang.svg"
-                class="w-32 md:w-48 mr-5"
+                src="@/assets/svg/logo-desktop.svg"
+                class="w-32 md:w-40 mr-5"
               />
             </router-link>
           </div>
         </div>
+        <div class="flex w-full md:w-1/2">
+          <ul class="flex mx-2 text-lg">
+            <li
+              class="mr-4 text-red-0 font-bold underline hover:text-red-0 hover:font-bold hover:underline"
+            >
+              <a href="/">Earn points</a>
+            </li>
+            <li class="mr-4 hover:text-red-0 hover:font-bold hover:underline">
+              <a href="/">Use points</a>
+            </li>
+            <li class="hover:text-red-0 hover:font-bold hover:underline">
+              <a href="/">Merchandise</a>
+            </li>
+          </ul>
+        </div>
 
         <div
-          class="flex flex-grow items-center justify-end lg:w-3/4 h-full lg:px-3"
+          class="flex flex-grow items-center justify-end md:w-1/4 h-full lg:px-3 overflow-hidden md:overflow-visible"
         >
           <div class="search-top">
-            <button
-              aria-label="Top search button"
-              class="search-top__button"
-              type="button"
-            ></button>
+            <button class="search-top__button" type="button"></button>
           </div>
-
           <a
-            class="block flex items-center ml-4 mr-2 hover:opacity-75 hover:underline"
+            class="block flex items-center ml-4 mr-1 opacity-75 border border-gray-0 rounded-full hover:text-red-0 hover:opacity-100 hover:border-red-0"
             href="https://github.com/minhnguyen1505"
             target="_blank"
           >
-            <img
-              alt="github"
-              src="@/assets/svg/logo-github.svg"
-              class="w-5 h-5 mr-2"
-            />
-            <span> Github Never Die</span>
+            <i
+              class="faf fa-github-alt flex items-center justify-center w-6 h-6 "
+            ></i>
           </a>
 
           <nav class="menu-top hidden">

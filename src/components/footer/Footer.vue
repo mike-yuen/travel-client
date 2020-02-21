@@ -1,21 +1,21 @@
 <template>
   <footer id="footer" class="block relative pt-2 pb-8 bg-white">
     <div
-      class="relative py-8 px-0 mb-12 bg-gray-100 border-t border-b border-gray-300"
+      class="relative py-8 px-0 mb-4 md:mb-12 bg-gray-100 border-t border-b border-gray-300"
     >
       <div class="relative w-full max-w-5lg mx-auto">
         <scroll-top href="#header"
           ><i class="fa fa-chevron-up" />Go to top</scroll-top
         >
         <div class="lg:flex relative">
-          <section class="relative w-full lg:w-3/12 px-3">
+          <section class="relative w-full lg:w-3/12 px-3 pt-5 md:pt-0">
             <div>
               <h3 class="mb-3 font-normal text-2xl leading-7">
                 About LuxTravel
               </h3>
-              <ul class="text-base">
+              <ul class="overflow-hidden text-base">
                 <li
-                  class="leading-6"
+                  class="block w-1/2 md:w-full float-left md:float-none leading-6 overflow-hidden"
                   v-for="(item, index) in aboutListData"
                   :key="index"
                 >
@@ -30,12 +30,12 @@
               </ul>
             </div>
           </section>
-          <section class="relative w-full lg:w-5/12 px-3">
+          <section class="relative w-full lg:w-5/12 px-3 pt-5 md:pt-0">
             <div>
               <h3 class="mb-3 font-normal text-2xl leading-7">
                 Never miss a deal again
               </h3>
-              <p class="w-64 text-lg mb-6">
+              <p class="w-full md:w-64 text-lg mb-6">
                 Create sale alerts with the&nbsp;
                 <a class="text-gray-600 underline" href=""
                   >Lux smartphone app</a
@@ -46,16 +46,18 @@
                 >.
               </p>
               <form>
-                <div class="flex relative">
-                  <div class="relative w-full lg:w-2/3 pr-3">
+                <div class="md:flex relative">
+                  <div class="relative w-full md:w-2/3 md:pr-3">
                     <Input
                       id="email-subcribe"
                       placeholder="Enter your email"
                       type="text"
                     />
                   </div>
-                  <div class="relative w-full lg:w-2/3">
-                    <Button class="w-40 bg-gray-0 opacity-75 hover:opacity-100">
+                  <div class="relative w-full md:w-2/3 mt-2 md:mt-0">
+                    <Button
+                      class="w-full md:w-40 bg-gray-0 opacity-75 hover:opacity-100"
+                    >
                       Subscribe
                     </Button>
                   </div>
@@ -63,12 +65,12 @@
               </form>
             </div>
           </section>
-          <section class="relative w-full lg:w-4/12 px-3">
+          <section class="relative w-full lg:w-4/12 px-3 pt-5 md:pt-0">
             <div>
               <h3 class="mb-3 font-normal text-2xl leading-7">Follow us</h3>
-              <ul>
+              <ul class="overflow-hidden">
                 <li
-                  class="block w-full lg:w-1/2 float-left pb-2"
+                  class="block w-1/2 float-left pb-2"
                   v-for="(item, index) in socialListData"
                   :key="index"
                 >
@@ -91,7 +93,7 @@
       </div>
     </div>
     <div class="footer-lower">
-      <div class="lg:flex w-full max-w-5lg mx-auto">
+      <div class="hidden md:flex w-full max-w-5lg mx-auto">
         <div class="relative w-full lg:w-3/12 px-3">
           <a
             class="footer__jetstar"
@@ -99,9 +101,7 @@
             target="_blank"
             >Jetstar</a
           >
-          <a
-            class="footer__accessibility"
-            href="http://www.qantas.com/travel/airlines/essential-accessibility/global/en"
+          <a class="footer__accessibility" href="/"
             >eSSENTIAL Accessibility<sup>TM</sup></a
           >
         </div>
@@ -121,7 +121,9 @@
       </div>
       <div class="w-full max-w-5lg mx-auto">
         <div class="relative w-full px-3">
-          <p class="mb-3 text-right text-gray-600 text-sm">
+          <p
+            class="mb-0 md:mb-3 text-center md:text-right text-gray-600 text-sm"
+          >
             Copyright © LuxTravel Limited {{ new Date().getFullYear() }}
           </p>
         </div>

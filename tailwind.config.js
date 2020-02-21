@@ -149,10 +149,14 @@ module.exports = {
       "20": "5rem",
       "24": "6rem",
       "32": "8rem",
+      "36": "9rem",
+      "38": "9.5rem",
       "40": "10rem",
       "48": "12rem",
+      "52": "13rem",
       "56": "14rem",
-      "64": "16rem"
+      "64": "16rem",
+      "40rem": "40rem"
     },
     backgroundColor: theme => theme("colors"),
     backgroundPosition: {
@@ -322,10 +326,11 @@ module.exports = {
       ...theme("spacing"),
       ...negative(theme("spacing"))
     }),
-    maxHeight: {
+    maxHeight: theme => ({
       full: "100%",
-      screen: "100vh"
-    },
+      screen: "100vh",
+      ...theme("spacing")
+    }),
     maxWidth: {
       xs: "20rem",
       sm: "24rem",
@@ -340,11 +345,11 @@ module.exports = {
       "6xl": "72rem",
       full: "100%"
     },
-    minHeight: {
-      "0": "0",
+    minHeight: theme => ({
       full: "100%",
-      screen: "100vh"
-    },
+      screen: "100vh",
+      ...theme("spacing")
+    }),
     minWidth: {
       "0": "0",
       full: "100%"

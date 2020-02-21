@@ -1,7 +1,7 @@
 <template>
-  <div class="rs-tabs__container" style="height: 13rem">
-    <nav class="rs-tabs__navigation" v-show="typeTabs">
-      <ul class="rs-tabs__navigation__list flex m-0 p-0">
+  <div class="md:h-52">
+    <nav v-if="typeTabs">
+      <ul class="flex m-0 p-0">
         <li
           v-for="(tab, index) in tabs"
           class="flex-grow text-center"
@@ -11,10 +11,7 @@
           <a
             @click="onSelect(index, $event)"
             :class="{ 'border-red-0 opacity-100 font-bold': tab.isActive }"
-            class="
-              block relative text-white bg-gray-0 opacity-75 p-4 pt-3 text-lg border-t-4 border-transparent cursor-pointer
-              hover:border-red-0 hover:opacity-100 hover:font-bold 
-            "
+            class="block relative text-white bg-gray-0 opacity-75 p-4 pt-3 text-lg border-t-4 border-transparent cursor-pointer hover:border-red-0 hover:opacity-100 hover:font-bold"
           >
             <i
               :class="'fa fa-' + tab.icon"
@@ -27,7 +24,7 @@
       </ul>
     </nav>
     <div
-      class="relative bg-gray-0 px-3 pt-6 overflow-hidden border-b-8 border-transparent h-9.5"
+      class="relative md:px-3 md:pt-6 md:bg-gray-0 md:border-b-8 md:border-transparent md:max-h-38 md:min-h-38 overflow-hidden"
       :class="{ 'overflow-visible expanded': isExpanded }"
       @click="$emit('onExpandTabs')"
     >
@@ -76,14 +73,10 @@ export default {
   mounted() {
     if (this.isResponsive) {
       this.currentType = this.findType();
-
       this.resizeListener = throttle(this.checkType.bind(this), 200);
       window.addEventListener("resize", this.resizeListener);
     }
-
     this.updateTabIndexes();
-    // this.$tabs.bus.$on("open", this.onApiOpen);
-    // this.$tabs.bus.$on("switchType", this.onApiSwitchType);
   },
   beforeDestroy() {
     if (this.isResponsive) {
@@ -95,9 +88,7 @@ export default {
       if (this.tabs[selectedIndex] === "undefined") {
         return;
       }
-
       const selectedTab = this.tabs[selectedIndex];
-
       if (
         (this.currentType === "tabs" && selectedTab.isActive) ||
         (this.currentType === "accordion" &&
@@ -106,22 +97,10 @@ export default {
       ) {
         return;
       }
-
-      this.emitBeforeChange(selectedTab, selectedIndex);
       this.change(selectedTab);
-      this.emitAfterChange(selectedTab, selectedIndex);
-    },
-    emitBeforeChange(tab, index) {
-      this.$emit("beforeChange", this, tab, index);
-      //   this.$tabs.bus.$emit("beforeChange", this, tab, index);
-    },
-    emitAfterChange(tab, index) {
-      this.$emit("afterChange", this, tab, index);
-      //   this.$tabs.bus.$emit("afterChange", this, tab, index);
     },
     emitTypeChange(typeFrom, typeTo) {
       this.$emit("typeChange", this, typeFrom, typeTo);
-      //   this.$tabs.bus.$emit("typeChange", this, typeFrom, typeTo);
     },
     change(toTab) {
       if (this.currentType === "tabs") {
@@ -129,7 +108,7 @@ export default {
           tab.isActive = tab.href == toTab.href;
         });
       } else if (this.currentType === "accordion") {
-        if (toTab.isActive && this.collapsible) {
+        if (toTab.isActive && this.collapsible && this.isExpanded) {
           toTab.isActive = false;
         } else if (this.keepOpen) {
           toTab.isActive = true;
@@ -143,16 +122,13 @@ export default {
     checkType() {
       const oldType = this.currentType,
         newType = this.findType();
-
       if (oldType === newType) {
         return;
       }
-
       this.typeChanged(oldType, newType);
     },
     typeChanged(oldType, newType) {
       this.currentType = newType;
-
       switch (newType) {
         case "tabs":
           if (this.tabs.every(tab => !tab.isActive)) {
@@ -167,7 +143,6 @@ export default {
         default:
           break;
       }
-
       this.emitTypeChange(oldType, newType);
     },
     findType() {
@@ -182,14 +157,12 @@ export default {
       if (this.name !== componentName) {
         return;
       }
-
       this.onSelect(index);
     },
     onApiSwitchType(componentName, newType) {
       if (this.name !== componentName || this.currentType === newType) {
         return;
       }
-
       this.typeChanged(this.type, newType);
     }
   }
@@ -197,27 +170,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.rs-tabs__container {
-  &--tabs {
-    .rs-tabs__tab__accordion-title {
-      display: none;
-    }
-  }
-
-  /* &--accordion {
-    .rs-tabs__navigation {
-      display: none;
-    }
-  } */
-}
-.h-9\.5 {
-  max-height: 9.5rem;
-  min-height: 9.5rem;
-}
 .expanded {
   max-height: 65rem;
   transition: max-height 0.45s 0.05s;
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
+  @media (min-width: 769px) {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
 }
 </style>

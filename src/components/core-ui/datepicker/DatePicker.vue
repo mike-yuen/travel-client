@@ -8,7 +8,7 @@
       ＋
     </div>
     <div class="datepicker__dummy-wrapper md:flex w-full">
-      <div class="w-full md:w-1/2 px-4">
+      <div class="w-full md:w-1/2 px-4 pt-2 md:pt-0">
         <Input
           id="checkin"
           :i18n="i18n"
@@ -22,7 +22,7 @@
           @enter="toggleDatepicker"
         />
       </div>
-      <div class="w-full md:w-1/2 px-4">
+      <div class="w-full md:w-1/2 px-4 pt-2 md:pt-0">
         <Input
           id="checkout"
           :i18n="i18n"
