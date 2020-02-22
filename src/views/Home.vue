@@ -1,32 +1,21 @@
 <template>
-  <div id="home">
-    <NavigatorTop class="z-30" />
-    <MenuDesktop class="hidden lg:block z-20" />
-    <main class="block relative bg-white min-h-screen pb-20 outline-none z-10">
-      <MainSlider />
-      <SearchTabs />
-    </main>
-    <Footer />
+  <div id="homepage">
+    <MainSlider />
+    <SearchTabs />
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import * as apiServices from "@/services";
-import NavigatorTop from "@/components/navigator/NavigatorTop";
-import MenuDesktop from "@/components/menu/MenuDesktop";
 import MainSlider from "@/components/slider/MainSlider";
 import SearchTabs from "@/components/search-tabs/SearchTabs";
-import Footer from "@/components/footer/Footer";
 
 export default {
   name: "home",
   components: {
-    NavigatorTop,
-    MenuDesktop,
     MainSlider,
-    SearchTabs,
-    Footer
+    SearchTabs
   },
   computed: {
     ...mapGetters({

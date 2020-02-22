@@ -1,11 +1,11 @@
 <template>
   <div class="nav-drawer-container">
-    <div v-if="isEnabled" class="nav-drawer" :style="drawerStyle">
+    <div v-if="isEnabled" class="nav-drawer">
       <transition name="nav-drawer-cover">
         <div
           v-if="isOpen"
           :style="coverStyle"
-          class="nav-drawer__cover"
+          class="fixed top-0 left-0 w-full h-screen"
           @click="close"
         />
       </transition>
@@ -13,13 +13,19 @@
         <div
           v-if="isOpen"
           :style="closeButtonStyle"
-          :class="closeClass"
+          class="nav-drawer__close--left"
           @keyup.13="close"
           @click="close"
-        />
+        >
+          <i class="faf fa-times" />
+        </div>
       </transition>
       <transition name="nav-drawer-menu">
-        <div :is-active="isOpen" :style="menuStyle" :class="menuClass">
+        <div
+          :is-active="isOpen"
+          :style="menuStyle"
+          class="nav-drawer__menu--left"
+        >
           <slot />
         </div>
       </transition>
@@ -31,6 +37,8 @@
 </template>
 
 <script>
+// import styled from "vue-styled-components";
+
 const queryMatch = mediaQuery => {
   return window.matchMedia(mediaQuery).matches;
 };
@@ -69,27 +77,20 @@ export default {
     zIndex: {
       type: Number,
       default: 1000
-    },
-    drawerWidth: {
-      type: String,
-      default: "80vw"
     }
   },
   data() {
     return {
       store: {},
       isEnabled: false,
-      menuClass: {
-        "nav-drawer__menu--left": this.isLeft,
-        "nav-drawer__menu--right": !this.isLeft
-      },
-      closeClass: {
-        "nav-drawer__close--left": this.isLeft,
-        "nav-drawer__close--right": !this.isLeft
-      },
-      drawerStyle: {
-        "--vue-nav-drawer-width": this.drawerWidth
-      },
+      //   menuClass: {
+      //     "nav-drawer__menu--left": this.isLeft,
+      //     "nav-drawer__menu--right": !this.isLeft
+      //   },
+      //   closeClass: {
+      //     "nav-drawer__close--left": this.isLeft,
+      //     "nav-drawer__close--right": !this.isLeft
+      //   },
       menuStyle: {
         top: this.top,
         height: `calc(100% - ${this.top})`,
@@ -131,18 +132,10 @@ export default {
 
 <style lang="scss">
 .nav-drawer {
-  --vue-nav-drawer-width: 80vw;
-  &__cover {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-  }
   %menu {
     overflow-y: auto;
     position: fixed;
-    width: var(--vue-nav-drawer-width);
+    width: 80vw;
     transition: transform 0.3s ease-out 0s;
   }
   &__menu {
@@ -159,7 +152,7 @@ export default {
       @extend %menu;
       right: 0;
       left: auto;
-      transform: translateX(var(--vue-nav-drawer-width));
+      transform: translateX(80vw);
       &[is-active] {
         transform: translateX(0);
       }
