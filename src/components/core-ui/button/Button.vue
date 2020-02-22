@@ -1,10 +1,5 @@
 <template>
-  <styled-button
-    :type="type"
-    class="w-full bg-red-0"
-    :class="className"
-    @click="$emit('onClick')"
-  >
+  <styled-button :type="type" :class="className" @click="$emit('onClick')">
     <slot></slot>
   </styled-button>
 </template>
@@ -31,7 +26,10 @@ export default {
   name: "Button",
   props: {
     type: String,
-    className: String
+    className: {
+      type: String,
+      default: "w-full bg-red-0"
+    }
   },
   components: {
     "styled-button": StyledButton

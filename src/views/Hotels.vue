@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <NavigatorTop />
-    <MenuDesktop />
+  <div id="hotels">
     <HotelCard
       v-for="(hotel, index) in hotels"
       :key="index"
@@ -12,16 +10,11 @@
 </template>
 
 <script>
-import NavigatorTop from "@/components/navigator/NavigatorTop";
-import MenuDesktop from "@/components/menu/MenuDesktop";
 import HotelCard from "@/components/hotel-card/HotelCard";
 export default {
-  name: "hotels",
+  name: "Hotels",
   components: {
-    NavigatorTop,
-    MenuDesktop,
     HotelCard
-    // DataFrame
   },
   data() {
     return {
@@ -66,7 +59,6 @@ export default {
   },
   methods: {
     skeletonLoading() {
-      // const self = this;
       setTimeout(() => {
         this.loading = !this.loading;
       }, 2000);

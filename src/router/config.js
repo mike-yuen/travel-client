@@ -1,8 +1,10 @@
+import ClientTemplate from "@/templates/ClientTemplate.vue";
+// view import
 import About from "@/views/About.vue";
 import Home from "@/views/Home.vue";
 import Hotels from "@/views/Hotels.vue";
 
-const routes = [
+const children = [
   {
     path: "/about",
     name: "about",
@@ -24,4 +26,19 @@ const routes = [
   }
 ];
 
+const routes = [
+  {
+    path: "/",
+    component: ClientTemplate,
+    redirect: "/",
+    meta: {
+      label: "ClientTemplate"
+    },
+    children: children
+  },
+  {
+    path: "*",
+    redirect: "/404-not-found"
+  }
+];
 export default routes;
