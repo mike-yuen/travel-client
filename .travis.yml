@@ -13,11 +13,6 @@ script:
   - npm install -g @vue/cli
   - npm install
   - npm run lint
-  # - npm run test
-  # - unset CI
   - npm run build
 after_success:
   - firebase deploy --token $FIREBASE_TOKEN --project luxtraveldevelop
-  # env:
-  #   global:
-  #   - REACT_APP_BASE_API: $REACT_APP_BASE_API
