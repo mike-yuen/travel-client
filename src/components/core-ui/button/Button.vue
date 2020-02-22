@@ -1,5 +1,10 @@
 <template>
-  <styled-button :type="type" :class="className" @click="$emit('onClick')">
+  <styled-button
+    :type="type"
+    class="w-full bg-red-0"
+    :class="className"
+    @click="$emit('onClick')"
+  >
     <slot></slot>
   </styled-button>
 </template>
@@ -13,12 +18,10 @@ const StyledButton = styled.button`
   letter-spacing: 1.5px;
   color: #fff;
   height: 48px;
-  width: 100%;
   text-align: center;
   border: none;
   cursor: pointer;
   transition: background-color 0.2s;
-  background-color: #e00;
   &:focus {
     outline: none;
   }
