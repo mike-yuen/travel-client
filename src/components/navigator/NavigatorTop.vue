@@ -22,7 +22,7 @@
         </div>
 
         <div
-          class="flex flex-grow items-center justify-end md:w-1/4 h-full lg:px-3 overflow-hidden md:overflow-visible"
+          class="flex flex-grow items-center justify-end md:w-1/4 h-full lg:px-3"
         >
           <a
             class="hidden md:flex items-center ml-4 mr-1 opacity-75 border border-gray-0 rounded-full hover:text-red-0 hover:opacity-100 hover:border-red-0"
