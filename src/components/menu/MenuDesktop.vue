@@ -5,14 +5,14 @@
         class="relative table w-full m-0 p-0 border-0 border-t border-transparent px-3"
       >
         <li
-          class="table-cell w-auto h-16"
+          class="table-cell w-auto h-15"
           role="menuitem"
           v-for="item in mock"
           :key="item.path"
         >
           <router-link
             :to="item.path"
-            class="flex items-center justify-center text-white text-lg h-full px-4             
+            class="flex items-center justify-center text-white text-lg font-bold h-full px-4             
             hover:bg-white hover:text-red-0"
           >
             {{ item.name }}
@@ -39,11 +39,6 @@ export default {
         { name: "Help", path: "help" }
       ]
     };
-  },
-  computed: {
-    active() {
-      return window.location.pathname;
-    }
   }
 };
 </script>

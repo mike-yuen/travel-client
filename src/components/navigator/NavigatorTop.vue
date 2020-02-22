@@ -1,8 +1,12 @@
 <template>
   <header id="header" class="h-auto bg-white relative" role="banner">
     <div class="max-w-5lg mx-auto">
+      <div class="md:hidden">
+        <SubNavigator mobile />
+      </div>
+      <!-- Main NavigatorTop -->
       <div class="flex items-center relative h-16">
-        <div class="w-full md:w-1/5 px-3">
+        <div class="w-1/2 md:w-1/5 px-3">
           <div class="flex items-center">
             <router-link to="/" class="block">
               <img
@@ -13,30 +17,15 @@
             </router-link>
           </div>
         </div>
-        <div class="flex w-full md:w-1/2">
-          <ul class="flex mx-2 text-lg">
-            <li
-              class="mr-4 text-red-0 font-bold underline hover:text-red-0 hover:font-bold hover:underline"
-            >
-              <a href="/">Earn points</a>
-            </li>
-            <li class="mr-4 hover:text-red-0 hover:font-bold hover:underline">
-              <a href="/">Use points</a>
-            </li>
-            <li class="hover:text-red-0 hover:font-bold hover:underline">
-              <a href="/">Merchandise</a>
-            </li>
-          </ul>
+        <div class="hidden md:flex w-full md:w-1/2">
+          <SubNavigator />
         </div>
 
         <div
           class="flex flex-grow items-center justify-end md:w-1/4 h-full lg:px-3 overflow-hidden md:overflow-visible"
         >
-          <div class="search-top">
-            <button class="search-top__button" type="button"></button>
-          </div>
           <a
-            class="block flex items-center ml-4 mr-1 opacity-75 border border-gray-0 rounded-full hover:text-red-0 hover:opacity-100 hover:border-red-0"
+            class="hidden md:flex items-center ml-4 mr-1 opacity-75 border border-gray-0 rounded-full hover:text-red-0 hover:opacity-100 hover:border-red-0"
             href="https://github.com/minhnguyen1505"
             target="_blank"
           >
@@ -45,13 +34,12 @@
             ></i>
           </a>
 
-          <nav class="menu-top hidden">
-            <ul>
-              <li>
-                <a class="menu-top__navigation" href="#">Menu<span></span></a>
-              </li>
-            </ul>
-          </nav>
+          <div class="md:hidden flex items-center">
+            <MenuMobileHandle @toggle="toggle()" />
+            <MenuMobile :isActive="isActive" @close="close()"
+              >MenuList</MenuMobile
+            >
+          </div>
           <LoginRibbon />
         </div>
       </div>
@@ -60,12 +48,45 @@
 </template>
 
 <script>
+import SubNavigator from "./SubNavigator";
 import LoginRibbon from "./LoginRibbon";
+import MenuMobileHandle from "../menu/MenuMobileHandle";
+import MenuMobile from "../menu/MenuMobile";
 
 export default {
   name: "NavigatorTop",
   components: {
-    LoginRibbon
+    SubNavigator,
+    LoginRibbon,
+    MenuMobileHandle,
+    MenuMobile
+  },
+  data() {
+    return {
+      isActive: false,
+      top: 0
+    };
+  },
+  methods: {
+    toggle() {
+      this.isActive = !this.isActive;
+      this.update();
+    },
+    close() {
+      this.isActive = false;
+      this.update();
+    },
+    update() {
+      if (this.isActive) {
+        this.top = window.pageYOffset;
+        // document.documentElement.setAttribute("drawer-active", "");
+        document.body.style.top = -this.top + "px";
+      } else {
+        // document.documentElement.removeAttribute("drawer-active");
+        window.scrollTo(0, this.top);
+        document.body.style.top = 0;
+      }
+    }
   }
 };
 </script>

@@ -56,7 +56,7 @@
                   </div>
                   <div class="relative w-full md:w-2/3 mt-2 md:mt-0">
                     <Button
-                      class="w-full md:w-40 bg-gray-0 opacity-75 hover:opacity-100"
+                      className="w-full md:w-40 bg-gray-0 opacity-75 hover:opacity-100"
                     >
                       Subscribe
                     </Button>

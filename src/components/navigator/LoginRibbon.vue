@@ -1,6 +1,6 @@
 <template>
   <div
-    class="login-ribbon flex items-center justify-center w-20 h-20 ml-5 -mb-2 z-10"
+    class="login-ribbon flex items-center justify-center w-20 h-20 ml-5 -mb-1 z-10"
     v-click-outside="closeLoginWidget"
   >
     <div
