@@ -1,5 +1,5 @@
 <template>
-  <login-widget class="absolute top-100 right-0 mr-3">
+  <login-widget class="absolute top-100 right-0 md:mr-3 z-20">
     <h4 class="text-lg font-bold m-0 p-4 pb-0">
       Frequent Customer login
     </h4>

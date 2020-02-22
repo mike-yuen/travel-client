@@ -2,7 +2,12 @@
   <div>
     <NavigatorTop />
     <MenuDesktop />
-    <HotelCard v-for="(hotel, index) in hotels" :key="index" :hotel="hotel" :loading="loading" />
+    <HotelCard
+      v-for="(hotel, index) in hotels"
+      :key="index"
+      :hotel="hotel"
+      :loading="loading"
+    />
   </div>
 </template>
 

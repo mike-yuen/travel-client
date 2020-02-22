@@ -16,7 +16,11 @@
               </div>
               <div class="lg:flex">
                 <div class="lg:flex self-center">
-                  <skeleton-box borderRadius="10px" width="100px" class="mr-2" />
+                  <skeleton-box
+                    borderRadius="10px"
+                    width="100px"
+                    class="mr-2"
+                  />
                 </div>
                 <skeleton-box borderRadius="10px" width="100px" class="mr-2" />
                 <skeleton-box borderRadius="10px" width="100px" class="mr-2" />
@@ -46,7 +50,9 @@
         <div class="lg:w-3/4 relative">
           <div class="p-6">
             <div class="float-left w-2/4">
-              <h3 class="uppercase font-bold text-2xl mb-2">{{ hotel.title }}</h3>
+              <h3 class="uppercase font-bold text-2xl mb-2">
+                {{ hotel.title }}
+              </h3>
               <p class="text-gray-500 capitalize mb-3">{{ hotel.country }}</p>
               <div class="lg:flex">
                 <div class="lg:flex self-center">
@@ -55,7 +61,9 @@
                   </div>
                 </div>
                 <img :src="hotel.tripadvisorImage" alt class="w-100 mr-1" />
-                <span class="text-gray-500 self-center">{{ hotel.numberOfReviews }} reviews</span>
+                <span class="text-gray-500 self-center"
+                  >{{ hotel.numberOfReviews }} reviews</span
+                >
               </div>
               <div class="lg:flex">
                 <div v-for="(icon, index) in hotel.icons" :key="index">
