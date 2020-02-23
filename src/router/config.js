@@ -3,6 +3,7 @@ import ClientTemplate from "@/templates/ClientTemplate.vue";
 import About from "@/views/About.vue";
 import Home from "@/views/Home.vue";
 import Hotels from "@/views/Hotels.vue";
+import HotelProperties from "@/views/HotelProperties.vue";
 
 const children = [
   {
@@ -19,6 +20,11 @@ const children = [
     path: "/hotels",
     name: "hotels",
     component: Hotels
+  },
+  {
+    path: "/hotel-properties/:hotelId",
+    name: "hotel-properties",
+    component: HotelProperties
   },
   {
     path: "*",

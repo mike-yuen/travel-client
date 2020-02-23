@@ -28,6 +28,7 @@
       @blur="$emit('blur', $event.target.value)"
       @change="$emit('change', $event.target.value)"
       @keyup="$emit('keyup', $event.target.value)"
+      @keydown="onKeyDown($event)"
       @keypress="onKeyPress($event)"
       @keyup.enter.stop.prevent="$emit('enter')"
     />
@@ -130,12 +131,25 @@ export default {
     }
   },
   methods: {
-    onKeyPress(e) {
+    onKeyDown(e) {
       if (this.$props.disableKeyPress) {
-        if (e.keyCode !== 13 && e.keyCode !== 27) {
+        const key = e.which || e.keyCode || 0;
+        if (key === 8 || key === 46) {
           e.preventDefault();
         } else {
-          this.$emit("keypress", e.target.value);
+          this.$emit("keydown", e.target.value);
+        }
+      }
+    },
+    onKeyPress(e) {
+      if (this.$props.disableKeyPress) {
+        const key = e.which || e.keyCode || 0;
+        if (key !== 13) {
+          e.preventDefault();
+        }
+        const isAndroid = /(android)/i.test(navigator.userAgent);
+        if (isAndroid) {
+          this.$props.type = "number";
         }
       } else {
         this.$emit("keypress", e.target.value);
