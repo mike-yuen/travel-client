@@ -1,13 +1,13 @@
 <template>
   <div id="datepicker" v-if="show" v-click-outside="clickOutside">
     <div
-      class="datepicker__close-button -hide-on-desktop"
+      class="md:hidden fixed top-0 right-0 w-6 h-6 bg-gray-0 text-white text-center z-50"
       v-if="isOpen"
       @click="hideDatepicker"
     >
-      ＋
+      <i class="faf fa-times" />
     </div>
-    <div class="datepicker__dummy-wrapper md:flex w-full">
+    <div class="md:flex w-full">
       <div class="w-full md:w-1/2 px-4 pt-2 md:pt-0">
         <Input
           id="checkin"
@@ -38,46 +38,43 @@
         />
       </div>
     </div>
-    <datepicker
-      :class="`${isOpen ? 'datepicker--open' : 'datepicker--closed'}`"
-    >
-      <div class="-hide-on-desktop">
+    <datepicker :class="{ hidden: !isOpen }">
+      <div class="md:hidden">
         <div
-          class="datepicker__dummy-wrapper datepicker__dummy-wrapper--no-border"
+          class="flex mt-3"
           @click="toggleDatepicker"
-          :class="`${isOpen ? 'datepicker__dummy-wrapper--is-active' : ''}`"
           v-if="isOpen"
+          :class="`${isOpen ? 'active' : ''}`"
         >
           <div
-            class="datepicker__input"
+            class="w-1/2 text-gray-0 text-center py-3"
             tabindex="0"
-            :class="
-              `${
-                isOpen && checkIn == null
-                  ? 'datepicker__dummy-input--is-active'
-                  : ''
-              }`
-            "
+            :class="[isOpen && checkIn == null ? 'active' : '']"
             v-text="`${checkIn ? formatDate(checkIn) : i18n['check-in']}`"
-            type="button"
           ></div>
           <div
-            class="datepicker__input"
+            class="w-1/2 text-gray-0 text-center py-3"
             tabindex="0"
-            :class="
-              `${
-                isOpen && checkOut == null && checkIn !== null
-                  ? 'datepicker__dummy-input--is-active'
-                  : ''
-              }`
-            "
+            :class="[
+              isOpen && checkOut == null && checkIn !== null ? 'active' : ''
+            ]"
             v-text="`${checkOut ? formatDate(checkOut) : i18n['check-out']}`"
-            type="button"
+          ></div>
+        </div>
+        <div
+          class="h-6 flex mt-3"
+          style="box-shadow: 0 13px 18px -8px rgba(0, 0, 0, 0.07)"
+        >
+          <div
+            class="w-1/7 text-center text-gray-600"
+            v-for="(dayName, index) in this.i18n['day-names']"
+            :key="index"
+            v-text="dayName"
           ></div>
         </div>
       </div>
-      <div class="datepicker__inner pt-10 pb-8 px-6 md:px-8">
-        <div class="datepicker__header hidden">
+      <div class="py-3 px-0 md:px-8 md:pt-10 md:pb-8">
+        <div class="hidden">
           <span
             class="datepicker__month-button datepicker__month-button--prev -hide-up-to-tablet"
             @click="renderPreviousMonth"
@@ -138,24 +135,12 @@
           </div>
         </div>
         <div v-if="screenSize !== 'desktop' && isOpen">
-          <div class="datepicker__week-row">
-            <div
-              class="datepicker__week-name"
-              v-for="(dayName, index) in this.i18n['day-names']"
-              :key="index"
-              v-text="dayName"
-            ></div>
-          </div>
-          <div class="datepicker__months" id="swiperWrapper">
-            <div
-              class="datepicker__month"
-              v-for="(a, n) in months"
-              v-bind:key="n"
-            >
+          <div class="relative h-screen overflow-visible">
+            <div class="pt-3" v-for="(a, n) in months" v-bind:key="n">
               <p
-                class="datepicker__month-name"
+                class="text-gray-0 text-center text-lg font-bold"
                 v-text="getMonth(months[n].days[15].date)"
-              ></p>
+              />
               <div class="datepicker__week-row -hide-up-to-tablet">
                 <div
                   class="datepicker__week-name"
@@ -189,11 +174,9 @@
                 ></Day>
               </div>
             </div>
-            <div
-              class="next--mobile"
-              @click="renderNextMonth"
-              type="button"
-            ></div>
+            <div class="next--mobile" @click="renderNextMonth" type="button">
+              Next Month
+            </div>
           </div>
         </div>
       </div>
@@ -239,10 +222,22 @@ const Datepicker = styled.div`
   margin-top: 9px;
   padding: 0 15px;
   box-sizing: border-box;
-  z-index: 1000;
+  z-index: 40;
   overflow: hidden;
   transition: all 0.2s ease-in-out;
-  @media (min-width: 768px) {
+  @media (max-width: 768px) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    background-color: white;
+    overflow: scroll;
+  }
+  @media (min-width: 769px) {
     padding-left: 26px;
     padding-right: 26px;
     margin-left: 15px;
@@ -250,7 +245,6 @@ const Datepicker = styled.div`
     width: calc(100% - 30px);
   }
 `;
-
 export default {
   name: "HotelDatePicker",
   components: {
@@ -369,22 +363,6 @@ export default {
     }
   },
   watch: {
-    isOpen(value) {
-      if (this.screenSize !== "desktop") {
-        const bodyClassList = document.querySelector("body").classList;
-        if (value) {
-          bodyClassList.add("-overflow-hidden");
-          setTimeout(() => {
-            let swiperWrapper = document.getElementById("swiperWrapper");
-            let monthHeihgt = document.querySelector(".datepicker__month")
-              .offsetHeight;
-            swiperWrapper.scrollTop = this.activeMonthIndex * monthHeihgt;
-          }, 100);
-        } else {
-          bodyClassList.remove("-overflow-hidden");
-        }
-      }
-    },
     checkIn(newDate) {
       this.dataValue.checkIn = newDate;
     },
@@ -477,7 +455,8 @@ export default {
       }
       let firstDayOfLastMonth;
       if (this.screenSize !== "desktop") {
-        firstDayOfLastMonth = this.months[this.months.length - 1].days.filter(
+        const monthDays = this.months[this.months.length - 1].days;
+        firstDayOfLastMonth = monthDays.filter(
           day => day.belongsToThisMonth === true
         );
       } else {
@@ -600,9 +579,6 @@ export default {
 </script>
 
 <style lang="scss">
-/* =============================================================
-     * VARIABLES
-     * ============================================================*/
 $white: #fff;
 $black: #000;
 $gray: #424b53;
@@ -633,27 +609,10 @@ $extra-small-screen: "(max-width: 23em)";
     @content;
   }
 }
-// .datepicker__wrapper {
-//   *,
-//   *::before,
-//   *::after {
-//     box-sizing: border-box;
-//   }
-// }
 /* =============================================================
      * BASE STYLES
      * ============================================================*/
 .datepicker {
-  transition: all 0.2s ease-in-out;
-  background-color: $white;
-  color: $gray;
-  font-size: 16px;
-  line-height: 14px;
-  overflow: hidden;
-  left: 0;
-  top: 48px;
-  position: absolute;
-  z-index: 999;
   button.next--mobile {
     background: none;
     border: 1px solid $light-gray;
@@ -671,8 +630,6 @@ $extra-small-screen: "(max-width: 23em)";
     box-shadow: 0 5px 30px 10px rgba($black, 0.08);
     background: white;
     &:after {
-      // background: transparent url("ic-arrow-right-green.regular.svg") no-repeat
-      //   center / 8px;
       transform: rotate(90deg);
       content: "";
       position: absolute;
@@ -682,179 +639,7 @@ $extra-small-screen: "(max-width: 23em)";
       left: -50%;
     }
   }
-  &--closed {
-    box-shadow: 0 15px 30px 10px rgba($black, 0);
-    max-height: 0;
-  }
-  &--open {
-    border: 2px solid #dadada;
-    box-shadow: 0 15px 30px 10px rgba($black, 0.08);
-    max-height: 900px;
-    @include device($up-to-tablet) {
-      box-shadow: none;
-      height: 100%;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      -webkit-overflow-scrolling: touch !important;
-      position: fixed;
-      top: 0;
-      width: 100%;
-    }
-  }
-  &__wrapper {
-    // position: relative;
-    // display: inline-block;
-    // width: 100%;
-    // height: 48px;
-    // background: $white url("calendar_icon.regular.svg") no-repeat 17px center /
-    //   16px;
-  }
-  &__input {
-    background: transparent;
-    height: 48px;
-    color: $primary-text-color;
-    font-size: 12px;
-    outline: none;
-    padding: 4px 30px 2px;
-    width: 100%;
-    word-spacing: 5px;
-    border: 0;
-    @include focusStyle();
-    &::-webkit-input-placeholder,
-    &::-moz-placeholder,
-    &:-ms-input-placeholder,
-    &:-moz-placeholder {
-      color: $primary-text-color;
-    }
-  }
-  // &__dummy-wrapper {
-  //   background: #fff;
-  //   border: solid 1px $light-gray;
-  //   cursor: pointer;
-  //   display: block;
-  //   float: left;
-  //   width: 100%;
-  //   height: 100%;
-  //   &--no-border.datepicker__dummy-wrapper {
-  //     margin-top: 15px;
-  //     border: 0;
-  //   }
-  //   &--is-active {
-  //     border: 1px solid $primary-color;
-  //   }
-  // }
-  &__input {
-    color: $primary-text-color;
-    padding-top: 0;
-    font-size: $font-small;
-    float: left;
-    height: 48px;
-    line-height: 3.1;
-    text-align: left;
-    text-indent: 5px;
-    width: calc(50% + 4px);
-    @include device($phone) {
-      text-indent: 0;
-      text-align: center;
-    }
-    &:first-child {
-      // background: transparent url("ic-arrow-right-datepicker.regular.svg")
-      //   no-repeat right center / 8px;
-      width: calc(50% - 4px);
-      text-indent: 20px;
-    }
-    &--is-active {
-      color: $primary-color;
-    }
-    &--is-active::placeholder {
-      color: $primary-color;
-    }
-    &--is-active::-moz-placeholder {
-      color: $primary-color;
-    }
-    &--is-active:-ms-input-placeholder {
-      color: $primary-color;
-    }
-    &--is-active:-moz-placeholder {
-      color: $primary-color;
-    }
-    &--single-date:first-child {
-      width: 100%;
-      background: none;
-      text-align: left;
-    }
-  }
-  &__month-day {
-    visibility: visible;
-    text-align: center;
-    margin: 0;
-    border: 0;
-    height: 40px;
-    padding-top: 14px;
-    @include focusStyle();
-    &--invalid-range {
-      background-color: rgba($primary-color, 0.3);
-      color: $lightest-gray;
-      cursor: not-allowed;
-      position: relative;
-    }
-    &--invalid {
-      color: $lightest-gray;
-      cursor: not-allowed;
-    }
-    &--valid:hover,
-    &--allowed-checkout:hover {
-      background-color: $white;
-      color: $primary-color;
-      z-index: 1;
-      position: relative;
-      box-shadow: 0 0 10px 3px rgba($gray, 0.4);
-    }
-    &--disabled {
-      opacity: 0.25;
-      cursor: not-allowed;
-      pointer-events: none;
-      position: relative;
-    }
-    &--selected {
-      background-color: rgba($primary-color, 0.5);
-      color: $white;
-      &:hover {
-        background-color: $white;
-        color: $primary-color;
-        z-index: 1;
-        position: relative;
-        box-shadow: 0 0 10px 3px rgba($gray, 0.4);
-      }
-    }
-    &--first-day-selected,
-    &--last-day-selected {
-      background: $primary-color;
-      color: $white;
-    }
-    &--allowed-checkout {
-      color: $medium-gray;
-    }
-    &--out-of-range {
-      color: $lightest-gray;
-      cursor: not-allowed;
-      position: relative;
-      pointer-events: none;
-    }
-    &--valid {
-      cursor: pointer;
-      color: $medium-gray;
-    }
-    &--hidden {
-      opacity: 0.25;
-      pointer-events: none;
-      color: $white;
-    }
-  }
   &__month-button {
-    // background: transparent url("ic-arrow-right-green.regular.svg") no-repeat
-    //   center center / 8px;
     cursor: pointer;
     display: inline-block;
     height: 60px;
@@ -872,34 +657,7 @@ $extra-small-screen: "(max-width: 23em)";
       pointer-events: none;
     }
   }
-  &__months {
-    @include device($up-to-tablet) {
-      margin-top: 92px;
-      height: calc(100% - 92px);
-      position: absolute;
-      left: 0;
-      top: 0;
-      overflow: scroll;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-    &::before {
-      background: $light-gray;
-      bottom: 0;
-      content: "";
-      display: block;
-      left: 50%;
-      position: absolute;
-      top: 0;
-      width: 1px;
-      @include device($up-to-tablet) {
-        display: none;
-      }
-    }
-  }
+
   &__month {
     font-size: 12px;
     float: left;
@@ -919,28 +677,6 @@ $extra-small-screen: "(max-width: 23em)";
         padding-left: 10px;
       }
     }
-  }
-  &__month-caption {
-    height: 2.5em;
-    vertical-align: middle;
-  }
-  // &__month-name {
-  //   font-size: 16px;
-  //   font-weight: 500;
-  //   margin-top: -40px;
-  //   padding-bottom: 17px;
-  //   pointer-events: none;
-  //   text-align: center;
-  //   @include device($up-to-tablet) {
-  //     margin-top: -25px;
-  //     margin-bottom: 0;
-  //     position: absolute;
-  //     width: 100%;
-  //   }
-  // }
-  &__week-days {
-    height: 2em;
-    vertical-align: middle;
   }
   &__week-row {
     border-bottom: 5px solid $white;
@@ -962,88 +698,10 @@ $extra-small-screen: "(max-width: 23em)";
     color: $medium-gray;
     text-align: center;
   }
-  &__close-button {
-    appearance: none;
-    background: transparent;
-    border: 0;
-    color: $primary-color;
-    cursor: pointer;
-    font-size: 21px;
-    font-weight: bold;
-    margin-top: 0;
-    outline: 0;
-    z-index: 10000;
-    position: fixed;
-    left: 7px;
-    top: 5px;
-    transform: rotate(45deg);
-  }
-  &__clear-button {
-    appearance: none;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    font-size: 25px;
-    font-weight: bold;
-    height: 40px;
-    margin-bottom: 0;
-    margin-left: 0;
-    margin-right: -2px;
-    margin-top: 4px;
-    padding: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 40px;
-    svg {
-      fill: none;
-      stroke-linecap: round;
-      stroke-width: 8px;
-      stroke: $medium-gray;
-      width: 20px;
-      width: 14px;
-      top: -3px;
-      position: relative;
-    }
-    @include focusStyle();
-  }
-  &__tooltip {
-    background-color: $dark-gray;
-    border-radius: 2px;
-    color: $white;
-    font-size: 11px;
-    text-align: center;
-    bottom: 100%;
-    width: 100%;
-    padding: 5px 5px;
-    position: absolute;
-    z-index: 50;
-    &:after {
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-top: 4px solid $dark-gray;
-      bottom: -4px;
-      content: "";
-      left: 50%;
-      margin-left: -4px;
-      position: absolute;
-    }
-  }
 }
 // Modifiers
-.-overflow-hidden {
-  overflow: hidden;
-}
-.-is-hidden {
-  display: none;
-}
 .-hide-up-to-tablet {
   @include device($up-to-tablet) {
-    display: none;
-  }
-}
-.-hide-on-desktop {
-  @include device($desktop) {
     display: none;
   }
 }

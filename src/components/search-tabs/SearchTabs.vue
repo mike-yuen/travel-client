@@ -1,7 +1,7 @@
 <template>
   <div class="search-tabs">
     <div
-      class="overlay fixed top-0 left-0 w-full h-full cursor-pointer"
+      class="overlay fixed top-0 left-0 w-full h-full cursor-pointer z-10"
       style="background: rgba(0,0,0,0.7)"
       v-show="isExpanded"
     ></div>
@@ -115,6 +115,7 @@ import fecha from "fecha";
 import styled from "vue-styled-components";
 const TabsWrapper = styled.div`
   position: absolute;
+  z-index: 50;
   @media (max-width: 768px) {
     top: 0;
     left: 0;
