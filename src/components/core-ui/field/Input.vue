@@ -31,6 +31,7 @@
       @keydown="onKeyDown($event)"
       @keypress="onKeyPress($event)"
       @keyup.enter.stop.prevent="$emit('enter')"
+      :disabled="disabled"
     />
     <styled-icon
       :class="'fa fa-' + icon.code"
@@ -120,6 +121,11 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      disabled: false
+    };
+  },
   computed: {
     dataValue: {
       get() {
@@ -149,7 +155,7 @@ export default {
         }
         const isAndroid = /(android)/i.test(navigator.userAgent);
         if (isAndroid) {
-          this.$props.type = "number";
+          this.disabled = true;
         }
       } else {
         this.$emit("keypress", e.target.value);
