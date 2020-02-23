@@ -145,6 +145,10 @@ export default {
         } else {
           this.$emit("keydown", e.target.value);
         }
+        const isAndroid = /(android)/i.test(navigator.userAgent);
+        if (isAndroid) {
+          this.$props.type = "number";
+        }
       }
     },
     onKeyPress(e) {
@@ -152,10 +156,6 @@ export default {
         const key = e.which || e.keyCode || 0;
         if (key !== 13) {
           e.preventDefault();
-        }
-        const isAndroid = /(android)/i.test(navigator.userAgent);
-        if (isAndroid) {
-          this.disabled = true;
         }
       } else {
         this.$emit("keypress", e.target.value);
