@@ -9,6 +9,7 @@
       :icon="{ code: iconCode, isShown: true }"
       type="text"
       @click="onOpenSelector($event)"
+      @keydown="onCloseSelector($event)"
       @actionOnIcon="toggleInput"
     />
     <div class="relative w-full z-10" v-show="isOpenSelector">
