@@ -44,6 +44,7 @@
 
 <script>
 import styled from "vue-styled-components";
+import { getMobileOperatingSystem } from "@/utils/helpers";
 const inputProps = { errors: Array };
 const StyledInput = styled("input", inputProps)`
   height: 48px;
@@ -145,9 +146,9 @@ export default {
         } else {
           this.$emit("keydown", e.target.value);
         }
-        const isAndroid = /(android)/i.test(navigator.userAgent);
-        if (isAndroid) {
-          this.$props.type = "number";
+        const isAndroid = getMobileOperatingSystem();
+        if (isAndroid === "android") {
+          this.disabled = true;
         }
       }
     },
