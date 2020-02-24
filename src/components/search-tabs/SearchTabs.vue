@@ -5,7 +5,11 @@
       style="background: rgba(0,0,0,0.7)"
       v-show="isExpanded"
     ></div>
-    <tabs-wrapper ref="button" v-click-outside="onCollapseTabs">
+    <tabs-wrapper
+      ref="button"
+      :class="[isExpanded ? 'z-50' : 'z-20']"
+      v-click-outside="onCollapseTabs"
+    >
       <Tabs
         :isExpanded="isExpanded"
         :collapsible="true"
@@ -115,7 +119,6 @@ import fecha from "fecha";
 import styled from "vue-styled-components";
 const TabsWrapper = styled.div`
   position: absolute;
-  z-index: 50;
   @media (max-width: 768px) {
     top: 0;
     left: 0;

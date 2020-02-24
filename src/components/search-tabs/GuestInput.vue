@@ -5,12 +5,11 @@
       :label="label"
       :placeholder="placeholder"
       :value="valueInput"
-      :disableKeyPress="true"
       :icon="{ code: iconCode, isShown: true }"
       type="text"
       @click="onOpenSelector($event)"
-      @keydown="onCloseSelector($event)"
       @actionOnIcon="toggleInput"
+      readonly
     />
     <div class="relative w-full z-10" v-show="isOpenSelector">
       <div class="box-content absolute w-full">
