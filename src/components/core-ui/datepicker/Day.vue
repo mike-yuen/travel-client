@@ -1,11 +1,9 @@
 <template>
   <day-wrapper @mouseover="$emit('mouseover')">
-    <div
-      class="datepicker__tooltip"
+    <tooltip
       v-if="showTooltip && options.hoveringTooltip"
       v-html="tooltipMessageDisplay"
-    ></div>
-
+    />
     <div
       class="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-white border-2 border-transparent text-gray-0 outline-none"
       :class="dayClass"
@@ -74,13 +72,37 @@ const TriangleLeft = Triangle.extend`
     margin-right: -500px;
   }
 `;
+const Tooltip = styled.div`
+    background-color: #2d3047;
+    border-radius: 2px;
+    color: white;
+    font-size: 11px;
+    text-align: center;
+    bottom: 100%;
+    width: 100%;
+    padding: 5px 5px;
+    position: absolute;
+    z-index: 50;
+    &:after {
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid #2d3047;
+      bottom: -4px;
+      content: "";
+      left: 50%;
+      margin-left: -4px;
+      position: absolute;
+    }
+  }
+`;
 
 export default {
   name: "Day",
   components: {
     "day-wrapper": DayWrapper,
     "triangle-right": TriangleRight,
-    "triangle-left": TriangleLeft
+    "triangle-left": TriangleLeft,
+    tooltip: Tooltip
   },
   props: {
     isOpen: {

@@ -20,6 +20,7 @@
           :icon="{ code: 'calendar', isShown: true }"
           @click="toggleDatepicker"
           @enter="toggleDatepicker"
+          readonly
         />
       </div>
       <div class="w-full md:w-1/2 px-4 pt-2 md:pt-0">
@@ -35,6 +36,7 @@
           @click="toggleDatepicker"
           @enter="toggleDatepicker"
           v-if="!singleDaySelection"
+          readonly
         />
       </div>
     </div>

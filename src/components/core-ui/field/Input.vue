@@ -31,7 +31,7 @@
       @keydown="onKeyDown($event)"
       @keypress="onKeyPress($event)"
       @keyup.enter.stop.prevent="$emit('enter')"
-      :disabled="disabled"
+      :readonly="readonly"
     />
     <styled-icon
       :class="'fa fa-' + icon.code"
@@ -44,7 +44,6 @@
 
 <script>
 import styled from "vue-styled-components";
-import { getMobileOperatingSystem } from "@/utils/helpers";
 const inputProps = { errors: Array };
 const StyledInput = styled("input", inputProps)`
   height: 48px;
@@ -120,12 +119,11 @@ export default {
           isShown: Boolean
         };
       }
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     }
-  },
-  data() {
-    return {
-      disabled: false
-    };
   },
   computed: {
     dataValue: {
@@ -139,28 +137,10 @@ export default {
   },
   methods: {
     onKeyDown(e) {
-      if (this.$props.disableKeyPress) {
-        const key = e.which || e.keyCode || 0;
-        if (key === 8 || key === 46) {
-          e.preventDefault();
-        } else {
-          this.$emit("keydown", e.target.value);
-        }
-        const isAndroid = getMobileOperatingSystem();
-        if (isAndroid === "android") {
-          this.disabled = true;
-        }
-      }
+      this.$emit("keydown", e.target.value);
     },
     onKeyPress(e) {
-      if (this.$props.disableKeyPress) {
-        const key = e.which || e.keyCode || 0;
-        if (key !== 13) {
-          e.preventDefault();
-        }
-      } else {
-        this.$emit("keypress", e.target.value);
-      }
+      this.$emit("keypress", e.target.value);
     },
     async actionOnIcon() {
       await this.$emit("actionOnIcon");
