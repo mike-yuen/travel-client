@@ -1,16 +1,10 @@
-import ClientTemplate from "@/templates/ClientTemplate.vue";
+const ClientTemplate = () => import("@/templates/ClientTemplate.vue");
 // view import
-import About from "@/views/About.vue";
-import Home from "@/views/Home.vue";
-import Hotels from "@/views/Hotels.vue";
-import HotelProperties from "@/views/HotelProperties.vue";
+const Home = () => import("@/views/Home.vue");
+const Hotels = () => import("@/views/Hotels.vue");
+const HotelProperties = () => import("@/views/HotelProperties.vue");
 
 const children = [
-  {
-    path: "/about",
-    name: "about",
-    component: About
-  },
   {
     path: "/",
     name: "home",

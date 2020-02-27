@@ -8,8 +8,8 @@
 <script>
 import { mapGetters } from "vuex";
 import * as apiServices from "@/services";
-import MainSlider from "@/components/slider/MainSlider";
-import SearchTabs from "@/components/search-tabs/SearchTabs";
+const MainSlider = () => import("@/components/slider/MainSlider");
+const SearchTabs = () => import("@/components/search-tabs/SearchTabs");
 
 export default {
   name: "home",

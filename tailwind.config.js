@@ -151,10 +151,13 @@ module.exports = {
       "20": "5rem",
       "24": "6rem",
       "32": "8rem",
+      "34": "8.5rem",
+      "35": "8.75rem",
       "36": "9rem",
       "38": "9.5rem",
       "40": "10rem",
       "48": "12rem",
+      "50": "12.5rem",
       "52": "13rem",
       "56": "14rem",
       "64": "16rem",
@@ -296,11 +299,12 @@ module.exports = {
       full: "100%",
       screen: "100vh"
     }),
-    inset: {
+    inset: theme => ({
       "0": "0",
       "100": "100%",
-      auto: "auto"
-    },
+      auto: "auto",
+      ...theme("spacing")
+    }),
     letterSpacing: {
       tighter: "-0.05em",
       tight: "-0.025em",
