@@ -7,10 +7,25 @@ module.exports = {
   configureWebpack: {
     plugins: [
       new PrerenderSPAPlugin({
-        // Required - The path to the webpack-outputted app to prerender.
         staticDir: path.join(__dirname, "dist"),
-        // Required - Routes to render.
-        routes: ["/", "/hotels"]
+        routes: ["/"],
+        postProcess(renderedRoute) {
+          // Ignore any redirects.
+          renderedRoute.route = renderedRoute.originalRoute;
+          renderedRoute.html = renderedRoute.html
+            .replace(/<script (.*?)>/g, "<script $1 defer>")
+            .replace('id="app"', 'id="app" data-server-rendered="true"');
+          return renderedRoute;
+        },
+        minify: {
+          collapseBooleanAttributes: true,
+          collapseWhitespace: true,
+          decodeEntities: true,
+          keepClosingSlash: true,
+          minifyCSS: true,
+          minifyJS: true,
+          sortAttributes: true
+        }
       })
     ]
   }

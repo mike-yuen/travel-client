@@ -1,5 +1,10 @@
 <template>
-  <styled-button :type="type" :class="className" @click="$emit('onClick')">
+  <styled-button
+    :type="type"
+    :class="className"
+    :aria-lable="type"
+    @click="$emit('onClick')"
+  >
     <slot></slot>
   </styled-button>
 </template>

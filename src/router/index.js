@@ -8,6 +8,8 @@ Vue.use(Router);
 
 const router = new Router({
   mode: "history",
+  fallback: false,
+  scrollBehavior: () => ({ y: 0 }),
   routes
 });
 
@@ -16,7 +18,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.requireAuth) {
     if (!isLoggedIn) {
       next({
-        path: "/about"
+        path: "/"
       });
     } else {
       next();
