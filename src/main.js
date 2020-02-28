@@ -11,7 +11,7 @@ import {
 import * as rules from "vee-validate/dist/rules";
 import VueAgile from "vue-agile";
 import "@/utils/directive";
-import "@/assets/css/tailwind.scss";
+import(/* webpackPrefetch: true */ "@/assets/css/tailwind.scss");
 
 Vue.config.productionTip = false;
 Vue.use(VueAgile);
