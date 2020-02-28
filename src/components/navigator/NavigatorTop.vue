@@ -36,9 +36,21 @@
 
           <div class="md:hidden flex items-center">
             <MenuMobileHandle @toggle="toggle()" />
-            <MenuMobile :isActive="isActive" @close="close()"
-              >MenuList</MenuMobile
-            >
+            <MenuMobile :isActive="isActive" @close="close()">
+              <div class="w-full h-full bg-gray-10">
+                <ul class="w-full" role="menubar">
+                  <li v-for="(item, index) in mock" :key="index">
+                    <router-link
+                      :to="{ path: item.path }"
+                      class="flex items-center text-lg pl-4 h-12 bg-gray-0 text-white border-b border-white"
+                      @click.native="close()"
+                    >
+                      {{ item.name }}
+                    </router-link>
+                  </li>
+                </ul>
+              </div>
+            </MenuMobile>
           </div>
           <LoginRibbon />
         </div>
@@ -64,7 +76,17 @@ export default {
   data() {
     return {
       isActive: false,
-      top: 0
+      top: 0,
+      mock: [
+        { name: "Hotels", path: "/hotels" },
+        { name: "Destinations", path: "/destinations" },
+        { name: "Hotel Deals", path: "/hotel-deals" },
+        { name: "Book", path: "/book" },
+        { name: "Frequent Customer", path: "/frequent-customer" },
+        { name: "Business Essentials", path: "/business-essentials" },
+        { name: "Blog", path: "/blog" },
+        { name: "Help", path: "/help" }
+      ]
     };
   },
   methods: {
@@ -79,10 +101,8 @@ export default {
     update() {
       if (this.isActive) {
         this.top = window.pageYOffset;
-        // document.documentElement.setAttribute("drawer-active", "");
         document.body.style.top = -this.top + "px";
       } else {
-        // document.documentElement.removeAttribute("drawer-active");
         window.scrollTo(0, this.top);
         document.body.style.top = 0;
       }

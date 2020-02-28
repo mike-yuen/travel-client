@@ -1,8 +1,10 @@
 <template>
   <div :id="'hotel-properties' + hotelId">
-    {{ hotelId }}
-    <div class="relative w-full max-w-5lg mx-auto">
-      <RoomCardGeneral :data="dataRoom" />
+    <p class="text-center my-6">This is hotel #{{ hotelId }}</p>
+    <div class="bg-gray-200 py-6">
+      <div class="relative w-full max-w-5lg mx-auto">
+        <RoomCardGeneral :data="dataRoom" />
+      </div>
     </div>
   </div>
 </template>

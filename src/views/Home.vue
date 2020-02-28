@@ -2,9 +2,11 @@
   <div id="homepage">
     <MainSlider />
     <SearchTabs />
-    <router-link :to="{ name: 'hotel-properties', params: { hotelId: '1' } }">
-      Detail Room Demo
-    </router-link>
+    <div class="text-center text-2xl font-bold pt-6">
+      <router-link :to="{ name: 'hotel-properties', params: { hotelId: '1' } }">
+        Detail Room Demo
+      </router-link>
+    </div>
   </div>
 </template>
 

@@ -20,6 +20,9 @@ module.exports = {
       },
       gray: {
         0: "#323232",
+        10: "#eeeeee",
+        20: "#999999",
+        30: "#666666",
         50: "#dadada",
         100: "#f7fafc",
         200: "#edf2f7",
@@ -273,6 +276,7 @@ module.exports = {
     fontSize: {
       xs: "0.75rem",
       sm: "0.875rem",
+      md: "0.9375rem",
       base: "1rem",
       lg: "1.125rem",
       xl: "1.25rem",
