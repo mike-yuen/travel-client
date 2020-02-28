@@ -2,13 +2,16 @@
   <div id="homepage">
     <MainSlider />
     <SearchTabs />
+    <router-link :to="{ name: 'hotel-properties', params: { hotelId: '1' } }">
+      Detail Room Demo
+    </router-link>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import * as apiServices from "@/services";
-const MainSlider = () => import("@/components/slider/MainSlider");
+import MainSlider from "@/components/slider/MainSlider";
 const SearchTabs = () => import("@/components/search-tabs/SearchTabs");
 
 export default {

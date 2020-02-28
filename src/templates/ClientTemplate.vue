@@ -10,9 +10,10 @@
 </template>
 
 <script>
+import NavigatorTop from "@/components/navigator/NavigatorTop";
+import MenuDesktop from "@/components/menu/MenuDesktop";
+
 //lazy-loading components && code split
-const NavigatorTop = () => import("@/components/navigator/NavigatorTop");
-const MenuDesktop = () => import("@/components/menu/MenuDesktop");
 const Footer = () => import("@/components/footer/Footer");
 
 export default {
