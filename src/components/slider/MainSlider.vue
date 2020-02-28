@@ -1,18 +1,19 @@
 <template>
   <div class="carousel relative w-full overflow-hidden md:h-40rem">
-    <Loader class="hidden" />
+    <Loader class="" v-show="!isLoad" />
     <div
       id="slide-placeholder"
-      class="block absolute top-0 left-0 w-full h-0 opacity-0"
+      class="block absolute top-0 left-0 w-full h-full opacity-50"
+      v-show="!isLoad"
     >
       <div
-        class="bg-no-repeat bg-100-100 absolute w-full h-full opacity-100"
+        class="bg-no-repeat bg-100-100 absolute w-full h-full"
         :style="{
           'background-image':
             'url(' + require('@/assets/images/placeholder-slider.jpg') + ')'
         }"
       ></div>
-      <bubble-wrapper>
+      <!-- <bubble-wrapper>
         <placeholder-bubble
           :style="{
             'background-image':
@@ -21,7 +22,7 @@
         >
           <placeholder-bubble-inner>
             <div
-              class="animation-pulse animation-2s animation-ease-in-out opacity-25 mb-5"
+              class="animation-pulse animation-2s animation-ease-in-out opacity-100 mb-5"
             >
               <div
                 class="inline-block h-5 mt-3 w-full bg-white opacity-50"
@@ -44,7 +45,7 @@
             </a>
           </placeholder-bubble-inner>
         </placeholder-bubble>
-      </bubble-wrapper>
+      </bubble-wrapper> -->
     </div>
 
     <agile ref="main" :options="options1">
@@ -59,6 +60,8 @@
                   :src="slide.path"
                   :alt="slide.title"
                   class="absolute top-0 right-0 w-auto block min-w-full min-h-full h-auto object-cover"
+                  v-show="isLoad"
+                  @load="loaded"
                 />
               </picture>
             </picture-wrapper>
@@ -71,7 +74,7 @@
                     ')'
                 }"
               >
-                <placeholder-bubble-inner>
+                <placeholder-bubble-inner v-show="isLoad">
                   <h2 class="mb-1 text-4xl text-white hover:underline">
                     <a :href="slide.link">
                       {{ slide.title }}
@@ -171,6 +174,7 @@ export default {
   },
   data() {
     return {
+      isLoad: false,
       options1: {
         dots: true,
         fade: true,
@@ -207,6 +211,11 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    loaded() {
+      this.isLoad = true;
+    }
   }
 };
 </script>
