@@ -11,11 +11,11 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "copy-webpack-plugin": "^5.1.1",
     "core-js": "^3.4.4",
     "fecha": "^4.1.0",
-    "lodash": "^4.17.15",
+    "imagemin-webpack-plugin": "^2.4.2",
     "lodash.throttle": "^4.1.1",
-    "prerender-spa-plugin": "^3.4.0",
     "tailwindcss": "^1.1.4",
     "tailwindcss-animations": "^1.0.0",
     "tailwindcss-transforms": "^2.2.0",

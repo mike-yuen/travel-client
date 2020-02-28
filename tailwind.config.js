@@ -268,7 +268,7 @@ module.exports = {
         '"Courier New"',
         "monospace"
       ],
-      ciuta: ["Ciutadella"]
+      ciuta: ["Ciutadella", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"']
     },
     fontSize: {
       xs: "0.75rem",
