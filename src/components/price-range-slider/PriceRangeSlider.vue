@@ -227,7 +227,8 @@ export default {
       dragFlag: false,
       crossFlag: false,
       isComponentExists: true,
-      isMounted: false
+      isMounted: false,
+      errors: ""
     };
   },
   render(h) {
@@ -1539,7 +1540,8 @@ export default {
     },
     printError(msg) {
       if (this.debug) {
-        console.error(`[VueSlider error]: ${msg}`);
+        this.errors = msg;
+        // console.error(`[VueSlider error]: ${msg}`);
       }
     }
   },
