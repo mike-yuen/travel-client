@@ -10,7 +10,6 @@ module.exports = {
       new webpack.HashedModuleIdsPlugin() // so that file hashes don't change unexpectedly
     ],
     output: {
-      publicPath: "dist/",
       path: path.resolve(__dirname, "dist"),
       filename: "[name].bundle.js"
     },
