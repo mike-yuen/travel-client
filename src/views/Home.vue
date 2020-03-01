@@ -7,14 +7,7 @@
         Detail Room Demo
       </router-link>
     </div>
-    <div class="max-w-xs mx-auto">
-      <PriceRangeSlider
-        v-model="value"
-        :min="min"
-        :max="max"
-        :enable-cross="enableCross"
-      />
-    </div>
+    <div class="max-w-xs mx-auto"></div>
   </div>
 </template>
 
@@ -23,15 +16,12 @@ import { mapGetters } from "vuex";
 import * as apiServices from "@/services";
 import MainSlider from "@/components/slider/MainSlider";
 const SearchTabs = () => import("@/components/search-tabs/SearchTabs");
-const PriceRangeSlider = () =>
-  import("@/components/price-range-slider/PriceRangeSlider");
 
 export default {
   name: "home",
   components: {
     MainSlider,
-    SearchTabs,
-    PriceRangeSlider
+    SearchTabs
   },
   data() {
     return {

@@ -50,7 +50,8 @@
         </div>
         <div class="mb-4 px-4">
           <div class="mb-4">
-            <Checkbox />
+            <Checkbox :data="rememberState" :value="rememberValue" />
+            {{ rememberValue }}
           </div>
           <Button type="submit" class="font-bold">LOG IN</Button>
         </div>
@@ -69,10 +70,10 @@
 
 <script>
 import styled from "vue-styled-components";
-import Input from "../core-ui/field/Input";
-import ErrorMessage from "../core-ui/field/ErrorMessage";
-import Button from "../core-ui/button/Button";
-import Checkbox from "../core-ui/checkbox/Checkbox";
+const Input = () => import("../core-ui/field/Input");
+const ErrorMessage = () => import("../core-ui/field/ErrorMessage");
+const Button = () => import("../core-ui/button/Button");
+const Checkbox = () => import("../core-ui/checkbox/Checkbox");
 
 const LoginWidget = styled.div`
   box-shadow: 0 0.5rem 0 #e40000 inset, 0 0.85rem 3rem rgba(0, 0, 0, 0.2);
@@ -98,7 +99,13 @@ export default {
       forgotPassword: {
         name: "Forgot Password?",
         onClick: this.handleForgotPassword
-      }
+      },
+      rememberState: {
+        label: "Remember Me",
+        checked: false,
+        value: "remember"
+      },
+      rememberValue: ""
     };
   },
   computed: {},
