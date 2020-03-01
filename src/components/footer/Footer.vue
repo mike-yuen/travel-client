@@ -4,9 +4,12 @@
       class="relative py-8 px-0 mb-4 md:mb-12 bg-gray-100 border-t border-b border-gray-300"
     >
       <div class="relative w-full max-w-5lg mx-auto">
-        <scroll-top href="#header"
-          ><i class="fa fa-chevron-up" />Go to top</scroll-top
-        >
+        <scroll-top href="#header">
+          <i
+            class="fa fa-chevron-up flex absolute w-full h-full items-center justify-center text-white"
+          />
+          Go to top
+        </scroll-top>
         <div class="lg:flex relative">
           <section class="relative w-full lg:w-3/12 px-3 pt-5 md:pt-0">
             <div>
@@ -141,11 +144,12 @@ const ScrollTop = styled.a`
   position: absolute;
   top: -3.375rem;
   right: 0.9375rem;
+  font-size: 0.75rem;
   width: 2.25rem;
   height: 2.25rem;
   color: transparent;
   background: #666;
-  text-indent: 150%;
+  // text-indent: 150%;
   white-space: nowrap;
   overflow: hidden;
   @media only screen and (min-width: 768px) {
@@ -158,7 +162,7 @@ const ScrollTop = styled.a`
   &:hover {
     color: #323232;
     background: #323232;
-    font-size: 0.75rem;
+
     line-height: 7.75rem;
     text-transform: uppercase;
     text-decoration: none;

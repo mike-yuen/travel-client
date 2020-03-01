@@ -13,7 +13,7 @@
 import styled from "vue-styled-components";
 const StyledButton = styled.button`
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 24px;
   letter-spacing: 1.5px;
   color: #fff;
