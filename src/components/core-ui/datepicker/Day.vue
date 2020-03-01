@@ -22,7 +22,7 @@
 
 <script>
 import fecha from "fecha";
-import Helpers from "./helpers.js";
+import Helpers from "./utils.js";
 import styled from "vue-styled-components";
 
 const DayWrapper = styled.div`

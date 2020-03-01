@@ -7,6 +7,14 @@
         Detail Room Demo
       </router-link>
     </div>
+    <div class="max-w-xs mx-auto">
+      <PriceRangeSlider
+        v-model="value"
+        :min="min"
+        :max="max"
+        :enable-cross="enableCross"
+      />
+    </div>
   </div>
 </template>
 
@@ -15,12 +23,20 @@ import { mapGetters } from "vuex";
 import * as apiServices from "@/services";
 import MainSlider from "@/components/slider/MainSlider";
 const SearchTabs = () => import("@/components/search-tabs/SearchTabs");
+const PriceRangeSlider = () =>
+  import("@/components/price-range-slider/PriceRangeSlider");
 
 export default {
   name: "home",
   components: {
     MainSlider,
-    SearchTabs
+    SearchTabs,
+    PriceRangeSlider
+  },
+  data() {
+    return {
+      value: [0, 100]
+    };
   },
   computed: {
     ...mapGetters({
@@ -32,6 +48,11 @@ export default {
     testApi() {
       apiServices.authenticate();
     }
+  },
+  created() {
+    this.min = 0;
+    this.max = 250;
+    this.enableCross = false;
   }
 };
 </script>

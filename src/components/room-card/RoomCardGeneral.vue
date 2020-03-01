@@ -1,6 +1,6 @@
 <template>
   <div class="room-wrapper">
-    <div class="md:flex w-full px-3">
+    <div class="md:flex w-full md:px-3 px-4">
       <div class="relative cursor-pointer w-full h-35 md:w-50">
         <div
           class="relative bg-grey-300 rounded overflow-hidden w-full h-35 md:w-50"
