@@ -24,7 +24,7 @@ const EVENT_MOUSE_MOVE = "mousemove";
 const EVENT_MOUSE_UP = "mouseup";
 const EVENT_MOUSE_LEAVE = "mouseleave";
 
-const EVENT_KEY_DOWN = "keydown";
+const EVENT_KEY_PRESS = "keypress";
 const EVENT_KEY_UP = "keyup";
 const EVENT_RESIZE = "resize";
 
@@ -1396,7 +1396,7 @@ export default {
       }
       this.focusFlag = false;
     },
-    handleKeydown(e) {
+    handleKeypress(e) {
       e.preventDefault();
       e.stopPropagation();
       if (!this.useKeyboard) {
@@ -1486,7 +1486,7 @@ export default {
           addEvent(this.$refs.dot, EVENT_MOUSE_DOWN, this._start);
         }
       }
-      addEvent(document, EVENT_KEY_DOWN, this.handleKeydown);
+      addEvent(document, EVENT_KEY_PRESS, this.handleKeypress);
       addEvent(document, EVENT_KEY_UP, this.handleKeyup);
       addEvent(window, EVENT_RESIZE, this.refresh);
       if (this.isRange && this.tooltipMerge) {
@@ -1521,7 +1521,7 @@ export default {
           removeEvent(this.$refs.dot, EVENT_MOUSE_DOWN, this._start);
         }
       }
-      removeEvent(document, EVENT_KEY_DOWN, this.handleKeydown);
+      removeEvent(document, EVENT_KEY_PRESS, this.handleKeypress);
       removeEvent(document, EVENT_KEY_UP, this.handleKeyup);
       removeEvent(window, EVENT_RESIZE, this.refresh);
       if (this.isRange && this.tooltipMerge) {

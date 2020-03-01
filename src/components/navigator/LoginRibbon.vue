@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import LoginWidget from "../login-form/LoginWidget";
+const LoginWidget = () => import("../login-form/LoginWidget");
 
 export default {
   name: "LoginRibbon",

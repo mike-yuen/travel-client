@@ -136,8 +136,8 @@
 </template>
 
 <script>
-import Input from "@/components/core-ui/field/Input";
-import Button from "@/components/core-ui/button/Button";
+const Input = () => import("@/components/core-ui/field/Input");
+const Button = () => import("@/components/core-ui/button/Button");
 import styled from "vue-styled-components";
 
 const ScrollTop = styled.a`

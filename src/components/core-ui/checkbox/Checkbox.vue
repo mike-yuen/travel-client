@@ -1,12 +1,12 @@
 <template>
   <CheckboxStyledContainer>
     <label class="container">
-      {{ checkbox.label }}
+      {{ data.label }}
       <input
         type="checkbox"
-        :id="checkbox.value"
-        :checked="checkbox.checked"
-        :value="checkbox.value"
+        :id="data.value"
+        :checked="data.checked"
+        :value="data.value"
         v-model="dataValue"
       />
       <span class="checkmark"></span>
@@ -94,12 +94,12 @@ export default {
   },
 
   props: {
-    checkbox: {
+    data: {
       type: Object
     },
 
     value: {
-      type: Number
+      type: String || Number || Boolean
     }
   },
 

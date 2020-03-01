@@ -16,7 +16,8 @@ module.exports = {
       cyan: {
         0: "#e7f7f7",
         50: "#cceded",
-        100: "#90e2df"
+        100: "#90e2df",
+        150: "#8de2e0"
       },
       gray: {
         0: "#323232",
@@ -58,6 +59,7 @@ module.exports = {
         900: "#7b341e"
       },
       yellow: {
+        0: "#fbcb3b",
         100: "#fffff0",
         200: "#fefcbf",
         300: "#faf089",
@@ -284,7 +286,8 @@ module.exports = {
       "3xl": "1.875rem",
       "4xl": "2.25rem",
       "5xl": "3rem",
-      "6xl": "4rem"
+      "6xl": "4rem",
+      "2rem": "2rem"
     },
     fontWeight: {
       hairline: "100",
