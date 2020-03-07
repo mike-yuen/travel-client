@@ -1,29 +1,19 @@
 <template>
   <div>
-    <!-- <div v-for="(checkbox, index) in checkboxs" :key="index">
-      <Checkbox  :checkbox="checkbox" v-model="checkboxValue" />
-      {{ checkboxValue }}
-    </div> -->
-    <!-- <Checkbox /> -->
-
+    <p class="font-bold mb-3">Hotel rating</p>
     <div v-for="(rate, index) in rates" :key="index">
-      <Radio :rate="rate" v-model="value" />
-      {{ value }}
+      <Radio :data="rate" v-model="value" />
     </div>
-
-    <!-- <Radio /> -->
   </div>
 </template>
 
 <script>
-// import Checkbox from "@/components/core-ui/checkbox/Checkbox";
 import Radio from "@/components/core-ui/checkbox/Radio";
 
 export default {
   name: "HotelRating",
   data() {
     return {
-      checkboxValue: [],
       value: null,
       rates: [
         {
@@ -35,24 +25,26 @@ export default {
           label: "2 Star",
           checked: false,
           value: 2
-        }
-      ],
-      checkboxs: [
-        {
-          label: "checkbox 1",
-          checked: true,
-          value: 1
         },
         {
-          label: "checkbox 2",
+          label: "3 Star",
           checked: false,
-          value: 2
+          value: 3
+        },
+        {
+          label: "4 Star",
+          checked: false,
+          value: 4
+        },
+        {
+          label: "5 Star",
+          checked: false,
+          value: 5
         }
       ]
     };
   },
   components: {
-    // Checkbox,
     Radio
   }
 };

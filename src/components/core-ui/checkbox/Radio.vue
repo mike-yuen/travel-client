@@ -1,12 +1,12 @@
 <template>
   <RadioStyledContainer>
     <label class="container">
-      {{ rate.label }}
+      {{ data.label }}
       <input
         type="radio"
-        :checked="rate.checked"
+        :checked="data.checked"
         name="radio"
-        :value="rate.value"
+        :value="data.value"
         v-model="dataValue"
       />
       <span class="checkmark"></span>
@@ -21,10 +21,10 @@ const RadioStyledContainer = styled.div`
   .container {
     display: block;
     position: relative;
-    padding-left: 35px;
+    padding-left: 25px;
     // margin-bottom: 12px;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 1.1em;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -36,10 +36,7 @@ const RadioStyledContainer = styled.div`
       &:checked {
         ~ {
           .checkmark {
-            // background-color: #2196f3 !important;
-            -webkit-box-shadow: 0px 0px 5px 0px rgba(61, 88, 237, 1);
-            -moz-box-shadow: 0px 0px 5px 0px rgba(61, 88, 237, 1);
-            box-shadow: 0px 0px 5px 0px rgba(61, 88, 237, 1);
+            border: 2px solid #8de2e0;
             &:after {
               display: block;
             }
@@ -51,7 +48,7 @@ const RadioStyledContainer = styled.div`
       input {
         ~ {
           .checkmark {
-            background-color: #ccc;
+            border: 2px solid #8de2e0;
           }
         }
       }
@@ -61,8 +58,8 @@ const RadioStyledContainer = styled.div`
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
         background: #404147;
       }
@@ -70,11 +67,13 @@ const RadioStyledContainer = styled.div`
   }
   .checkmark {
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 0;
-    height: 25px;
-    width: 25px;
-    background-color: #eee;
+    transform: translateY(-50%);
+    height: 18px;
+    width: 18px;
+    border: 2px solid #ccc;
+    // background-color: #eee;
     border-radius: 50%;
     &:after {
       content: "";
@@ -90,11 +89,11 @@ export default {
     RadioStyledContainer
   },
   props: {
-    rate: {
+    data: {
       type: Object
     },
     value: {
-      type: Number
+      type: Number || String || Boolean
     }
   },
   computed: {
