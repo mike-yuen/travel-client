@@ -22,12 +22,8 @@ const CheckboxStyledContainer = styled.div`
     display: block;
     position: relative;
     padding-left: 25px;
-    // margin-bottom: 12px;
     cursor: pointer;
     font-size: 1.1em;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
     input {
       position: absolute;
@@ -50,7 +46,6 @@ const CheckboxStyledContainer = styled.div`
       input {
         ~ {
           .checkmark {
-            // background-color: #ccc;
             border: 2px solid #8de2e0;
           }
         }
@@ -75,7 +70,6 @@ const CheckboxStyledContainer = styled.div`
     left: 0;
     height: 18px;
     width: 18px;
-    // background-color: #eee;
     border: 2px solid #ccc;
     &:after {
       content: "";
