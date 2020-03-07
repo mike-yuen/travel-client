@@ -4,12 +4,16 @@
       {{ data.label }}
       <input
         type="checkbox"
+<<<<<<< HEAD
         :id="data.value"
+=======
+>>>>>>> filter-advanced
         :checked="data.checked"
         :value="data.value"
         v-model="dataValue"
       />
       <span class="checkmark"></span>
+      <span class="float-right">10</span>
     </label>
   </CheckboxStyledContainer>
 </template>
@@ -21,10 +25,10 @@ const CheckboxStyledContainer = styled.div`
   .container {
     display: block;
     position: relative;
-    padding-left: 35px;
+    padding-left: 25px;
     // margin-bottom: 12px;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 1.1em;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -38,10 +42,7 @@ const CheckboxStyledContainer = styled.div`
       &:checked {
         ~ {
           .checkmark {
-            // background-color:  !important;
-            -webkit-box-shadow: 0px 0px 5px 0px rgba(61, 88, 237, 1);
-            -moz-box-shadow: 0px 0px 5px 0px rgba(61, 88, 237, 1);
-            box-shadow: 0px 0px 5px 0px rgba(61, 88, 237, 1);
+            border: 2px solid #8de2e0;
             &:after {
               display: block;
             }
@@ -53,32 +54,33 @@ const CheckboxStyledContainer = styled.div`
       input {
         ~ {
           .checkmark {
-            background-color: #ccc;
+            // background-color: #ccc;
+            border: 2px solid #8de2e0;
           }
         }
       }
     }
     .checkmark {
       &:after {
-        left: 9px;
-        top: 5px;
+        left: 22%;
+        top: 50%;
         width: 5px;
         height: 10px;
         border: solid #404147;
         border-width: 0 3px 3px 0;
-        -webkit-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-        transform: rotate(45deg);
+        transform: rotate(45deg) translate(-50%, -50%);
       }
     }
   }
   .checkmark {
     position: absolute;
-    top: 0;
+    top: 50%;
+    transform: translateY(-50%);
     left: 0;
-    height: 25px;
-    width: 25px;
-    background-color: #eee;
+    height: 18px;
+    width: 18px;
+    // background-color: #eee;
+    border: 2px solid #ccc;
     &:after {
       content: "";
       position: absolute;
@@ -99,7 +101,11 @@ export default {
     },
 
     value: {
+<<<<<<< HEAD
       type: String || Number || Boolean
+=======
+      type: Array
+>>>>>>> filter-advanced
     }
   },
 

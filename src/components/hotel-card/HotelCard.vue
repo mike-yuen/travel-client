@@ -49,7 +49,7 @@
         </div>
         <div class="lg:w-3/4 relative">
           <div class="px-4 py-2 lg:py-0">
-            <div class="lg:float-left lg:w-2/4">
+            <div class="lg:float-left lg:w-3/4">
               <h3 class="uppercase font-bold text-2xl mb-2">
                 {{ hotel.title }}
               </h3>
@@ -58,12 +58,10 @@
               </p>
               <div class="flex">
                 <div class="flex self-center">
-                  <div v-for="index in hotel.numberOfRank" :key="index">
+                  <!-- <div v-for="index in hotel.numberOfRank" :key="index">
                     <div class="rounded-full bg-yellow-500 h-4 w-4 mr-1"></div>
-                  </div>
-                  <!-- <div v-for="index in (5 - hotel.numberOfRank)" :key="index">
-                    <div class="rounded-full border-2 border-yellow-500 h-4 w-4 mr-1"></div>
                   </div> -->
+                  <RatingStar :value="hotel.numberOfRank" :disabled="true" />
                 </div>
                 <div class="ml-3 lg:ml-0  lg:mt-0 self-center">
                   <img :src="hotel.tripadvisorImage" alt class="w-100 mr-1" />
@@ -82,7 +80,7 @@
                 </div>
               </div>
             </div>
-            <div class="lg:float-right lg:text-right lg:w-2/4 mt-3 lg:mt-0">
+            <div class="lg:float-right lg:text-right lg:w-1/4 mt-3 lg:mt-0">
               <p class="">
                 <span class>{{ hotel.numberOfNights }} night</span>
                 from (AUD)
@@ -107,11 +105,13 @@
 
 <script>
 import SkeletonBox from "@/components/skeleton/SkeletonBox.vue";
+const RatingStar = () => import("@/components/hotel-card/RatingStar.vue");
 
 export default {
   name: "HotelCard",
   components: {
-    SkeletonBox
+    SkeletonBox,
+    RatingStar
   },
   props: {
     loading: {

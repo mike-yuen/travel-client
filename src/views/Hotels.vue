@@ -3,8 +3,12 @@
     <!-- <NavigatorTop /> -->
     <!-- <MenuDesktop /> -->
     <div class="lg:flex container mx-auto">
-      <div class="w-3/12">
+      <div class="w-12/12 lg:w-3/12 p-2 lg:p-0">
+        <PriceRangeSlider :hotels="hotels" :step="5" />
         <HotelRatingFilter />
+        <TripAdvisorRating />
+        <HotelPropertyFilter />
+        <Facilities />
       </div>
       <div class="w-12/12 lg:w-9/12">
         <HotelCard
@@ -21,8 +25,16 @@
 <script>
 // import NavigatorTop from "@/components/navigator/NavigatorTop";
 // import MenuDesktop from "@/components/menu/MenuDesktop";
-import HotelCard from "@/components/hotel-card/HotelCard";
-import HotelRatingFilter from "@/components/advanced-filter/HotelRating";
+const HotelCard = () => import("@/components/hotel-card/HotelCard");
+const HotelRatingFilter = () =>
+  import("@/components/advanced-filter/HotelRating");
+const TripAdvisorRating = () =>
+  import("@/components/advanced-filter/TripAdvisorRating");
+const HotelPropertyFilter = () =>
+  import("@/components/advanced-filter/PropertyType");
+const Facilities = () => import("@/components/advanced-filter/Facilities");
+const PriceRangeSlider = () =>
+  import("@/components/price-range-slider/PriceRangeSlider");
 
 export default {
   name: "Hotels",
@@ -30,7 +42,11 @@ export default {
     // NavigatorTop,
     // MenuDesktop,
     HotelCard,
-    HotelRatingFilter
+    PriceRangeSlider,
+    HotelRatingFilter,
+    TripAdvisorRating,
+    HotelPropertyFilter,
+    Facilities
   },
   data() {
     return {
@@ -44,10 +60,10 @@ export default {
           hotelImage: require("@/assets/images/room-test.jpg"),
           url: "void:javascript(0)",
           discount: 300,
-          price: 200,
+          price: 100,
           numberOfNights: 1,
           numberOfReviews: 3000,
-          numberOfRank: 4,
+          numberOfRank: 4.5,
           points: 90,
           isDeal: true,
           icons: ["phone", "car"]
@@ -60,7 +76,23 @@ export default {
           hotelImage: require("@/assets/images/room-test.jpg"),
           url: "void:javascript(0)",
           discount: 300,
-          price: 200,
+          price: 800,
+          numberOfNights: 2,
+          numberOfReviews: 4000,
+          numberOfRank: 5,
+          points: 100,
+          isDeal: false,
+          icons: ["book", "car"]
+        },
+        {
+          title: "Hotel 3",
+          country: "US",
+          tripadvisorImage:
+            "https://www.tripadvisor.com/img/cdsi/img2/ratings/traveler/4.5-15969-4.svg",
+          hotelImage: require("@/assets/images/room-test.jpg"),
+          url: "void:javascript(0)",
+          discount: 300,
+          price: 2800,
           numberOfNights: 2,
           numberOfReviews: 4000,
           numberOfRank: 5,
@@ -69,23 +101,12 @@ export default {
           icons: ["book", "car"]
         }
       ]
-      // rates: [
-      //   {
-      //       id: '1',
-      //       lable: 'checkbox1'
-      //   },
-      //   {
-      //       id: '2',
-      //       lable: 'checkbox2'
-      //   }
-      // ]
     };
   },
   methods: {
     skeletonLoading() {
       setTimeout(() => {
         this.loading = !this.loading;
-        // this.loading = true;
       }, 2000);
     }
   },

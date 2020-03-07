@@ -89,7 +89,7 @@ export default {
     "login-widget": LoginWidget,
     Input,
     ErrorMessage,
-    Checkbox,
+    // Checkbox,
     Button
   },
   data() {
