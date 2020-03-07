@@ -4,7 +4,6 @@
     <PriceRangeStyledContainer>
       <div class="track-container">
         <span class="range-value">${{ minValue }} - ${{ maxValue }}</span>
-        <!-- <span class="range-value max">{{ max }}</span> -->
         <div class="track" ref="_vpcTrack" @click.stop="setClickMove"></div>
         <div class="track-highlight" ref="trackHighlight"></div>
         <button
@@ -84,8 +83,6 @@ const PriceRangeStyledContainer = styled.div`
   }
 
   .track-btn {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     outline: none;
     cursor: pointer;
@@ -101,7 +98,6 @@ const PriceRangeStyledContainer = styled.div`
     border-radius: 50%;
     box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.75);
     background-color: red;
-    -ms-touch-action: pan-x;
     touch-action: pan-x;
     transition: box-shadow 0.3s ease-out, background-color 0.3s ease,
       -webkit-transform 0.3s ease-out;
@@ -214,7 +210,6 @@ export default {
     },
 
     moveTrack(track) {
-      // console.log(ev);
       let percentInPx = this.getPercentInPx;
       let trackX = Math.round(
         this.$refs._vpcTrack.getBoundingClientRect().left
@@ -239,21 +234,17 @@ export default {
 
       this.$refs[track].style.left = moveInPercent + "%";
       this.setTrackHightlight();
-      // console.log(value);
     },
 
     mouseup() {
-      // console.log(track);
       if (!this.isDragging) return;
       this.isDragging = false;
-      // alert('mouseup');
     },
 
     mousedown(track) {
       if (this.isDragging) return;
       this.isDragging = true;
       this.pos.curTrack = track;
-      // console.log(track)
     },
 
     mousemove(track) {
@@ -261,10 +252,8 @@ export default {
       this.moveTrack(track);
     },
     setClickMove() {
-      // alert(event.clientX);
-      let track1Left = this.$refs.track1.getBoundingClientRect().left;
+      // let track1Left = this.$refs.track1.getBoundingClientRect().left;
       // let track2Left = this.$refs.track2.getBoundingClientRect().left;
-      console.log(track1Left);
       // if(event.clientX < track1Left){
       //   this.moveTrack('trackMin')
       // }else if((event.clientX - track1Left) < (track2Left - event.clientX) ){
@@ -279,7 +268,6 @@ export default {
   mounted() {
     this.minValue = this.min;
     this.maxValue = this.max;
-    // this.setTrackHightlight();
   }
 };
 </script>
