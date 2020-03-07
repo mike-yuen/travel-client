@@ -4,10 +4,6 @@
       {{ data.label }}
       <input
         type="checkbox"
-<<<<<<< HEAD
-        :id="data.value"
-=======
->>>>>>> filter-advanced
         :checked="data.checked"
         :value="data.value"
         v-model="dataValue"
@@ -101,11 +97,7 @@ export default {
     },
 
     value: {
-<<<<<<< HEAD
-      type: String || Number || Boolean
-=======
       type: Array
->>>>>>> filter-advanced
     }
   },
 

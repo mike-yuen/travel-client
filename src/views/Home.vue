@@ -7,18 +7,7 @@
         Detail Room Demo
       </router-link>
     </div>
-<<<<<<< HEAD
     <div class="max-w-xs mx-auto"></div>
-=======
-    <div class="max-w-xs mx-auto">
-      <!-- <PriceRangeSlider
-        v-model="value"
-        :min="min"
-        :max="max"
-        :enable-cross="enableCross"
-      /> -->
-    </div>
->>>>>>> filter-advanced
   </div>
 </template>
 
@@ -27,20 +16,12 @@ import { mapGetters } from "vuex";
 import * as apiServices from "@/services";
 import MainSlider from "@/components/slider/MainSlider";
 const SearchTabs = () => import("@/components/search-tabs/SearchTabs");
-<<<<<<< HEAD
-=======
-// const PriceRangeSlider = () => import("@/components/price-range-slider/PriceRangeSlider");
->>>>>>> filter-advanced
 
 export default {
   name: "home",
   components: {
     MainSlider,
     SearchTabs
-<<<<<<< HEAD
-=======
-    // PriceRangeSlider
->>>>>>> filter-advanced
   },
   data() {
     return {
