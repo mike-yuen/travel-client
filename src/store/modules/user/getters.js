@@ -1,5 +1,7 @@
-const userState = state => state.userState;
+import { GETTERS } from "./const";
 
-export default {
-  userState
+export const getters = {
+  [GETTERS.GET_AUTH]: (state) => {
+    return state.authInfo;
+  }
 };

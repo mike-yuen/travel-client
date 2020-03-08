@@ -17,7 +17,7 @@ function processDirectiveArguments(bindingValue) {
 
   return {
     handler: isFunction ? bindingValue : bindingValue.handler,
-    middleware: bindingValue.middleware || (item => item),
+    middleware: bindingValue.middleware || ((item) => item),
     events: bindingValue.events || EVENTS,
     isActive: !(bindingValue.isActive === false)
   };
@@ -50,9 +50,9 @@ function bind(el, { value }) {
     return;
   }
 
-  el[HANDLERS_PROPERTY] = events.map(eventName => ({
+  el[HANDLERS_PROPERTY] = events.map((eventName) => ({
     event: eventName,
-    handler: event => onEvent({ event, el, handler, middleware })
+    handler: (event) => onEvent({ event, el, handler, middleware })
   }));
 
   el[HANDLERS_PROPERTY].forEach(({ event, handler }) =>

@@ -1,7 +1,7 @@
 // Unsharp text [#166](https://github.com/NightCatSama/vue-slider-component/issues/166)
 export const roundToDPR = (function() {
   const r = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
-  return value => Math.round(value * r) / r;
+  return (value) => Math.round(value * r) / r;
 })();
 
 export const isMobile = (() => {

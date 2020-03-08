@@ -102,7 +102,7 @@ export default {
     "day-wrapper": DayWrapper,
     "triangle-right": TriangleRight,
     "triangle-left": TriangleLeft,
-    tooltip: Tooltip
+    "tooltip": Tooltip
   },
   props: {
     isOpen: {
@@ -324,7 +324,7 @@ export default {
         // If this day is equal any of the disabled dates
         (this.sortedDisabledDates
           ? this.sortedDisabledDates.some(
-              i => this.compareDay(i, this.date) == 0
+              (i) => this.compareDay(i, this.date) == 0
             )
           : null) ||
         // Or is before the start date
@@ -333,7 +333,7 @@ export default {
         this.compareEndDay() ||
         // Or is in one of the disabled days of the week
         this.options.disabledDaysOfWeek.some(
-          i => i == fecha.format(this.date, "dddd")
+          (i) => i == fecha.format(this.date, "dddd")
         );
       // Handle checkout enabled
       if (this.options.enableCheckout) {

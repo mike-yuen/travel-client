@@ -1,4 +1,4 @@
-const hotelState = state => state.hotelState;
+const hotelState = (state) => state.hotelState;
 
 export default {
   hotelState

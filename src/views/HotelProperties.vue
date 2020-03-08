@@ -56,16 +56,8 @@
           </div>
         </div>
         <div class="md:flex">
-          <div class="css-1w0om4m-Box-Flex e1x0udlv0 w-2/3">
-            <div class="css-t0bljt-Box exfkhm60">
-              <!-- <HotelPropertySlider /> -->
-              <div class="image-gallery ">
-                <img
-                  src="https://images-cdn.qantashotels.com/insecure/xlarge/plain/k/images/000/073/751/original.jpg"
-                  alt="Floor Lobby"
-                />
-              </div>
-            </div>
+          <div class="w-full md:w-2/3">
+            <HotelPropertySlider />
 
             <div class="md:hidden">
               <h1
@@ -203,19 +195,16 @@
               </div>
             </div>
           </div>
-          <div class="css-1rrdw1g-Box-Flex e1x0udlv1">
-            <div class="css-1mn2okd-Box e5f71i10">
-              <div class="css-1tfsrrm-Box e5f71i10">
-                <h2 class="css-dqh1hu-Heading-Heading-Text e1cffud32">
+          <div class="w-full md:w-1/3 md:pl-6">
+            <div class="block">
+              <div class="mb-6 pb-6 border-b border-gray-50">
+                <h2 class="text-lg font-bold text-gray-0 m-0 mb-3">
                   Popular features
                 </h2>
-                <div class="css-15kmvm1-Box-Flex eu8lwwc0">
-                  <div class="css-a4q51c-Box-Flex eu8lwwc1">
-                    <div class="css-1j3udpz-Box-Flex e6hqxet0">
-                      <div
-                        data-testid="facility-icon"
-                        class="css-1a8a5sc-Box-Flex e6hqxet0"
-                      >
+                <div class="overflow-hidden">
+                  <div class="w-1/2 float-left mb-4">
+                    <div class="flex items-center w-full">
+                      <div class="text-left pr-3">
                         <svg
                           color="greys.charcoal"
                           class="e16d2er41 css-6kqemk-StyledSvg-Icon e16d2er40"
@@ -230,19 +219,14 @@
                           ></path>
                         </svg>
                       </div>
-                      <span
-                        data-testid="facility-text"
-                        class="css-1skbx3q-Text e7qkkfc0"
-                        >Swimming Pool</span
-                      >
+                      <span class="text-lg text-left">
+                        Swimming Pool
+                      </span>
                     </div>
                   </div>
-                  <div class="css-a4q51c-Box-Flex eu8lwwc1">
-                    <div class="css-1j3udpz-Box-Flex e6hqxet0">
-                      <div
-                        data-testid="facility-icon"
-                        class="css-1a8a5sc-Box-Flex e6hqxet0"
-                      >
+                  <div class="flex w-1/2 float-left mb-4">
+                    <div class="flex items-center w-full">
+                      <div class="text-left pr-3">
                         <svg
                           color="greys.charcoal"
                           class="e16d2er41 css-6kqemk-StyledSvg-Icon e16d2er40"
@@ -257,19 +241,14 @@
                           ></path>
                         </svg>
                       </div>
-                      <span
-                        data-testid="facility-text"
-                        class="css-1skbx3q-Text e7qkkfc0"
-                        >Restaurant</span
-                      >
+                      <span class="text-lg text-left">
+                        Restaurant
+                      </span>
                     </div>
                   </div>
-                  <div class="css-a4q51c-Box-Flex eu8lwwc1">
-                    <div class="css-1j3udpz-Box-Flex e6hqxet0">
-                      <div
-                        data-testid="facility-icon"
-                        class="css-1a8a5sc-Box-Flex e6hqxet0"
-                      >
+                  <div class="flex w-1/2 float-left mb-4">
+                    <div class="flex items-center w-full">
+                      <div class="text-left pr-3">
                         <svg
                           color="greys.charcoal"
                           class="e16d2er41 css-6kqemk-StyledSvg-Icon e16d2er40"
@@ -284,19 +263,14 @@
                           ></path>
                         </svg>
                       </div>
-                      <span
-                        data-testid="facility-text"
-                        class="css-1skbx3q-Text e7qkkfc0"
-                        >Parking</span
-                      >
+                      <span class="text-lg text-left">
+                        Parking
+                      </span>
                     </div>
                   </div>
-                  <div class="css-a4q51c-Box-Flex eu8lwwc1">
-                    <div class="css-1j3udpz-Box-Flex e6hqxet0">
-                      <div
-                        data-testid="facility-icon"
-                        class="css-1a8a5sc-Box-Flex e6hqxet0"
-                      >
+                  <div class="flex w-1/2 float-left mb-4">
+                    <div class="flex items-center w-full">
+                      <div class="text-left pr-3">
                         <svg
                           color="greys.charcoal"
                           class="e16d2er41 css-6kqemk-StyledSvg-Icon e16d2er40"
@@ -311,30 +285,22 @@
                           ></path>
                         </svg>
                       </div>
-                      <span
-                        data-testid="facility-text"
-                        class="css-1skbx3q-Text e7qkkfc0"
-                        >Smoke Free</span
-                      >
+                      <span class="css-1skbx3q-Text e7qkkfc0">
+                        Smoke Free
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div class="css-1gcgfnk-Box-Flex e6hqxet0">
-                  <button
-                    color="ui.link"
-                    text-decoration="underline"
-                    data-testid="view-all"
-                    type="button"
-                    class="css-btxq5s-NakedButton e1tmcgay0"
-                  >
+                <div class="flex">
+                  <a class="py-2 text-lg text-red-0 underline cursor-pointer">
                     View 22 property features
-                  </button>
+                  </a>
                 </div>
               </div>
-              <div class="css-v72m09-Box-Flex e6hqxet0">
-                <div class="css-bo1w8j-Box-Flex e6hqxet0">
-                  <span class="css-442ynt-Text e7qkkfc0">Check-in time</span>
-                  <div class="css-1gcgfnk-Box-Flex e6hqxet0">
+              <div class="md:flex mb-4">
+                <div class="w-full md:w-1/2">
+                  <span class="text-base ml-1 mb-1">Check-in time</span>
+                  <div class="flex items-center text-lg">
                     <svg
                       class="e16d2er41 css-xa1vdf-StyledSvg-Icon e16d2er40"
                       viewBox="0 0 24 24"
@@ -349,9 +315,9 @@
                     >From 15:00
                   </div>
                 </div>
-                <div class="css-86z4e5-Box-Flex e6hqxet0">
-                  <span class="css-442ynt-Text e7qkkfc0">Check-out time</span>
-                  <div class="css-1gcgfnk-Box-Flex e6hqxet0">
+                <div class="w-full md:w-1/2">
+                  <span class="text-base ml-1 mb-1">Check-out time</span>
+                  <div class="flex items-center text-lg">
                     <svg
                       class="e16d2er41 css-xa1vdf-StyledSvg-Icon e16d2er40"
                       viewBox="0 0 24 24"
@@ -367,50 +333,23 @@
                   </div>
                 </div>
               </div>
-              <div class="css-sruptq-Box e5f71i10">
-                <button
-                  color="ui.link"
-                  text-decoration="underline"
-                  data-testid="about-this-property-btn"
-                  type="button"
-                  class="css-btxq5s-NakedButton e1tmcgay0"
-                >
+              <div class="flex">
+                <a class="py-2 text-lg text-red-0 underline cursor-pointer">
                   About this property
-                </button>
+                </a>
               </div>
             </div>
-            <div
-              data-testid="property-map-static-desktop-container"
-              class="css-96pr0p-Box-Flex e6hqxet0"
-            >
-              <button
-                data-testid="show-map-button"
-                type="button"
-                color="inherit"
-                class="css-q4s2b-NakedButton edgguw80"
-              >
-                <div class="css-h8ywpc-Box e5f71i10">
-                  <picture
-                    ><source
-                      srcset="
-                        https://cdn.qantashotels.com/maps/api/staticmap?center=-42.88076%2C147.33362&amp;format=png8&amp;key=AIzaSyCsC8z8X6VHXKGp7v6McTBvuLxZ-mgbiZs&amp;markers=-42.88076%2C147.33362&amp;size=400x220&amp;style=feature%3Apoi.business%7Cvisibility%3Aoff&amp;zoom=16             1x,
-                        https://cdn.qantashotels.com/maps/api/staticmap?center=-42.88076%2C147.33362&amp;format=png8&amp;key=AIzaSyCsC8z8X6VHXKGp7v6McTBvuLxZ-mgbiZs&amp;markers=-42.88076%2C147.33362&amp;size=400x220&amp;style=feature%3Apoi.business%7Cvisibility%3Aoff&amp;zoom=16&amp;scale=2 2x
-                      "
-                      media="(min-width: 768px)"/>
-                    <source
-                      srcset="
-                        https://cdn.qantashotels.com/maps/api/staticmap?center=-42.88076%2C147.33362&amp;format=png8&amp;key=AIzaSyCsC8z8X6VHXKGp7v6McTBvuLxZ-mgbiZs&amp;markers=-42.88076%2C147.33362&amp;size=640x200&amp;style=feature%3Apoi.business%7Cvisibility%3Aoff&amp;zoom=16             1x,
-                        https://cdn.qantashotels.com/maps/api/staticmap?center=-42.88076%2C147.33362&amp;format=png8&amp;key=AIzaSyCsC8z8X6VHXKGp7v6McTBvuLxZ-mgbiZs&amp;markers=-42.88076%2C147.33362&amp;size=640x200&amp;style=feature%3Apoi.business%7Cvisibility%3Aoff&amp;zoom=16&amp;scale=2 2x
-                      "
-                      media="(min-width: 0px)"/>
-                    <img
-                      src="https://cdn.qantashotels.com/maps/api/staticmap?center=-42.88076%2C147.33362&amp;format=png8&amp;key=AIzaSyCsC8z8X6VHXKGp7v6McTBvuLxZ-mgbiZs&amp;markers=-42.88076%2C147.33362&amp;size=400x220&amp;style=feature%3Apoi.business%7Cvisibility%3Aoff&amp;zoom=16 1x, https://cdn.qantashotels.com/maps/api/staticmap?center=-42.88076%2C147.33362&amp;format=png8&amp;key=AIzaSyCsC8z8X6VHXKGp7v6McTBvuLxZ-mgbiZs&amp;markers=-42.88076%2C147.33362&amp;size=400x220&amp;style=feature%3Apoi.business%7Cvisibility%3Aoff&amp;zoom=16&amp;scale=2 2x"
-                      alt="map of Hotel Grand Chancellor Hobart"
-                      data-testid="google-maps-static-image"
-                      class="css-1paibui-Image evqvlce0"
-                  /></picture>
-                </div></button
-              ><span class="css-g7b1el-Text e7qkkfc0"
+
+            <div class="css-96pr0p-Box-Flex e6hqxet0">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5315527332596!2d106.6922063141164!3d10.770540262249103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3e8eddf565%3A0x2ab6e5fe92c2e5d7!2sNew%20World%20Saigon%20Hotel!5e0!3m2!1svi!2s!4v1583578018837!5m2!1svi!2s"
+                width="100%"
+                height="100%"
+                frameborder="0"
+                style="border:0;"
+                allowfullscreen=""
+              ></iframe>
+              <span class="css-g7b1el-Text e7qkkfc0"
                 >1 Davey Street, Hobart Tasmania Australia</span
               >
             </div>
@@ -428,14 +367,14 @@
 </template>
 
 <script>
-// import HotelPropertySlider from "@/components/slider/HotelPropertySlider";
+import HotelPropertySlider from "@/components/slider/HotelPropertySlider";
 const StarRating = () => import("@/components/core-ui/rating/StarRating");
 const RoomCardGeneral = () => import("@/components/room-card/RoomCardGeneral");
 
 export default {
   name: "HotelProperties",
   components: {
-    // HotelPropertySlider,
+    HotelPropertySlider,
     StarRating,
     RoomCardGeneral
   },
