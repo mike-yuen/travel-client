@@ -5,30 +5,34 @@
       <div class="track-container">
         <span class="range-value">${{ minValue }} - ${{ maxValue }}</span>
         <div class="track" ref="_vpcTrack" @click.stop="setClickMove"></div>
-        <div class="track-highlight" ref="trackHighlight"></div>
+        <div
+          class="track-highlight"
+          ref="trackHighlight"
+          @click.stop="setClickMove"
+        ></div>
         <button
           class="track-btn track1 tooltip"
           ref="trackMin"
           :title="'$' + minValue"
           :style="trackWidthMin"
-          @mouseup.stop.prevent="mouseup('trackMin')"
-          @mousemove.stop.prevent="mousemove('trackMin')"
+          @mouseup.stop="mouseup()"
+          @mousemove.stop="mousemove('trackMin')"
           @mousedown.stop="mousedown('trackMin')"
           @touchstart.stop="mousedown('trackMin')"
-          @touchmove.stop="mousemove('trackMin')"
-          @touchend.stop="mouseup('trackMin')"
+          @touchmove.stop="mousemove('trackMin', true)"
+          @touchend.stop="mouseup()"
         ></button>
         <button
           class="track-btn track2 tooltip"
           ref="trackMax"
           :title="'$' + (maxValue < max ? maxValue : maxValue + '+')"
           :style="trackWidthMax"
-          @mouseup.stop.prevent="mouseup('trackMax')"
-          @mousemove.stop.prevent="mousemove('trackMax')"
+          @mouseup.stop="mouseup()"
+          @mousemove.stop="mousemove('trackMax')"
           @mousedown.stop="mousedown('trackMax')"
           @touchstart.stop="mousedown('trackMax')"
-          @touchmove.stop="mousemove('trackMax')"
-          @touchend.stop="mouseup('trackMax')"
+          @touchmove.stop="mousemove('trackMax', true)"
+          @touchend.stop="mouseup()"
         ></button>
       </div>
     </PriceRangeStyledContainer>
@@ -152,6 +156,12 @@ export default {
     },
     step: {
       type: Number
+    },
+    priceMin: {
+      type: Number
+    },
+    priceMax: {
+      type: Number
     }
   },
 
@@ -209,12 +219,19 @@ export default {
         "%";
     },
 
-    moveTrack(track) {
+    moveTrack(track, touchStatus) {
       let percentInPx = this.getPercentInPx;
       let trackX = Math.round(
         this.$refs._vpcTrack.getBoundingClientRect().left
       );
-      let clientX = event.clientX;
+      let clientX;
+
+      if (touchStatus == true) {
+        clientX = event.changedTouches[0].clientX;
+      } else {
+        clientX = event.clientX;
+      }
+
       let moveDiff = clientX - trackX;
       let moveInPercent = moveDiff / percentInPx;
 
@@ -231,7 +248,7 @@ export default {
         if (value <= this.minValue + this.step) return;
         this.maxValue = value;
       }
-
+      this.valueBack(this.minValue, this.maxValue);
       this.$refs[track].style.left = moveInPercent + "%";
       this.setTrackHightlight();
     },
@@ -247,27 +264,40 @@ export default {
       this.pos.curTrack = track;
     },
 
-    mousemove(track) {
+    mousemove(track, touchStatus = false) {
       if (!this.isDragging) return;
-      this.moveTrack(track);
+      this.moveTrack(track, touchStatus);
     },
     setClickMove() {
-      // let track1Left = this.$refs.track1.getBoundingClientRect().left;
-      // let track2Left = this.$refs.track2.getBoundingClientRect().left;
-      // if(event.clientX < track1Left){
-      //   this.moveTrack('trackMin')
-      // }else if((event.clientX - track1Left) < (track2Left - event.clientX) ){
-      //   this.moveTrack('trackMin')
-      // }else{
-      //   this.moveTrack('trackMax')
-      // }
+      let track1Left = this.$refs.trackMin.getBoundingClientRect().left;
+      let track2Left = this.$refs.trackMax.getBoundingClientRect().left;
+      if (event.clientX < track1Left) {
+        this.moveTrack("trackMin");
+      } else if (event.clientX - track1Left < track2Left - event.clientX) {
+        this.moveTrack("trackMin");
+      } else {
+        this.moveTrack("trackMax");
+      }
       this.setTrackHightlight();
+    },
+
+    valueBack(...value) {
+      this.$emit("priceReceive", ...value);
     }
   },
 
   mounted() {
     this.minValue = this.min;
     this.maxValue = this.max;
+    var self = this;
+
+    ["mouseup", "mousemove"].forEach(type => {
+      document.body.addEventListener(type, () => {
+        if (self.isDragging && self.pos.curTrack) {
+          self[type](self.pos.curTrack);
+        }
+      });
+    });
   }
 };
 </script>

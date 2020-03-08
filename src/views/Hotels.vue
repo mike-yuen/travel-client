@@ -4,7 +4,12 @@
     <!-- <MenuDesktop /> -->
     <div class="lg:flex container mx-auto">
       <div class="w-12/12 lg:w-3/12 p-2 lg:p-0">
-        <PriceRangeSlider :hotels="hotels" :step="5" />
+        <PriceRangeSlider
+          :hotels="hotels"
+          :step="5"
+          v-on:priceReceive="(...price) => this.priceReceive(...price)"
+        />
+        <p>price range: {{ priceRange }}</p>
         <HotelRatingFilter />
         <TripAdvisorRating />
         <HotelPropertyFilter />
@@ -51,6 +56,7 @@ export default {
   data() {
     return {
       loading: true,
+      priceRange: null,
       hotels: [
         {
           title: "Hotel",
@@ -103,11 +109,16 @@ export default {
       ]
     };
   },
+
   methods: {
     skeletonLoading() {
       setTimeout(() => {
         this.loading = !this.loading;
       }, 2000);
+    },
+
+    priceReceive(...price) {
+      this.priceRange = price;
     }
   },
 
