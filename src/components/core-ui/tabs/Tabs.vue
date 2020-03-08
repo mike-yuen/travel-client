@@ -104,7 +104,7 @@ export default {
     },
     change(toTab) {
       if (this.currentType === "tabs") {
-        this.tabs.forEach(tab => {
+        this.tabs.forEach((tab) => {
           tab.isActive = tab.href == toTab.href;
         });
       } else if (this.currentType === "accordion") {
@@ -113,7 +113,7 @@ export default {
         } else if (this.keepOpen) {
           toTab.isActive = true;
         } else {
-          this.tabs.forEach(tab => {
+          this.tabs.forEach((tab) => {
             tab.isActive = tab.href == toTab.href;
           });
         }
@@ -131,10 +131,10 @@ export default {
       this.currentType = newType;
       switch (newType) {
         case "tabs":
-          if (this.tabs.every(tab => !tab.isActive)) {
+          if (this.tabs.every((tab) => !tab.isActive)) {
             this.onSelect(0);
           }
-          if (this.tabs.filter(tab => tab.isActive).length > 1) {
+          if (this.tabs.filter((tab) => tab.isActive).length > 1) {
             this.change(this.tabs[0]);
           }
           break;

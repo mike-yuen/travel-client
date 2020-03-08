@@ -138,7 +138,7 @@ module.exports = {
       }
     },
     spacing: {
-      px: "1px",
+      "px": "1px",
       "0": "0",
       "1": "0.25rem",
       "2": "0.5rem",
@@ -168,68 +168,68 @@ module.exports = {
       "64": "16rem",
       "40rem": "40rem"
     },
-    backgroundColor: theme => theme("colors"),
+    backgroundColor: (theme) => theme("colors"),
     backgroundPosition: {
-      bottom: "bottom",
-      center: "center",
-      left: "left",
+      "bottom": "bottom",
+      "center": "center",
+      "left": "left",
       "left-bottom": "left bottom",
       "left-top": "left top",
-      right: "right",
+      "right": "right",
       "right-bottom": "right bottom",
       "right-top": "right top",
-      top: "top"
+      "top": "top"
     },
     backgroundSize: {
-      auto: "auto",
-      cover: "cover",
-      contain: "contain",
+      "auto": "auto",
+      "cover": "cover",
+      "contain": "contain",
       "100-100": "100% 100%"
     },
-    borderColor: theme => ({
+    borderColor: (theme) => ({
       ...theme("colors"),
       default: theme("colors.gray.300", "currentColor")
     }),
     borderRadius: {
-      none: "0",
-      sm: "0.125rem",
-      default: "0.25rem",
-      md: "0.375rem",
-      lg: "0.5rem",
+      "none": "0",
+      "sm": "0.125rem",
+      "default": "0.25rem",
+      "md": "0.375rem",
+      "lg": "0.5rem",
       "2": "2rem",
-      full: "9999px"
+      "full": "9999px"
     },
     borderWidth: {
-      default: "1px",
+      "default": "1px",
       "0": "0",
       "2": "2px",
       "4": "4px",
       "8": "8px"
     },
     boxShadow: {
-      default:
+      "default":
         "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-      md:
+      "md":
         "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-      lg:
+      "lg":
         "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-      xl:
+      "xl":
         "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
       "2xl": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-      inner: "inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)",
-      outline: "0 0 0 3px rgba(66, 153, 225, 0.5)",
-      none: "none"
+      "inner": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)",
+      "outline": "0 0 0 3px rgba(66, 153, 225, 0.5)",
+      "none": "none"
     },
     container: {
       center: true
     },
     cursor: {
-      auto: "auto",
-      default: "default",
-      pointer: "pointer",
-      wait: "wait",
-      text: "text",
-      move: "move",
+      "auto": "auto",
+      "default": "default",
+      "pointer": "pointer",
+      "wait": "wait",
+      "text": "text",
+      "move": "move",
       "not-allowed": "not-allowed"
     },
     fill: {
@@ -237,17 +237,17 @@ module.exports = {
     },
     flex: {
       "1": "1 1 0%",
-      auto: "1 1 auto",
-      initial: "0 1 auto",
-      none: "none"
+      "auto": "1 1 auto",
+      "initial": "0 1 auto",
+      "none": "none"
     },
     flexGrow: {
       "0": "0",
-      default: "1"
+      "default": "1"
     },
     flexShrink: {
       "0": "0",
-      default: "1"
+      "default": "1"
     },
     fontFamily: {
       sans: [
@@ -276,12 +276,12 @@ module.exports = {
       ciuta: ["Ciutadella", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"']
     },
     fontSize: {
-      xs: "0.75rem",
-      sm: "0.875rem",
-      md: "0.9375rem",
-      base: "1rem",
-      lg: "1.125rem",
-      xl: "1.25rem",
+      "xs": "0.75rem",
+      "sm": "0.875rem",
+      "md": "0.9375rem",
+      "base": "1rem",
+      "lg": "1.125rem",
+      "xl": "1.25rem",
       "2xl": "1.5rem",
       "3xl": "1.875rem",
       "4xl": "2.25rem",
@@ -300,16 +300,16 @@ module.exports = {
       extrabold: "800",
       black: "900"
     },
-    height: theme => ({
+    height: (theme) => ({
       auto: "auto",
       ...theme("spacing"),
       full: "100%",
       screen: "100vh"
     }),
-    inset: theme => ({
+    inset: (theme) => ({
       "0": "0",
       "100": "100%",
-      auto: "auto",
+      "auto": "auto",
       ...theme("spacing")
     }),
     letterSpacing: {
@@ -321,12 +321,12 @@ module.exports = {
       widest: "0.1em"
     },
     lineHeight: {
-      none: "1",
-      tight: "1.25",
-      snug: "1.375",
-      normal: "1.5",
-      relaxed: "1.625",
-      loose: "2",
+      "none": "1",
+      "tight": "1.25",
+      "snug": "1.375",
+      "normal": "1.5",
+      "relaxed": "1.625",
+      "loose": "2",
       "6": "1.5rem"
     },
     listStyleType: {
@@ -339,17 +339,17 @@ module.exports = {
       ...theme("spacing"),
       ...negative(theme("spacing"))
     }),
-    maxHeight: theme => ({
+    maxHeight: (theme) => ({
       full: "100%",
       screen: "100vh",
       ...theme("spacing")
     }),
     maxWidth: {
-      xs: "20rem",
-      sm: "24rem",
-      md: "28rem",
-      lg: "32rem",
-      xl: "36rem",
+      "xs": "20rem",
+      "sm": "24rem",
+      "md": "28rem",
+      "lg": "32rem",
+      "xl": "36rem",
       "2xl": "42rem",
       "3xl": "48rem",
       "4xl": "56rem",
@@ -357,27 +357,27 @@ module.exports = {
       "5xl": "64rem",
       "6xl": "72rem",
       "7xl": "78rem",
-      full: "100%"
+      "full": "100%"
     },
-    minHeight: theme => ({
+    minHeight: (theme) => ({
       full: "100%",
       screen: "100vh",
       ...theme("spacing")
     }),
     minWidth: {
       "0": "0",
-      full: "100%"
+      "full": "100%"
     },
     objectPosition: {
-      bottom: "bottom",
-      center: "center",
-      left: "left",
+      "bottom": "bottom",
+      "center": "center",
+      "left": "left",
       "left-bottom": "left bottom",
       "left-top": "left top",
-      right: "right",
+      "right": "right",
       "right-bottom": "right bottom",
       "right-top": "right top",
-      top: "top"
+      "top": "top"
     },
     opacity: {
       "0": "0",
@@ -387,9 +387,9 @@ module.exports = {
       "100": "1"
     },
     order: {
-      first: "-9999",
-      last: "9999",
-      none: "0",
+      "first": "-9999",
+      "last": "9999",
+      "none": "0",
       "1": "1",
       "2": "2",
       "3": "3",
@@ -403,14 +403,14 @@ module.exports = {
       "11": "11",
       "12": "12"
     },
-    padding: theme => theme("spacing"),
-    placeholderColor: theme => theme("colors"),
+    padding: (theme) => theme("spacing"),
+    placeholderColor: (theme) => theme("colors"),
     stroke: {
       current: "currentColor"
     },
-    textColor: theme => theme("colors"),
-    width: theme => ({
-      auto: "auto",
+    textColor: (theme) => theme("colors"),
+    width: (theme) => ({
+      "auto": "auto",
       ...theme("spacing"),
       "1/2": "50%",
       "1/3": "33.333333%",
@@ -443,11 +443,11 @@ module.exports = {
       "10/12": "83.333333%",
       "11/12": "91.666667%",
       "7/20": "35%",
-      full: "100%",
-      screen: "100vw"
+      "full": "100%",
+      "screen": "100vw"
     }),
     zIndex: {
-      auto: "auto",
+      "auto": "auto",
       "0": "0",
       "10": "10",
       "20": "20",
@@ -470,7 +470,7 @@ module.exports = {
           transform: "scale(0)"
         }
       },
-      pulse: {
+      "pulse": {
         "50%": {
           opacity: 1.0
         },
@@ -480,7 +480,7 @@ module.exports = {
       }
     },
     animationDuration: {
-      default: "1s",
+      "default": "1s",
       "0s": "0s",
       "1s": "1s",
       "1.4s": "1.4s",
@@ -490,15 +490,15 @@ module.exports = {
       "5s": "5s"
     },
     animationTimingFunction: {
-      default: "ease",
-      linear: "linear",
-      ease: "ease",
+      "default": "ease",
+      "linear": "linear",
+      "ease": "ease",
       "ease-in": "ease-in",
       "ease-out": "ease-out",
       "ease-in-out": "ease-in-out"
     },
     animationDelay: {
-      default: "0s",
+      "default": "0s",
       ".32s": "-.32s",
       ".16s": "-.16s",
       "0s": "0s",
@@ -514,10 +514,10 @@ module.exports = {
       infinite: "infinite"
     },
     animationDirection: {
-      default: "normal",
-      normal: "normal",
-      reverse: "reverse",
-      alternate: "alternate",
+      "default": "normal",
+      "normal": "normal",
+      "reverse": "reverse",
+      "alternate": "alternate",
       "alternate-reverse": "alternate-reverse"
     },
     animationFillMode: {
@@ -546,7 +546,7 @@ module.exports = {
     },
     translate: {
       "1/2": "50%",
-      full: "100%",
+      "full": "100%",
       "right-up": ["100%", "-100%"],
       "3d": ["40px", "-60px", "-130px"]
     },
@@ -570,7 +570,7 @@ module.exports = {
       "5": "5deg"
     },
     perspective: {
-      none: "none",
+      "none": "none",
       "250": "250px",
       "500": "500px",
       "750": "750px",

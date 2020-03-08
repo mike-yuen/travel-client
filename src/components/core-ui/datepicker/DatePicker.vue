@@ -196,8 +196,8 @@ import throttle from "lodash.throttle";
 import styled from "vue-styled-components";
 
 const defaulti18n = {
-  night: "Night",
-  nights: "Nights",
+  "night": "Night",
+  "nights": "Nights",
   "day-names": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   "check-in": "Check-in",
   "check-out": "Check-out",
@@ -459,12 +459,12 @@ export default {
       if (this.screenSize !== "desktop") {
         const monthDays = this.months[this.months.length - 1].days;
         firstDayOfLastMonth = monthDays.filter(
-          day => day.belongsToThisMonth === true
+          (day) => day.belongsToThisMonth === true
         );
       } else {
         firstDayOfLastMonth = this.months[
           this.activeMonthIndex + 1
-        ].days.filter(day => day.belongsToThisMonth === true);
+        ].days.filter((day) => day.belongsToThisMonth === true);
       }
       if (this.endDate !== Infinity) {
         if (

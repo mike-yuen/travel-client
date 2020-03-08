@@ -166,7 +166,7 @@ export default {
   name: "MainSlider",
   components: {
     Loader,
-    agile: VueAgile,
+    "agile": VueAgile,
     "picture-wrapper": PictureWrapper,
     "bubble-wrapper": BubbleWrapper,
     "placeholder-bubble": PlaceholderBubble,

@@ -56,7 +56,7 @@ const StyledInput = styled("input", inputProps)`
     border-color: #90e2df;
     box-shadow: inset 0 0 0 1px #8de2e0;
   }
-  ${props =>
+  ${(props) =>
     props.errors &&
     props.errors.length > 0 &&
     `border-color: #ed710b!important;

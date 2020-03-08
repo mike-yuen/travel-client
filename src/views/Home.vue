@@ -23,11 +23,6 @@ export default {
     MainSlider,
     SearchTabs
   },
-  data() {
-    return {
-      value: [0, 100]
-    };
-  },
   computed: {
     ...mapGetters({
       user: "user/userState",

@@ -48,9 +48,9 @@ const Drawer = styled("div", drawerProps)`
   overflow: visible;
   transition: transform 0.3s ease-out 0s;
   transform: translateX(-100vw);
-  ${props => props.isOpen && `transform: translateX(0);`}
+  ${(props) => props.isOpen && `transform: translateX(0);`}
 `;
-const queryMatch = mediaQuery => {
+const queryMatch = (mediaQuery) => {
   return window.matchMedia(mediaQuery).matches;
 };
 

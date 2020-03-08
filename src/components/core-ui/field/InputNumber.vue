@@ -76,7 +76,7 @@ export default {
     "styled-input": StyledInput,
     "minus-icon": MinusIcon,
     "plus-icon": PlusIcon,
-    icon: Icon
+    "icon": Icon
   },
   props: {
     id: {
