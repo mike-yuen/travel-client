@@ -9,7 +9,6 @@
         v-model="dataValue"
       />
       <span class="checkmark"></span>
-      <span class="float-right">10</span>
     </label>
   </CheckboxStyledContainer>
 </template>
