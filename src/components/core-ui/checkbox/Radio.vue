@@ -5,7 +5,6 @@
       <input
         type="radio"
         :checked="data.checked"
-        name="radio"
         :value="data.value"
         v-model="dataValue"
       />

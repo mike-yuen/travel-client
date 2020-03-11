@@ -2,9 +2,9 @@
   <CheckboxStyledContainer>
     <label class="container">
       {{ data.label }}
+      
       <input
         type="checkbox"
-        :checked="data.checked"
         :value="data.value"
         v-model="dataValue"
       />

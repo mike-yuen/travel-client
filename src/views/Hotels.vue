@@ -2,26 +2,24 @@
   <div>
     <!-- <NavigatorTop /> -->
     <!-- <MenuDesktop /> -->
-    <div class="lg:flex container mx-auto">
+    <div class="lg:flex container mx-auto px-2">
       <div class="w-12/12 lg:w-3/12 p-2 lg:p-0">
-        <PriceRangeSlider
-          :hotels="hotels"
-          :step="5"
-          v-on:priceReceive="(...price) => this.priceReceive(...price)"
-        />
-        <p>price range: {{ priceRange }}</p>
-        <HotelRatingFilter />
-        <TripAdvisorRating />
-        <HotelPropertyFilter />
-        <Facilities />
+        <div class="lg:hidden" @click="showFilter">show filter</div>
+        <div :class=" (filter == true ? '' : 'hidden lg:block' )">
+          <PriceRangeSlider
+            :hotels="hotels"
+            :step="5"
+            v-on:priceReceive="(...price) => this.priceReceive(...price)"
+          />
+          <p>price range: {{ priceRange }}</p>
+          <HotelRatingFilter />
+          <TripAdvisorRating />
+          <HotelPropertyFilter />
+          <Facilities />
+        </div>
       </div>
       <div class="w-12/12 lg:w-9/12">
-        <HotelCard
-          v-for="(hotel, index) in hotels"
-          :key="index"
-          :hotel="hotel"
-          :loading="loading"
-        />
+        <HotelCard v-for="(hotel, index) in hotels" :key="index" :hotel="hotel" :loading="loading" />
       </div>
     </div>
   </div>
@@ -56,6 +54,7 @@ export default {
   data() {
     return {
       loading: true,
+      filter: false,
       priceRange: null,
       hotels: [
         {
@@ -119,6 +118,10 @@ export default {
 
     priceReceive(...price) {
       this.priceRange = price;
+    },
+
+    showFilter() {
+      this.filter = !this.filter;
     }
   },
 
