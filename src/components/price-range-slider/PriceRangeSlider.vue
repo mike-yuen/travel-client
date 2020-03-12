@@ -170,7 +170,7 @@ export default {
   computed: {
     priceArray() {
       let priceArr = [];
-      this.$props.hotels.forEach(room => {
+      this.$props.hotels.forEach((room) => {
         priceArr.push(room.price);
       });
       return priceArr;
@@ -293,7 +293,7 @@ export default {
     this.maxValue = this.max;
     var self = this;
 
-    ["mouseup", "mousemove"].forEach(type => {
+    ["mouseup", "mousemove"].forEach((type) => {
       document.body.addEventListener(type, () => {
         if (self.isDragging && self.pos.curTrack) {
           self[type](self.pos.curTrack);

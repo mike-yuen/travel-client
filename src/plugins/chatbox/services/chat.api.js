@@ -1,0 +1,104 @@
+import api from "../utils/api";
+import { API_URL } from "./constants.api";
+
+export const getInformationUserAndRoom = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.get(
+        `${API_URL.GET_INFORMATION_USER_N_ROOM + userId}`
+      );
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const getTokenLoginFirebase = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.post(`${API_URL.GET_TOKEN_LOGIN_FIREBASE}`);
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const registerRoomChat = (dataId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { userId, roomId } = dataId;
+      const resp = await api.post(`${API_URL.REGISTER_ROOM_CHAT}`, {
+        userId,
+        roomId
+      });
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const getChatList = (pagination) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { page, limit } = pagination;
+      const resp = await api.get(`${API_URL.GET_CHAT_LIST}`, {
+        params: {
+          page: page,
+          limit: limit
+        }
+      });
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const getListMessageHistories = (dataGetList) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { page, roomId } = dataGetList;
+      const resp = await api.get(
+        `${API_URL.GET_LIST_MESSAGE_HISTORIES + roomId}`,
+        {
+          params: {
+            page: page
+          }
+        }
+      );
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const sendMessage = (dataMessage) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { roomId, message } = dataMessage;
+      const resp = await api.post(`${API_URL.SEND_MESSAGE}`, {
+        roomId,
+        message
+      });
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

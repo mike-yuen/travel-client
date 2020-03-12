@@ -1,0 +1,181 @@
+.chatbox {
+  position: fixed;
+  bottom: 0;
+  right: 285px;
+  width: 300px; // considering
+  box-shadow: none;
+  z-index: 10;
+  &__outer {
+    font-size: 12px;
+    line-height: 16px;
+    color: #1d2129;
+  }
+  &__inner {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  }
+}
+.chat-titlebar {
+  &__outer {
+    position: relative;
+    padding: 5px 10px 5px;
+    background-color: #7b8a9d;
+    transition: background-color 0.4s;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    z-index: 3;
+  }
+  &__inner {
+    display: flex;
+    min-height: 28px;
+    position: relative;
+  }
+  &__wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 9px;
+    min-width: 1px;
+    width: 100%;
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .username {
+      min-width: 0;
+      font-size: 16px;
+      line-height: normal;
+      span {
+        color: white;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+    }
+    .tools {
+      display: flex;
+      flex: 0 0 auto;
+      margin: auto 0;
+      .tool {
+        position: relative;
+        padding: 0 6px 0;
+        margin-right: 1px;
+        &__link {
+          display: block;
+        }
+        &__more-option {
+          position: absolute;
+          top: calc(100% + 5px);
+          right: 10px;
+          width: 150px;
+          background-color: #f2f1f6;
+          box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 8px;
+          ul {
+            padding: 10px 0 12px;
+            list-style: none;
+            li {
+              padding: 5px 10px 10px;
+              font-size: 14px;
+              font-weight: bold;
+              &:last-child {
+                padding-bottom: 3px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.chatframe {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 308px;
+  background-color: #fff;
+  &__wrapper {
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+    z-index: 2;
+  }
+  &__overscroll {
+    flex-basis: 0px;
+    flex-grow: 1;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scroll-behavior: auto;
+    overscroll-behavior: contain;
+  }
+  &__content {
+    display: flex;
+    flex-direction: column;
+    padding: 15px 5px 10px 12px;
+    min-height: 100%;
+  }
+  &__init {
+    display: flex;
+    margin-bottom: 15px;
+  }
+  &__info {
+    margin-left: 5px;
+    .member {
+      display: flex;
+      color: #888;
+      &__since {
+        padding-right: 5px;
+      }
+    }
+  }
+}
+.composer {
+  &__outer {
+    display: flex;
+    border-top: 1px solid #c9d0da;
+  }
+  &__input {
+    flex: 1 1 auto;
+    input {
+      position: relative;
+      padding: 8px 8px 10px 10px;
+      width: 100%;
+      max-height: 90px;
+      min-height: 50px;
+      font-size: 16px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      cursor: text;
+      &:focus {
+        outline: none;
+        border: 0;
+      }
+    }
+  }
+  &__btn {
+    flex: 0 0 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    button {
+      padding: 7px 12px;
+      border-radius: 10px;
+      background-color: #e0557d;
+      &:hover {
+        background-color: #f7799d;
+      }
+      &:focus {
+        outline: none;
+        border: 0;
+      }
+    }
+  }
+}
