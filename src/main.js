@@ -12,7 +12,7 @@ import * as rules from "vee-validate/dist/rules";
 import VueAgile from "vue-agile";
 import "@/utils/directive";
 import "@/assets/css/tailwind.scss";
-// import "@/plugins/chatbox";
+import "@/plugins/chatbox";
 
 Vue.config.productionTip = false;
 Vue.use(VueAgile);
