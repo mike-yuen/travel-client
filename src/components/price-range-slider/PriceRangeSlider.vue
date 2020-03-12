@@ -1,7 +1,9 @@
 <template>
   <div>
     <p class="font-bold mb-3">Price per night [AUD]</p>
-    <PriceRangeStyledContainer>
+    <PriceRangeStyledContainer
+      class="border-2 w-full px-8 pt-15 pb-10 lg:px-0 lg:pt-10  lg:pb-10 lg:border-0 lg:w-10/12"
+    >
       <div class="track-container">
         <span class="range-value">${{ minValue }} - ${{ maxValue }}</span>
         <div class="track" ref="_vpcTrack" @click.stop="setClickMove"></div>
@@ -43,11 +45,11 @@
 import styled from "vue-styled-components";
 
 const PriceRangeStyledContainer = styled.div`
-  padding: 15% 0;
+  // padding: 15% 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80%;
+  // width: 80%;
   flex-direction: column;
   .range-value {
     position: absolute;
