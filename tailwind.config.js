@@ -310,6 +310,8 @@ module.exports = {
       "0": "0",
       "100": "100%",
       "auto": "auto",
+      "-3rem": "-3rem",
+      "1/2": "50%",
       ...theme("spacing")
     }),
     letterSpacing: {
@@ -449,6 +451,7 @@ module.exports = {
     zIndex: {
       "auto": "auto",
       "0": "0",
+      "2": "2",
       "10": "10",
       "20": "20",
       "30": "30",

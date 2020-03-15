@@ -5,11 +5,13 @@
       <div
         v-for="(rate, index) in rates"
         :key="index"
-        :class="
-          index == rates.length - 1
-            ? 'px-4 py-2 lg:p-0'
-            : 'border-b-2 px-4 py-2 lg:p-0 lg:border-0'
-        "
+        class="px-4 py-2 lg:p-0"
+        :class="{
+          'border-b-2 px-4 py-2 lg:p-0 lg:border-0': !(
+            index ==
+            rates.length - 1
+          )
+        }"
       >
         <Radio :data="rate" v-model="value" />
       </div>

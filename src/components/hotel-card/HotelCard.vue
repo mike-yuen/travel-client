@@ -2,12 +2,12 @@
   <div class="max-w-full mx-auto p-2">
     <div class="border-solid border-1 shadow-lg rounded" v-if="loading">
       <div class="lg:flex">
-        <div class="lg:w-4/12">
+        <div class="lg:w-1/3">
           <skeleton-box width="100%" height="200px" />
         </div>
-        <div class="lg:w-8/12 relative">
+        <div class="lg:w-2/3 relative">
           <div class="p-6 flex">
-            <div class="lg:float-left w-2/4">
+            <div class="lg:float-left w-1/2">
               <div>
                 <skeleton-box width="100%" height="20px" borderRadius="10px" />
               </div>
@@ -27,7 +27,7 @@
               </div>
               <div class="lg:flex"></div>
             </div>
-            <div class="lg:float-right text-right w-2/4 hidden lg:block">
+            <div class="lg:float-right text-right w-1/2 hidden lg:block">
               <div class="text-right block">
                 <skeleton-box width="50%" height="20px" borderRadius="10px" />
               </div>
@@ -44,10 +44,10 @@
     </div>
     <div class="border-solid border-1 shadow-lg rounded" v-else>
       <div class="lg:flex">
-        <div class="lg:w-4/12">
+        <div class="lg:w-1/3">
           <img :src="hotel.hotelImage" alt class="w-full" />
         </div>
-        <div class="lg:w-8/12 relative">
+        <div class="lg:w-2/3 relative">
           <div class="px-4 py-2 lg:py-0">
             <div class="lg:float-left lg:w-7/12">
               <h3 class="uppercase font-bold text-2xl mb-2">
