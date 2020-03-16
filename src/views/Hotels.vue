@@ -3,9 +3,9 @@
     <!-- <NavigatorTop /> -->
     <!-- <MenuDesktop /> -->
     <div class="lg:flex container mx-auto px-2">
-      <div class="w-12/12 lg:w-3/12 p-2 lg:p-0">
+      <div class="w-full lg:w-1/4 p-2 lg:p-0">
         <div class="lg:hidden" @click="showFilter">show filter</div>
-        <div :class=" (filter == true ? '' : 'hidden lg:block' )">
+        <div :class="{ 'hidden lg:block': !filter }">
           <PriceRangeSlider
             :hotels="hotels"
             :step="5"
@@ -18,8 +18,13 @@
           <Facilities />
         </div>
       </div>
-      <div class="w-12/12 lg:w-9/12">
-        <HotelCard v-for="(hotel, index) in hotels" :key="index" :hotel="hotel" :loading="loading" />
+      <div class="w-full lg:w-3/4">
+        <HotelCard
+          v-for="(hotel, index) in hotels"
+          :key="index"
+          :hotel="hotel"
+          :loading="loading"
+        />
       </div>
     </div>
   </div>

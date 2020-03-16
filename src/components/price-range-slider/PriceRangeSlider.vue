@@ -1,19 +1,25 @@
 <template>
   <div>
     <p class="font-bold mb-3">Price per night [AUD]</p>
-    <PriceRangeStyledContainer
-      class="border-2 w-full px-8 pt-15 pb-10 lg:px-0 lg:pt-10  lg:pb-10 lg:border-0 lg:w-10/12"
+    <div
+      class="border-2 w-full px-8 pt-15 pb-10 lg:px-0 lg:pt-10 lg:pb-10 lg:border-0 lg:w-10/12 flex items-center justify-center flex-col"
     >
-      <div class="track-container">
-        <span class="range-value">${{ minValue }} - ${{ maxValue }}</span>
-        <div class="track" ref="_vpcTrack" @click.stop="setClickMove"></div>
-        <div
-          class="track-highlight"
+      <div class="track-container w-full relative cursor-pointer h-2">
+        <span class="absolute -top-3rem"
+          >${{ minValue }} - ${{ maxValue }}</span
+        >
+        <Track
+          class="track block absolute w-full bg-gray-500 top-1/2"
+          ref="_vpcTrack"
+          @click.stop="setClickMove"
+        />
+        <TrackHighlight
+          class="track-highlight block absolute w-full bg-red-0 z-2 top-1/2"
           ref="trackHighlight"
           @click.stop="setClickMove"
-        ></div>
-        <button
-          class="track-btn track1 tooltip"
+        />
+        <TrackButton
+          class="track1 appearance-none cursor-pointer block absolute w-6 h-6 -ml-4 border-0 rounded-full bg-red-0 outline-none focus:outline-none z-2 top-1/2"
           ref="trackMin"
           :title="'$' + minValue"
           :style="trackWidthMin"
@@ -23,9 +29,9 @@
           @touchstart.stop="mousedown('trackMin')"
           @touchmove.stop="mousemove('trackMin', true)"
           @touchend.stop="mouseup()"
-        ></button>
-        <button
-          class="track-btn track2 tooltip"
+        ></TrackButton>
+        <TrackButton
+          class="track2 appearance-none cursor-pointer block absolute w-6 h-6 -ml-4 border-0 rounded-full bg-red-0 outline-none focus:outline-none z-2 top-1/2"
           ref="trackMax"
           :title="'$' + (maxValue < max ? maxValue : maxValue + '+')"
           :style="trackWidthMax"
@@ -35,111 +41,60 @@
           @touchstart.stop="mousedown('trackMax')"
           @touchmove.stop="mousemove('trackMax', true)"
           @touchend.stop="mouseup()"
-        ></button>
+        ></TrackButton>
       </div>
-    </PriceRangeStyledContainer>
+    </div>
   </div>
 </template>
 
 <script>
 import styled from "vue-styled-components";
 
-const PriceRangeStyledContainer = styled.div`
-  // padding: 15% 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  // width: 80%;
-  flex-direction: column;
-  .range-value {
+const Track = styled.div`
+  height: 0.3rem;
+  transform: translateY(-50%);
+`;
+
+const TrackHighlight = Track.extend``;
+
+const TrackButton = styled.button`
+  transform: translateY(-50%);
+  box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.75);
+  touch-action: pan-x;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out,
+    background-color 0.3s ease;
+  &:hover:before {
+    content: attr(title);
+    background: #ccc;
+    padding: 1px 5px;
+    font-size: 1rem;
+    border-radius: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 30px;
     position: absolute;
-    top: -3rem;
   }
-  .range-value.min {
-    left: 0;
-  }
-
-  .range-value.max {
-    right: 0;
-  }
-  .track-container {
-    width: 100%;
-    position: relative;
-    cursor: pointer;
-    height: 0.5rem;
-  }
-
-  .track,
-  .track-highlight {
-    display: block;
+  &:hover:after {
+    border: solid;
+    border-color: #ccc transparent;
+    border-width: 12px 6px 0 6px;
+    content: "";
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 25px;
     position: absolute;
-    width: 100%;
-    height: 0.3rem;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  .track {
-    background-color: #ddd;
-  }
-
-  .track-highlight {
-    background-color: red;
-    z-index: 2;
-  }
-
-  .track-btn {
-    appearance: none;
-    outline: none;
-    cursor: pointer;
-    display: block;
-    position: absolute;
-    z-index: 2;
-    width: 1.5rem;
-    height: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-left: -1rem;
-    border: none;
-    border-radius: 50%;
-    box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.75);
-    background-color: red;
-    touch-action: pan-x;
-    transition: box-shadow 0.3s ease-out, background-color 0.3s ease,
-      -webkit-transform 0.3s ease-out;
-    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out,
-      background-color 0.3s ease;
-    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out,
-      background-color 0.3s ease, -webkit-transform 0.3s ease-out;
-    &:hover:before {
-      content: attr(title);
-      background: #ccc;
-      padding: 1px 5px;
-      font-size: 1rem;
-      border-radius: 5px;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 30px;
-      position: absolute;
-    }
-    &:hover:after {
-      border: solid;
-      border-color: #ccc transparent;
-      border-width: 12px 6px 0 6px;
-      content: "";
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 25px;
-      position: absolute;
-    }
   }
 `;
 
 export default {
   name: "price-range-slider",
+
   components: {
-    PriceRangeStyledContainer
+    Track,
+    TrackHighlight,
+    TrackButton
   },
+
   data() {
     return {
       minValue: 0,
@@ -199,7 +154,7 @@ export default {
     },
 
     getPercentInPx() {
-      let trackWidth = this.$refs._vpcTrack.offsetWidth;
+      let trackWidth = this.$refs._vpcTrack.$el.offsetWidth;
       let oneStepInPX = trackWidth / this.totalSteps;
       // 1 percent in px
       let percentInPx = oneStepInPX / this.percentPerStep;
@@ -213,9 +168,9 @@ export default {
     },
 
     setTrackHightlight() {
-      this.$refs.trackHighlight.style.left =
+      this.$refs.trackHighlight.$el.style.left =
         this.valueToPercent(this.minValue) + "%";
-      this.$refs.trackHighlight.style.width =
+      this.$refs.trackHighlight.$el.style.width =
         this.valueToPercent(this.maxValue) -
         this.valueToPercent(this.minValue) +
         "%";
@@ -224,7 +179,7 @@ export default {
     moveTrack(track, touchStatus) {
       let percentInPx = this.getPercentInPx;
       let trackX = Math.round(
-        this.$refs._vpcTrack.getBoundingClientRect().left
+        this.$refs._vpcTrack.$el.getBoundingClientRect().left
       );
       let clientX;
 
@@ -251,7 +206,7 @@ export default {
         this.maxValue = value;
       }
       this.valueBack(this.minValue, this.maxValue);
-      this.$refs[track].style.left = moveInPercent + "%";
+      this.$refs[track].$el.style.left = moveInPercent + "%";
       this.setTrackHightlight();
     },
 
@@ -271,8 +226,8 @@ export default {
       this.moveTrack(track, touchStatus);
     },
     setClickMove() {
-      let track1Left = this.$refs.trackMin.getBoundingClientRect().left;
-      let track2Left = this.$refs.trackMax.getBoundingClientRect().left;
+      let track1Left = this.$refs.trackMin.$el.getBoundingClientRect().left;
+      let track2Left = this.$refs.trackMax.$el.getBoundingClientRect().left;
       if (event.clientX < track1Left) {
         this.moveTrack("trackMin");
       } else if (event.clientX - track1Left < track2Left - event.clientX) {

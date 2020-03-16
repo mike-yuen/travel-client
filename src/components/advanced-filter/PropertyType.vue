@@ -5,11 +5,12 @@
       <div
         v-for="(checkbox, index) in checkboxs"
         :key="index"
-        :class="
-        index == checkboxs.length - 1
-          ? 'px-4 py-2 lg:p-0'
-          : 'border-b-2 px-4 py-2 lg:p-0 lg:border-0'
-      "
+        class="px-4 py-2 lg:p-0"
+        :class="{
+          'border-b-2 px-4 py-2 lg:p-0 lg:border-0': !(
+            index == checkboxs.length
+          )
+        }"
       >
         <Checkbox :data="checkbox" v-model="checkboxValue" />
       </div>
