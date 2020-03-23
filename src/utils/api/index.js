@@ -11,7 +11,11 @@ import { REQUEST_TYPE } from "./constants";
  */
 const request = (
   url,
-  options = { method: REQUEST_TYPE.GET, useFormData: false }
+  options = {
+    method: REQUEST_TYPE.GET,
+    useFormData: false,
+    authorization: false
+  }
 ) => {
   let data = { ...(options.data || {}) };
   let req;
@@ -34,7 +38,10 @@ const request = (
       }
     }
 
-    reqOptions.headers = { "Content-Type": "multipart/form-data" };
+    reqOptions.headers = {
+      "Content-Type": "multipart/form-data",
+      "authorization": options.auth
+    };
   }
 
   req = axiosInstance(url, reqOptions);
