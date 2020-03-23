@@ -25,6 +25,26 @@
           :hotel="hotel"
           :loading="loading"
         />
+        <Pagination
+          v-model="page"
+          :page-count="hotels.length"
+          :margin-pages="2"
+          :page-range="5"
+          :container-class="'flex list-reset rounded w-auto font-sans'"
+          :page-link-class="
+            'block cursor-pointer ml-1 px-3 py-2 outline-none hover:bg-gray-300 rounded-full h-10 w-10 text-center'
+          "
+          :prev-link-class="
+            'block cursor-pointer px-3 py-2 outline-none hover:bg-gray-300 '
+          "
+          :next-link-class="
+            'block cursor-pointer ml-1 px-3 py-2 outline-none hover:bg-gray-300 '
+          "
+          :break-view-link-class="'break-view-link cursor-pointer'"
+          :activeClass="'bg-gray-300'"
+          :no-li-surround="true"
+        />
+        {{ page }}
       </div>
     </div>
   </div>
@@ -43,6 +63,7 @@ const HotelPropertyFilter = () =>
 const Facilities = () => import("@/components/advanced-filter/Facilities");
 const PriceRangeSlider = () =>
   import("@/components/price-range-slider/PriceRangeSlider");
+const Pagination = () => import("@/components/pagination/Pagination");
 
 export default {
   name: "Hotels",
@@ -50,6 +71,7 @@ export default {
     // NavigatorTop,
     // MenuDesktop,
     HotelCard,
+    Pagination,
     PriceRangeSlider,
     HotelRatingFilter,
     TripAdvisorRating,
@@ -58,6 +80,7 @@ export default {
   },
   data() {
     return {
+      page: 1,
       loading: true,
       filter: false,
       priceRange: null,
