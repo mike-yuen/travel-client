@@ -9,7 +9,7 @@
 ### - Intergrate API chat
 
 - update variable in .env.\* file or update in global variable of production server:
-  - VUE_BASE_URL: url of current website included protocol and port (for local)
+  - VUE_APP_BASE_URL: url of current website included protocol and port (for local)
   - VUE_APP_CHAT_API: url of api
 
 ### - Import plugin to main JS file

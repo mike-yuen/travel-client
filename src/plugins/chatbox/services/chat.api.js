@@ -29,11 +29,11 @@ export const getTokenLoginFirebase = () => {
   });
 };
 
-export const registerRoomChat = (dataId) => {
+export const getDetailRoom = (dataId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const { userId, roomId } = dataId;
-      const resp = await api.post(`${API_URL.REGISTER_ROOM_CHAT}`, {
+      const resp = await api.post(`${API_URL.GET_DETAIL_ROOM}`, {
         userId,
         roomId
       });
@@ -93,6 +93,23 @@ export const sendMessage = (dataMessage) => {
       const resp = await api.post(`${API_URL.SEND_MESSAGE}`, {
         roomId,
         message
+      });
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const toggleBlockUser = (dataBlock) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { roomId, isBlock } = dataBlock;
+      const resp = await api.post(`${API_URL.TOGGLE_BLOCK}`, {
+        roomId,
+        isBlock
       });
       if (resp) {
         resolve(resp);

@@ -43,7 +43,9 @@
                   <span>{{ account.latestMessage.message }}</span>
                 </div>
                 <div class="mainlist__timestamp">
-                  <div>{{ account.latestMessage.messageId }}</div>
+                  <div>
+                    {{ account.latestMessage.createdDate | moment("MM/DD/YY") }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -85,7 +87,7 @@ export default {
           type: "sendDataRegisterRoomChat",
           data: dataRegisterChat
         }),
-        process.env.VUE_BASE_URL
+        process.env.VUE_APP_BASE_URL
       );
     },
     getChatListForRendering() {

@@ -7,14 +7,14 @@
             <div class="chat-titlebar__inner">
               <Avatar
                 :size="40"
-                :userName="displayName"
-                :imageUrl="userPhotoUrl"
+                :userName="detailRoom.roomName"
+                :imageUrl="detailRoom.roomPhotoUrl"
               />
               <div class="chat-titlebar__wrapper">
                 <div class="user-info">
                   <div class="username">
                     <a href="javascript:void(0)">
-                      <span>{{ displayName }}</span>
+                      <span>{{ detailRoom.roomName }}</span>
                     </a>
                   </div>
                 </div>
@@ -33,9 +33,16 @@
                     </a>
                     <div v-if="isToolsOpen" class="tool__more-option">
                       <ul>
-                        <li>Clear chat</li>
-                        <li>Block</li>
-                        <li>Report</li>
+                        <li><a href="javascript:void(0)">Clear chat</a></li>
+                        <li>
+                          <a
+                            href="javascript:void(0)"
+                            v-on:click="toggleBlockModal(true)"
+                          >
+                            Block
+                          </a>
+                        </li>
+                        <li><a href="javascript:void(0)">Report</a></li>
                       </ul>
                     </div>
                   </div>
@@ -60,6 +67,38 @@
         </div>
 
         <div class="chatframe">
+          <div class="chatframe__overlay" v-if="isBlockModalOpen">
+            <div class="block-modal" v-show="isBlockModalOpen">
+              <div class="block-modal__outer">
+                <div class="block-modal__warning">
+                  <div>Are you sure you want to block</div>
+                  <div>{{ userInformation.displayName }}?</div>
+                </div>
+                <div class="block-modal__description">
+                  <div>
+                    Blocked members will no longer be able to send you a
+                    message.
+                  </div>
+                </div>
+                <div class="block-modal__action">
+                  <a
+                    role="button"
+                    class="block-modal__btn"
+                    v-on:click="toggleBlockModal(false)"
+                  >
+                    Cancel
+                  </a>
+                  <a
+                    role="button"
+                    class="block-modal__btn"
+                    v-on:click="toggleBlockChat"
+                  >
+                    Block
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="chatframe__wrapper">
             <div
               class="chatframe__overscroll"
@@ -67,28 +106,32 @@
               style="max-height: inherit"
             >
               <div class="chatframe__content">
-                <div class="chatframe__init">
+                <div class="chatframe__init" v-show="isInitDataShowed">
                   <Avatar
                     :size="50"
                     radius="5px"
-                    :userName="displayName"
-                    :imageUrl="userPhotoUrl"
+                    :userName="userInformation.displayName"
+                    :imageUrl="userInformation.userPhotoUrl"
                   />
                   <div class="chatframe__info">
                     <div class="quote">
-                      {{ shortBio }}
+                      {{ userInformation.shortBio }}
                     </div>
                     <div class="member">
                       <div class="member__since">Member since:</div>
-                      <div>{{ memberSince | moment("MMM DD YYYY") }}</div>
+                      <div>
+                        {{
+                          userInformation.memberSince | moment("MMM DD YYYY")
+                        }}
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <div class="chatframe__chat">
-                  <Spinner :size="30" v-show="isSpinnerShowed" />
+                  <Spinner ref="spinner" :size="30" v-show="isSpinnerShowed" />
                   <Message
-                    v-for="(message, index) in messages"
+                    v-for="(message, index) in detailRoom.messages"
                     :key="`message-${index}`"
                     :data="message"
                     :self="checkSelfID(message.user.userId)"
@@ -126,8 +169,13 @@
 
 <script>
 import storage from "../utils/storage";
-import { isJSONString } from "../utils/helpers";
+import {
+  isJSONString,
+  userInformationDTO,
+  roomDetailDTO
+} from "../utils/helpers";
 import * as apiServices from "../services";
+import firebase from "../utils/firebase-sdk";
 
 import Spinner from "./core/Spinner";
 import Avatar from "./core/Avatar";
@@ -142,28 +190,75 @@ export default {
   },
   data() {
     return {
+      // data for calculating internal component
       selfUser: "",
       localMessage: "",
       isChatboxOpened: false,
       isSpinnerShowed: false,
       isToolsOpen: false,
-      scrollContainer: "",
-      currentScrollContainerHeightHeight: 0,
+      isBlockModalOpen: false,
+      isInitDataShowed: false,
+      currentScrollContainerHeight: 0,
+      currentPage: 0,
 
-      userId: 0,
-      roomId: 0,
-      displayName: "",
-      userPhotoUrl: "",
-      shortBio: "",
-      memberSince: "",
-      messages: []
+      // data object of user information - should only user userId & roomId
+      userInformation: {
+        userId: 0,
+        roomId: 0,
+        displayName: "",
+        userPhotoUrl: "",
+        shortBio: "",
+        memberSince: "",
+        locationName: ""
+      },
+
+      // data object of detail room
+      detailRoom: {
+        roomName: "",
+        roomPhotoUrl: "",
+        messages: [],
+        limit: 0,
+        totalPages: 0,
+        totalElements: 0,
+        isBlocked: false,
+        isReported: false,
+        isMyBlock: false
+      }
     };
   },
+
   async created() {
     this.selfUser = await storage.get("user");
+
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc("1")
+      .collection("messages")
+      .where("messageId", ">", 1)
+      .onSnapshot(function(querySnapshot) {
+        var cities = [];
+        querySnapshot.forEach(function(doc) {
+          cities.push(doc.data());
+        });
+        // console.log("Current cities in CA: ", cities);
+      });
   },
-  mounted() {
+  async mounted() {
+    const userId = await this.selfUser.userId;
     window.addEventListener("message", this.receiveDataRegisterRoomChat, false);
+
+    firebase
+      .firestore()
+      .collection("rooms")
+      .where(`participants.${userId}.userId`, "==", userId)
+      .onSnapshot(function(querySnapshot) {
+        var cities = [];
+        querySnapshot.forEach(function(doc) {
+          cities.push(doc.data());
+        });
+        // console.log("Current cities in CA mounted: ", cities);
+      });
 
     this.$nextTick(async () => {
       const container = await this.$el.querySelector("#scroll-container");
@@ -171,23 +266,31 @@ export default {
       container.addEventListener(
         "scroll",
         (e) => {
-          this.currentScrollContainerHeight = container.scrollHeight;
-          let st = e.target.scrollTop;
-          // check lastScrollTop for already render component case - just scrolling up fires event
-          if (st < lastScrollTop && e.target.scrollTop === 0) {
-            this.isSpinnerShowed = true;
-            const pageNroomId = { page: 1, roomId: this.roomId };
-            this.getListMessageHistories(
-              pageNroomId,
-              this.currentScrollContainerHeight
-            );
-            // console.log("st", st);
+          if (this.canLoadMoreChatHistories) {
+            let st = e.target.scrollTop;
+            // check lastScrollTop for already render component case - just scrolling up fires event
+            if (st < lastScrollTop && e.target.scrollTop === 0) {
+              this.isSpinnerShowed = true;
+              const pageNroomId = {
+                page: this.currentPage - 1,
+                roomId: this.userInformation.roomId
+              };
+              this.getListMessageHistories(
+                pageNroomId,
+                this.currentScrollContainerHeight
+              );
+            }
+            lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
           }
-          lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
         },
         false
       );
     });
+  },
+  computed: {
+    canLoadMoreChatHistories() {
+      return this.currentPage > 0;
+    }
   },
   methods: {
     toggleTools() {
@@ -198,9 +301,19 @@ export default {
     },
     closeChatbox() {
       this.isChatboxOpened = false;
+      this.resetInternalData();
     },
     checkSelfID(id) {
       return this.selfUser.userId === id;
+    },
+    resetInternalData() {
+      this.localMessage = "";
+      this.isChatboxOpened = false;
+      this.isSpinnerShowed = false;
+      this.isToolsOpen = false;
+      this.isInitDataShowed = false;
+      this.currentScrollContainerHeight = 0;
+      this.currentPage = 0;
     },
     async autoFocus() {
       if (this.isChatboxOpened) {
@@ -210,6 +323,7 @@ export default {
     },
     async updateScrollContainerHeight() {
       const container = await this.$el.querySelector("#scroll-container");
+      // console.log("update", container.scrollHeight);
       this.currentScrollContainerHeight = container.scrollHeight;
     },
     async scrollToEnd() {
@@ -218,59 +332,96 @@ export default {
         container.scrollTop = container.scrollHeight;
       }
     },
-    receiveDataRegisterRoomChat(event) {
+    getTokenLoginFirebase() {
+      apiServices.getTokenLoginFirebase().then((response) => {
+        if (response && response.data) {
+          // console.log("response", response);
+          firebase.auth().signInWithCustomToken(response.data);
+          // .then((response) => {
+          //   console.log("setTokenSuccess", response);
+          // })
+          // .catch(function(error) {
+          //   console.log("error.message", error.code, error.message);
+          // });
+        }
+      });
+    },
+    async receiveDataRegisterRoomChat(event) {
       const isJSON = isJSONString(event.data);
-      if (!isJSON) return;
+      if (event.origin !== process.env.VUE_APP_BASE_URL || !isJSON) return;
       const response = JSON.parse(event.data);
       if (response.type === "sendDataRegisterRoomChat") {
-        this.messages = [];
-        const data = response.data;
-        this.userId = data.userId;
-        this.roomId = data.roomId;
+        this.detailRoom.messages = [];
+        await this.getTokenLoginFirebase();
+        const data = userInformationDTO(response.data);
         this.getInformationUserAndRoom(data);
       }
     },
     getInformationUserAndRoom(data) {
       apiServices.getInformationUserAndRoom(data.userId).then((response) => {
         if (response && response.data) {
-          const data = response.data;
-          this.displayName = data.displayName;
-          this.userPhotoUrl = data.userPhotoUrl;
-          this.shortBio = data.shortBio;
-          this.memberSince = data.memberSince;
+          const data = userInformationDTO(response.data);
+          this.userInformation = data;
+          const dataId = {
+            userId: this.userInformation.userId,
+            roomId: this.userInformation.roomId
+          };
           this.isChatboxOpened = true;
           this.isSpinnerShowed = true;
-          this.registerRoomChat(data);
+          this.getDetailRoom(dataId);
         }
       });
     },
-    registerRoomChat(data) {
-      apiServices.registerRoomChat(data).then(async (response) => {
+    getDetailRoom(dataId) {
+      apiServices.getDetailRoom(dataId).then((response) => {
         if (response && response.data) {
-          const data = response.data;
-          this.messages = data.messages.slice();
+          const data = roomDetailDTO(response.data);
+          this.detailRoom = data;
+          this.currentPage = this.detailRoom.totalPages - 1;
+          if (this.detailRoom.messages.length < 10) {
+            const pageNroomId = {
+              page: this.currentPage - 1,
+              roomId: this.userInformation.roomId
+            };
+            this.getListMessageHistories(
+              pageNroomId,
+              this.currentScrollContainerHeight
+            );
+          }
           this.isSpinnerShowed = false;
           this.scrollToEnd();
           this.autoFocus();
+          this.updateScrollContainerHeight();
+        } else {
+          this.isInitDataShowed = true;
         }
       });
     },
     async getListMessageHistories(pageNroomId, lastPosition) {
+      this.currentPage = pageNroomId.page;
       const container = await this.$el.querySelector("#scroll-container");
-      // console.log("last", lastPosition);
-      apiServices.getListMessageHistories(pageNroomId).then((response) => {
-        if (response && response.data) {
-          this.isSpinnerShowed = false;
-          this.messages = response.data.concat(this.messages);
-          container.scrollTo(0, lastPosition);
-          // console.log("resp", response.data);
-        }
-      });
+      apiServices
+        .getListMessageHistories(pageNroomId)
+        .then(async (response) => {
+          if (response && response.data) {
+            this.isSpinnerShowed = false;
+            this.detailRoom.messages = await response.data.concat(
+              this.detailRoom.messages
+            );
+            if (this.currentPage === 0) {
+              this.isInitDataShowed = true;
+            }
+            await this.updateScrollContainerHeight();
+            const scrollPosition =
+              this.currentScrollContainerHeight - lastPosition - 39;
+            container.scrollTo(0, scrollPosition);
+          }
+        });
     },
     submitMessage(text) {
       if (text) {
         const newMessage = {
-          roomId: this.roomId,
+          roomId: this.userInformation.roomId,
           message: text
         };
         const mockMessage = {
@@ -279,20 +430,44 @@ export default {
             displayName: this.selfUser.displayName,
             userPhotoUrl: this.selfUser.userPhotoUrl
           },
-          roomId: this.roomId,
+          roomId: this.userInformation.roomId,
           message: text,
           createdDate: new Date()
         };
-        this.messages.push(mockMessage);
+        this.detailRoom.messages.push(mockMessage);
         this.scrollToEnd();
         this.localMessage = "";
         apiServices.sendMessage(newMessage).then((response) => {
           if (response && response.data) {
-            this.messages.pop().push(response.data);
+            this.detailRoom.messages.pop();
+            this.detailRoom.messages.push(response.data);
           }
         });
       }
+    },
+    toggleBlockModal(isToggled) {
+      if (isToggled) {
+        this.isBlockModalOpen = true;
+        this.isToolsOpen = false;
+      } else {
+        this.isBlockModalOpen = false;
+      }
+    },
+    toggleBlockChat() {
+      const dataBlock = {
+        roomId: this.userInformation.roomId,
+        isBlock: false
+      };
+      apiServices.toggleBlockUser(dataBlock).then((response) => {
+        if (response && response.data) {
+          const data = response.data;
+          this.isBlock = data.isBlock;
+        }
+      });
     }
+  },
+  destroyed() {
+    firebase.auth().signOut();
   }
 };
 </script>
