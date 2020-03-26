@@ -1,3 +1,11 @@
+export const chatListDTO = (data) => ({
+  data: data.data || [],
+  page: data.page || 0,
+  limit: data.limit || 0,
+  totalPages: data.totalPages || 0,
+  totalElements: data.totalElements || 0
+});
+
 export const userInformationDTO = (data) => ({
   userId: data.userId || 0,
   roomId: data.roomId || 0,
@@ -9,9 +17,10 @@ export const userInformationDTO = (data) => ({
 });
 
 export const roomDetailDTO = (data) => ({
+  roomId: data.roomId || 0,
   roomName: data.roomName || "",
   roomPhotoUrl: data.roomPhotoUrl || "",
-  messages: data.messages || [],
+  messages: data.messages.reverse() || [],
   limit: data.limit || 0,
   totalPages: data.totalPages || 0,
   totalElements: data.totalElements || 0,

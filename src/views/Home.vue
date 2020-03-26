@@ -34,10 +34,6 @@ export default {
       apiServices.authenticate();
     }
   },
-  created() {
-    this.min = 0;
-    this.max = 250;
-    this.enableCross = false;
-  }
+  created() {}
 };
 </script>
