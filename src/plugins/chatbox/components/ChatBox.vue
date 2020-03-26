@@ -175,7 +175,6 @@ import {
   roomDetailDTO
 } from "../utils/helpers";
 import * as apiServices from "../services";
-import firebase from "../utils/firebase-sdk";
 
 import Spinner from "./core/Spinner";
 import Avatar from "./core/Avatar";
@@ -214,6 +213,7 @@ export default {
 
       // data object of detail room
       detailRoom: {
+        roomId: 0,
         roomName: "",
         roomPhotoUrl: "",
         messages: [],
@@ -229,36 +229,9 @@ export default {
 
   async created() {
     this.selfUser = await storage.get("user");
-
-    firebase
-      .firestore()
-      .collection("rooms")
-      .doc("1")
-      .collection("messages")
-      .where("messageId", ">", 1)
-      .onSnapshot(function(querySnapshot) {
-        var cities = [];
-        querySnapshot.forEach(function(doc) {
-          cities.push(doc.data());
-        });
-        // console.log("Current cities in CA: ", cities);
-      });
   },
   async mounted() {
-    const userId = await this.selfUser.userId;
     window.addEventListener("message", this.receiveDataRegisterRoomChat, false);
-
-    firebase
-      .firestore()
-      .collection("rooms")
-      .where(`participants.${userId}.userId`, "==", userId)
-      .onSnapshot(function(querySnapshot) {
-        var cities = [];
-        querySnapshot.forEach(function(doc) {
-          cities.push(doc.data());
-        });
-        // console.log("Current cities in CA mounted: ", cities);
-      });
 
     this.$nextTick(async () => {
       const container = await this.$el.querySelector("#scroll-container");
@@ -272,7 +245,7 @@ export default {
             if (st < lastScrollTop && e.target.scrollTop === 0) {
               this.isSpinnerShowed = true;
               const pageNroomId = {
-                page: this.currentPage - 1,
+                page: this.currentPage + 1,
                 roomId: this.userInformation.roomId
               };
               this.getListMessageHistories(
@@ -280,7 +253,8 @@ export default {
                 this.currentScrollContainerHeight
               );
             }
-            lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+            // For Mobile or negative scrolling
+            lastScrollTop = st <= 0 ? 0 : st;
           }
         },
         false
@@ -289,7 +263,7 @@ export default {
   },
   computed: {
     canLoadMoreChatHistories() {
-      return this.currentPage > 0;
+      return this.currentPage <= this.detailRoom.totalPages;
     }
   },
   methods: {
@@ -314,6 +288,11 @@ export default {
       this.isInitDataShowed = false;
       this.currentScrollContainerHeight = 0;
       this.currentPage = 0;
+
+      this.detailRoom.roomId = 0;
+      this.detailRoom.roomName = "";
+      this.detailRoom.roomPhotoUrl = "";
+      this.detailRoom.messages = [];
     },
     async autoFocus() {
       if (this.isChatboxOpened) {
@@ -332,28 +311,15 @@ export default {
         container.scrollTop = container.scrollHeight;
       }
     },
-    getTokenLoginFirebase() {
-      apiServices.getTokenLoginFirebase().then((response) => {
-        if (response && response.data) {
-          // console.log("response", response);
-          firebase.auth().signInWithCustomToken(response.data);
-          // .then((response) => {
-          //   console.log("setTokenSuccess", response);
-          // })
-          // .catch(function(error) {
-          //   console.log("error.message", error.code, error.message);
-          // });
-        }
-      });
-    },
     async receiveDataRegisterRoomChat(event) {
       const isJSON = isJSONString(event.data);
       if (event.origin !== process.env.VUE_APP_BASE_URL || !isJSON) return;
       const response = JSON.parse(event.data);
       if (response.type === "sendDataRegisterRoomChat") {
-        this.detailRoom.messages = [];
-        await this.getTokenLoginFirebase();
         const data = userInformationDTO(response.data);
+        if (data.roomId !== this.detailRoom.roomId) {
+          this.closeChatbox();
+        }
         this.getInformationUserAndRoom(data);
       }
     },
@@ -373,15 +339,15 @@ export default {
       });
     },
     getDetailRoom(dataId) {
-      apiServices.getDetailRoom(dataId).then((response) => {
+      apiServices.getDetailRoom(dataId).then(async (response) => {
         if (response && response.data) {
           const data = roomDetailDTO(response.data);
           this.detailRoom = data;
-          this.currentPage = this.detailRoom.totalPages - 1;
+          // this.currentPage = this.currentPage + 1;
           if (this.detailRoom.messages.length < 10) {
             const pageNroomId = {
-              page: this.currentPage - 1,
-              roomId: this.userInformation.roomId
+              page: this.currentPage + 1,
+              roomId: this.detailRoom.roomId
             };
             this.getListMessageHistories(
               pageNroomId,
@@ -405,9 +371,10 @@ export default {
         .then(async (response) => {
           if (response && response.data) {
             this.isSpinnerShowed = false;
-            this.detailRoom.messages = await response.data.concat(
-              this.detailRoom.messages
-            );
+            const data = response.data;
+            this.detailRoom.messages = await data
+              .reverse()
+              .concat(this.detailRoom.messages);
             if (this.currentPage === 0) {
               this.isInitDataShowed = true;
             }
@@ -421,7 +388,7 @@ export default {
     submitMessage(text) {
       if (text) {
         const newMessage = {
-          roomId: this.userInformation.roomId,
+          roomId: this.detailRoom.roomId,
           message: text
         };
         const mockMessage = {
@@ -430,7 +397,7 @@ export default {
             displayName: this.selfUser.displayName,
             userPhotoUrl: this.selfUser.userPhotoUrl
           },
-          roomId: this.userInformation.roomId,
+          roomId: this.detailRoom.roomId,
           message: text,
           createdDate: new Date()
         };
@@ -455,7 +422,7 @@ export default {
     },
     toggleBlockChat() {
       const dataBlock = {
-        roomId: this.userInformation.roomId,
+        roomId: this.detailRoom.roomId,
         isBlock: false
       };
       apiServices.toggleBlockUser(dataBlock).then((response) => {
@@ -465,9 +432,6 @@ export default {
         }
       });
     }
-  },
-  destroyed() {
-    firebase.auth().signOut();
   }
 };
 </script>

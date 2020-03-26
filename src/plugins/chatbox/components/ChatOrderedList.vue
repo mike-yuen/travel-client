@@ -19,13 +19,18 @@
       <ul>
         <li
           class="mainlist__outer"
-          v-for="(account, index) in chatList"
+          v-for="(account, index) in chatList.data"
           :key="`account-${index}`"
         >
           <a
             class="mainlist__inner"
             href="javascript:void(0)"
-            v-on:click="selectChatAccount(70915, account.roomId)"
+            v-on:click="
+              selectChatAccount(
+                account.latestMessage.user.userId,
+                account.roomId
+              )
+            "
           >
             <div class="mainlist__container">
               <div class="mainlist__avatar">
@@ -58,6 +63,8 @@
 
 <script>
 import * as apiServices from "../services";
+import { chatListDTO } from "../utils/helpers";
+import firebase from "../utils/firebase-sdk";
 import Avatar from "./core/Avatar";
 
 export default {
@@ -71,14 +78,49 @@ export default {
       mockUserID: "70000",
       paramsChatList: {
         page: 0,
-        limit: 10
+        limit: 1
       },
-      chatList: {}
+      chatList: {
+        data: [
+          {
+            roomId: 0,
+            roomName: "",
+            roomPhotoUrl: "",
+            latestMessage: {
+              messageId: 0,
+              roomId: 0,
+              user: {
+                userId: 0,
+                displayName: "",
+                userPhotoUrl: ""
+              },
+              message: "",
+              createdDate: "",
+              isRead: false
+            },
+            isBlocked: false
+          }
+        ],
+        page: 0,
+        limit: 0,
+        totalPages: 0,
+        totalElements: 0
+      }
     };
   },
   methods: {
     toggleList() {
       this.isListExpanded = !this.isListExpanded;
+    },
+    getTokenLoginFirebase() {
+      apiServices.getTokenLoginFirebase().then((response) => {
+        if (response && response.data) {
+          firebase.auth().signInWithCustomToken(response.data);
+          // .catch(function(error) {
+          //   console.log("error.message", error.code, error.message);
+          // });
+        }
+      });
     },
     selectChatAccount(userId, roomId) {
       const dataRegisterChat = { userId: userId, roomId: roomId };
@@ -91,14 +133,35 @@ export default {
       );
     },
     getChatListForRendering() {
-      const self = this;
-      apiServices.getChatList(this.paramsChatList).then((response) => {
-        self.chatList = response.data;
+      apiServices.getChatList(this.paramsChatList).then(async (response) => {
+        if (response && response.data) {
+          await this.getTokenLoginFirebase();
+          this.chatList = chatListDTO(response);
+        }
       });
+    },
+    listenNewMessagesInRoom(lastMessageId) {
+      firebase
+        .firestore()
+        .collection("rooms")
+        .doc(this.detailRoom.roomId.toString())
+        .collection("messages")
+        .where("messageId", ">", lastMessageId)
+        .onSnapshot(function(querySnapshot) {
+          var messagesFirebase = [];
+          querySnapshot.forEach(function(doc) {
+            messagesFirebase.push(doc.data());
+          });
+          // console.log("Current cities in CA: ", messagesFirebase);
+        });
     }
+    // this.listenNewMessagesInRoom(this.lastMessageId);
   },
   created() {
     this.getChatListForRendering();
+  },
+  destroyed() {
+    firebase.auth().signOut();
   }
 };
 </script>
