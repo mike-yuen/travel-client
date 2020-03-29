@@ -11,7 +11,6 @@
             :step="5"
             v-on:priceReceive="(...price) => this.priceReceive(...price)"
           />
-          <p>price range: {{ priceRange }}</p>
           <HotelRatingFilter />
           <TripAdvisorRating />
           <HotelPropertyFilter />
@@ -19,6 +18,11 @@
         </div>
       </div>
       <div class="w-full lg:w-3/4">
+        <SortType
+          :optionsSelect="optionsSelectSort"
+          :optionsRadio="optionsRadioSort"
+          v-on:sortValue="(...value) => this.sortValue(...value)"
+        />
         <HotelCard
           v-for="(hotel, index) in hotels"
           :key="index"
@@ -30,21 +34,7 @@
           :page-count="hotels.length"
           :margin-pages="2"
           :page-range="5"
-          :container-class="'flex list-reset rounded w-auto font-sans'"
-          :page-link-class="
-            'block cursor-pointer ml-1 px-3 py-2 outline-none hover:bg-gray-300 rounded-full h-10 w-10 text-center'
-          "
-          :prev-link-class="
-            'block cursor-pointer px-3 py-2 outline-none hover:bg-gray-300 '
-          "
-          :next-link-class="
-            'block cursor-pointer ml-1 px-3 py-2 outline-none hover:bg-gray-300 '
-          "
-          :break-view-link-class="'break-view-link cursor-pointer'"
-          :activeClass="'bg-gray-300'"
-          :no-li-surround="true"
         />
-        {{ page }}
       </div>
     </div>
   </div>
@@ -61,6 +51,7 @@ const TripAdvisorRating = () =>
 const HotelPropertyFilter = () =>
   import("@/components/advanced-filter/PropertyType");
 const Facilities = () => import("@/components/advanced-filter/Facilities");
+const SortType = () => import("@/components/advanced-filter/SortType");
 const PriceRangeSlider = () =>
   import("@/components/price-range-slider/PriceRangeSlider");
 const Pagination = () => import("@/components/pagination/Pagination");
@@ -76,10 +67,23 @@ export default {
     HotelRatingFilter,
     TripAdvisorRating,
     HotelPropertyFilter,
-    Facilities
+    Facilities,
+    SortType
   },
   data() {
     return {
+      SortArray: null,
+      optionsSelectSort: [
+        { label: "Best Deal", value: "promotion" },
+        { label: "Popularity", value: "popularity" },
+        { label: "Highest Price", value: "price_desc" },
+        { label: "Lowest Price", value: "price_asc" },
+        { label: "TripAdvisor Rating", value: "tripadvisor" }
+      ],
+      optionsRadioSort: [
+        { label: "Use Cash", value: "cash" },
+        { label: "Use Points", value: "points" }
+      ],
       page: 1,
       loading: true,
       filter: false,
@@ -146,6 +150,10 @@ export default {
 
     priceReceive(...price) {
       this.priceRange = price;
+    },
+
+    sortValue(...value) {
+      this.SortArray = value;
     },
 
     showFilter() {

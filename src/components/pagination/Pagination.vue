@@ -197,35 +197,41 @@ export default {
       default: "…"
     },
     containerClass: {
-      type: String
+      type: String,
+      default: "flex list-reset rounded w-auto font-sans"
     },
     pageClass: {
       type: String
     },
     pageLinkClass: {
-      type: String
+      type: String,
+      default:
+        "block cursor-pointer px-3 py-2 outline-none hover:bg-gray-300 rounded-full h-10 w-10 text-center"
     },
     prevClass: {
       type: String
     },
     prevLinkClass: {
-      type: String
+      type: String,
+      default: "block cursor-pointer px-3 py-2 outline-none hover:bg-gray-300"
     },
     nextClass: {
       type: String
     },
     nextLinkClass: {
-      type: String
+      type: String,
+      default: "block cursor-pointer px-3 py-2 outline-none hover:bg-gray-300"
     },
     breakViewClass: {
       type: String
     },
     breakViewLinkClass: {
-      type: String
+      type: String,
+      default: "break-view-link cursor-pointer"
     },
     activeClass: {
       type: String,
-      default: "active"
+      default: "bg-gray-300 rounded-full"
     },
     disabledClass: {
       type: String,
