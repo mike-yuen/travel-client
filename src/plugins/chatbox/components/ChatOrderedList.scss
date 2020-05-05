@@ -35,13 +35,30 @@
   background-color: #fff;
   overflow-x: hidden;
   overflow-y: auto;
+  &__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #7b8a9d;
+    font-size: 14px;
+    padding: 10px;
+  }
+  &__wrapper {
+    padding: 5px 0 0;
+  }
+  .mainlist__outer-move {
+    transition: transform 1s;
+  }
   &__outer {
     list-style-type: none;
+  }
+  &__outer-move {
+    transition: transform 1s;
   }
   &__inner {
     color: #333;
     display: block;
-    padding: 12px 0 5px;
+    padding: 7px 0 5px;
     position: relative;
   }
   &__container {
@@ -61,12 +78,14 @@
     padding-bottom: 8px;
   }
   &__timestamp {
+    font-size: 14px;
     line-height: 32px;
     margin: 0 1px 0 15px;
     text-align: right;
   }
   &__username {
     display: block;
+    font-size: 15px;
     line-height: 32px;
     padding-left: 12px;
     text-overflow: ellipsis;
@@ -82,5 +101,13 @@
     padding-left: 12px;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  &__loadmore {
+    display: block;
+    text-align: center;
+    padding: 5px;
+    font-size: 14px;
+    color: #7b8a9d;
+    cursor: pointer;
   }
 }

@@ -16,69 +16,97 @@
       </a>
     </div>
     <div class="mainlist" v-show="isListExpanded">
-      <ul>
-        <li
-          class="mainlist__outer"
-          v-for="(account, index) in chatList.data"
-          :key="`account-${index}`"
+      <div v-if="chatList.data[0].roomId > 0">
+        <transition-group
+          class="mainlist__wrapper"
+          name="mainlist__outer"
+          tag="ul"
         >
-          <a
-            class="mainlist__inner"
-            href="javascript:void(0)"
-            v-on:click="
-              selectChatAccount(
-                account.latestMessage.user.userId,
-                account.roomId
-              )
-            "
+          <li
+            class="mainlist__outer"
+            v-for="account in chatList.data"
+            :key="account.roomId"
           >
-            <div class="mainlist__container">
-              <div class="mainlist__avatar">
-                <Avatar
-                  :size="32"
-                  :userName="account.roomName"
-                  :imageUrl="account.roomPhotoUrl"
-                />
-              </div>
-              <div class="mainlist__seperate">
-                <div class="mainlist__username">
-                  <span>{{ account.roomName }}</span>
+            <a
+              class="mainlist__inner"
+              href="javascript:void(0)"
+              v-on:click="
+                selectChatAccount(
+                  account.latestMessage.user.userId,
+                  account.roomId
+                )
+              "
+            >
+              <div class="mainlist__container">
+                <div class="mainlist__avatar">
+                  <Avatar
+                    :size="32"
+                    :userName="account.roomName"
+                    :imageUrl="account.roomPhotoUrl"
+                  />
+                  <!-- The below component I intended to use for indicating this user has a new message that still unread yet -->
+                  <!-- Can be used with <isRead> in chatList.data -->
+                  <!-- <SpinnerAlert :position="{ top: '7px', right: '-20px' }" /> -->
                 </div>
-                <div class="mainlist__last-message">
-                  <span>{{ account.latestMessage.message }}</span>
-                </div>
-                <div class="mainlist__timestamp">
-                  <div>
-                    {{ account.latestMessage.createdDate | moment("MM/DD/YY") }}
+                <div class="mainlist__seperate">
+                  <div class="mainlist__username">
+                    <span>{{ account.roomName }}</span>
+                  </div>
+                  <div class="mainlist__last-message">
+                    <span v-if="account.latestMessage">
+                      {{ account.latestMessage.message }}
+                    </span>
+                  </div>
+                  <div class="mainlist__timestamp">
+                    <div v-if="account.latestMessage">
+                      {{
+                        account.latestMessage.createdDate | moment("MM/DD/YY")
+                      }}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </a>
-        </li>
-      </ul>
+            </a>
+          </li>
+        </transition-group>
+        <a
+          v-if="canLoadMoreChatList"
+          v-on:click="loadMoreChatList"
+          class="mainlist__loadmore"
+        >
+          Load more
+        </a>
+      </div>
+      <div class="mainlist__placeholder" v-else>
+        <div>You haven't had any conversation yet.</div>
+        <div>Let's start a new chat on social wall.</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import storage from "../utils/storage";
 import * as apiServices from "../services";
-import { chatListDTO } from "../utils/helpers";
+import EventBus from "../utils/event-bus";
+import { chatListDTO, roomDetailDTO } from "../utils/helpers";
 import firebase from "../utils/firebase-sdk";
 import Avatar from "./core/Avatar";
+// import SpinnerAlert from "./core/SpinnerAlert";
 
 export default {
   name: "ChatOrderedList",
   components: {
     Avatar
+    // SpinnerAlert
   },
   data() {
     return {
+      selfUser: "",
       isListExpanded: false,
-      mockUserID: "70000",
       paramsChatList: {
         page: 0,
-        limit: 1
+        limit: 10
       },
       chatList: {
         data: [
@@ -108,19 +136,17 @@ export default {
       }
     };
   },
+  computed: {
+    canLoadMoreChatList() {
+      return (
+        this.chatList.data.length < this.chatList.totalElements &&
+        this.paramsChatList.page < this.chatList.totalPages - 1 //page index from 0
+      );
+    }
+  },
   methods: {
     toggleList() {
       this.isListExpanded = !this.isListExpanded;
-    },
-    getTokenLoginFirebase() {
-      apiServices.getTokenLoginFirebase().then((response) => {
-        if (response && response.data) {
-          firebase.auth().signInWithCustomToken(response.data);
-          // .catch(function(error) {
-          //   console.log("error.message", error.code, error.message);
-          // });
-        }
-      });
     },
     selectChatAccount(userId, roomId) {
       const dataRegisterChat = { userId: userId, roomId: roomId };
@@ -132,36 +158,146 @@ export default {
         process.env.VUE_APP_BASE_URL
       );
     },
-    getChatListForRendering() {
-      apiServices.getChatList(this.paramsChatList).then(async (response) => {
+    getChatListForRendering(payload) {
+      // payload included {page: <>, limit: 10}
+      apiServices.getChatList(payload).then(async (response) => {
         if (response && response.data) {
-          await this.getTokenLoginFirebase();
-          this.chatList = chatListDTO(response);
+          const chatList = await chatListDTO(response);
+          const chatListData = await chatList.data;
+
+          if (this.chatList.data[0].roomId === 0) {
+            this.chatList = await chatList;
+          } else {
+            Object.keys(this.chatList).forEach((key) => {
+              if (key !== "data") {
+                this.chatList[key] = chatList[key];
+              }
+            });
+            this.chatList.data = await this.chatList.data
+              .concat(chatListData)
+              .filter(function(item) {
+                return this[item.roomId] ? false : (this[item.roomId] = true);
+              }, {});
+          }
+          chatListData.map((userChatData) => {
+            // console.log("data", userChatData);
+            this.listenNewMessagesInRoom(
+              userChatData.roomId,
+              userChatData.latestMessage.user.userId,
+              userChatData.latestMessage.messageId
+            );
+          });
         }
       });
     },
-    listenNewMessagesInRoom(lastMessageId) {
+    loadMoreChatList() {
+      if (this.canLoadMoreChatList) {
+        this.paramsChatList.page++;
+        this.getChatListForRendering(this.paramsChatList);
+      }
+    },
+    findExistChat(newRoomId) {
+      return this.chatList.data.some((data) => data.roomId === newRoomId);
+    },
+    findFriendId(arrayId, selfId) {
+      return Object.keys(arrayId).find((data) => data != selfId);
+    },
+    orderToTop(array, property, value) {
+      array.sort((first) => first[`${property}`] === value && -1);
+    },
+    listenNewMessagesInRoom(roomId, userId, lastMessageId) {
+      const self = this;
       firebase
         .firestore()
         .collection("rooms")
-        .doc(this.detailRoom.roomId.toString())
+        .doc(roomId.toString())
         .collection("messages")
         .where("messageId", ">", lastMessageId)
         .onSnapshot(function(querySnapshot) {
-          var messagesFirebase = [];
+          let messagesFirebase = [];
           querySnapshot.forEach(function(doc) {
             messagesFirebase.push(doc.data());
           });
-          // console.log("Current cities in CA: ", messagesFirebase);
+          // console.log("Current cities in CA: ", roomId, messagesFirebase);
+          EventBus.$emit("newMessageInRoom", {
+            roomId,
+            userId,
+            messagesFirebase
+          });
+          if (messagesFirebase.length > 0) {
+            self.orderToTop(self.chatList.data, "roomId", roomId);
+          }
         });
+    },
+
+    async listenNewChatInChatlist() {
+      const self = this,
+        userId = await this.selfUser.userId;
+      firebase
+        .firestore()
+        .collection("rooms")
+        .where(`participants.${userId}.userId`, "==", userId)
+        .onSnapshot(function(snapshot) {
+          snapshot.docChanges().forEach(async function(change) {
+            // Case New Room: Listen new room registered but has no message
+            if (change.type === "added") {
+              const newChat = await change.doc.data();
+              const foundExistChat = await self.findExistChat(newChat.roomId);
+              const friendId = await self.findFriendId(
+                newChat.participants,
+                userId
+              );
+              if (!foundExistChat && !newChat.latestMessageId) {
+                // console.log("register new", newChat);
+                self.listenNewMessagesInRoom(newChat.roomId, friendId, 0);
+              }
+            }
+
+            // Case Modified Room: Listen all rooms registered and has message
+            if (change.type === "modified") {
+              const newChat = await change.doc.data();
+              const foundExistChat = await self.findExistChat(newChat.roomId);
+              const friendId = await self.findFriendId(
+                newChat.participants,
+                userId
+              );
+              const payloadDetailRoom = {
+                userId: friendId,
+                roomId: newChat.roomId
+              };
+              if (!foundExistChat) {
+                self.listenNewMessagesInRoom(
+                  newChat.roomId,
+                  friendId,
+                  newChat.latestMessageId
+                );
+                await self.createItemInChatList(payloadDetailRoom);
+                EventBus.$emit("openRoomWithoutPushMessage", {
+                  ...payloadDetailRoom
+                });
+                // console.log("Modified", newChat);
+              }
+            }
+          });
+        });
+    },
+    createItemInChatList(data) {
+      apiServices.getDetailRoom(data).then((response) => {
+        if (response && response.data) {
+          const data = roomDetailDTO(response.data);
+          const latestMessage = data.messages[0];
+          const newItem = Object.assign({}, data);
+          newItem.latestMessage = latestMessage;
+          delete newItem.messages;
+          this.chatList.data.unshift(newItem);
+        }
+      });
     }
-    // this.listenNewMessagesInRoom(this.lastMessageId);
   },
-  created() {
-    this.getChatListForRendering();
-  },
-  destroyed() {
-    firebase.auth().signOut();
+  async created() {
+    this.selfUser = await storage.get("user");
+    await this.getChatListForRendering(this.paramsChatList);
+    this.listenNewChatInChatlist();
   }
 };
 </script>

@@ -6,7 +6,7 @@
           <div class="chat-titlebar__outer">
             <div class="chat-titlebar__inner">
               <Avatar
-                :size="40"
+                :size="35"
                 :userName="detailRoom.roomName"
                 :imageUrl="detailRoom.roomPhotoUrl"
               />
@@ -33,13 +33,28 @@
                     </a>
                     <div v-if="isToolsOpen" class="tool__more-option">
                       <ul>
-                        <li><a href="javascript:void(0)">Clear chat</a></li>
                         <li>
+                          <a
+                            href="javascript:void(0)"
+                            v-on:click="toggleClearChatModal(true)"
+                          >
+                            Clear chat
+                          </a>
+                        </li>
+                        <li v-if="!detailRoom.isMyBlock">
                           <a
                             href="javascript:void(0)"
                             v-on:click="toggleBlockModal(true)"
                           >
                             Block
+                          </a>
+                        </li>
+                        <li v-if="detailRoom.isMyBlock">
+                          <a
+                            href="javascript:void(0)"
+                            v-on:click="toggleBlockChat('unblock')"
+                          >
+                            Unblock
                           </a>
                         </li>
                         <li><a href="javascript:void(0)">Report</a></li>
@@ -67,37 +82,77 @@
         </div>
 
         <div class="chatframe">
-          <div class="chatframe__overlay" v-if="isBlockModalOpen">
-            <div class="block-modal" v-show="isBlockModalOpen">
-              <div class="block-modal__outer">
-                <div class="block-modal__warning">
-                  <div>Are you sure you want to block</div>
-                  <div>{{ userInformation.displayName }}?</div>
+          <div class="chatframe__overlay" v-if="isClearChatModalOpen">
+            <ConfirmationModal v-if="isClearChatModalOpen">
+              <template v-slot:warning>
+                <div>Are you sure you want to clear</div>
+                <div>messages in this chat?</div>
+              </template>
+              <template v-slot:description>
+                <div>
+                  This action can't be undone.
                 </div>
-                <div class="block-modal__description">
-                  <div>
-                    Blocked members will no longer be able to send you a
-                    message.
-                  </div>
+              </template>
+              <template v-slot:action>
+                <Button v-on:onClick="toggleClearChatModal(false)">
+                  Cancel
+                </Button>
+                <Button v-on:onClick="clearChat(detailRoom.roomId)">
+                  Clear
+                </Button>
+              </template>
+            </ConfirmationModal>
+          </div>
+
+          <div
+            class="chatframe__overlay"
+            v-if="isBlockModalOpen || isBlockMessageOpen || isBlockedWarning"
+          >
+            <ConfirmationModal v-if="isBlockModalOpen">
+              <template v-slot:warning>
+                <div>Are you sure you want to block</div>
+                <div>{{ userInformation.displayName }}?</div>
+              </template>
+              <template v-slot:description>
+                <div>
+                  Blocked members will no longer be able to send you a message.
                 </div>
-                <div class="block-modal__action">
-                  <a
-                    role="button"
-                    class="block-modal__btn"
-                    v-on:click="toggleBlockModal(false)"
-                  >
-                    Cancel
-                  </a>
-                  <a
-                    role="button"
-                    class="block-modal__btn"
-                    v-on:click="toggleBlockChat"
-                  >
-                    Block
-                  </a>
+              </template>
+              <template v-slot:action>
+                <Button v-on:onClick="toggleBlockModal(false)">Cancel</Button>
+                <Button v-on:onClick="toggleBlockChat('block')">Block</Button>
+              </template>
+            </ConfirmationModal>
+
+            <InformationModal v-if="isBlockMessageOpen">
+              <template v-slot:heading>
+                <div>Confirmed!</div>
+              </template>
+              <template v-slot:description>
+                <div>
+                  {{ userInformation.displayName }} has been
+                  {{
+                    detailRoom.isMyBlock && detailRoom.isBlocked
+                      ? "blocked"
+                      : "unblocked"
+                  }}.
                 </div>
-              </div>
-            </div>
+              </template>
+            </InformationModal>
+
+            <InformationModal v-if="isBlockedWarning">
+              <template v-slot:heading>
+                <div>Unable to send this message.</div>
+              </template>
+              <template v-slot:description>
+                <div>
+                  Please try later or <a href="#">contact us</a> for details.
+                </div>
+              </template>
+              <template v-slot:action>
+                <Button v-on:onClick="closeBlockWaring()">Ok</Button>
+              </template>
+            </InformationModal>
           </div>
           <div class="chatframe__wrapper">
             <div
@@ -148,6 +203,7 @@
                     ref="composer"
                     placeholder="Type your message here..."
                     v-model="localMessage"
+                    :disabled="detailRoom.isMyBlock && detailRoom.isBlocked"
                   />
                 </div>
                 <div class="composer__btn">
@@ -174,33 +230,43 @@ import {
   userInformationDTO,
   roomDetailDTO
 } from "../utils/helpers";
+import EventBus from "../utils/event-bus";
 import * as apiServices from "../services";
 
 import Spinner from "./core/Spinner";
 import Avatar from "./core/Avatar";
 import Message from "./core/Message";
+import Button from "./core/Button";
+import ConfirmationModal from "./core/ConfirmationModal";
+import InformationModal from "./core/InformationModal";
 
 export default {
   name: "Chatbox",
   components: {
     Spinner,
     Avatar,
-    Message
+    Message,
+    Button,
+    ConfirmationModal,
+    InformationModal
   },
   data() {
     return {
-      // data for calculating internal component
+      // data for calculating internal component, when add new one you should add it to <resetInternalData> function
       selfUser: "",
       localMessage: "",
       isChatboxOpened: false,
       isSpinnerShowed: false,
       isToolsOpen: false,
+      isClearChatModalOpen: false,
       isBlockModalOpen: false,
+      isBlockMessageOpen: false,
+      isBlockedWarning: false,
       isInitDataShowed: false,
       currentScrollContainerHeight: 0,
       currentPage: 0,
 
-      // data object of user information - should only user userId & roomId
+      // data object of user information - should only use userId & roomId
       userInformation: {
         userId: 0,
         roomId: 0,
@@ -229,6 +295,31 @@ export default {
 
   async created() {
     this.selfUser = await storage.get("user");
+
+    EventBus.$on("newMessageInRoom", async (data) => {
+      if (data.messagesFirebase.length > 0) {
+        if (!this.isChatboxOpened) {
+          const userId = { userId: data.userId };
+          await this.getInformationUserAndRoom(userId);
+        }
+        // Check listening to the correct room then add to chatlog
+        if (data.roomId === this.detailRoom.roomId) {
+          let newMessage =
+            data.messagesFirebase[data.messagesFirebase.length - 1];
+          if (!this.checkSelfID(newMessage.user.userId)) {
+            this.detailRoom.messages.push(newMessage);
+            this.scrollToEnd();
+          }
+        }
+      }
+    });
+
+    EventBus.$on("openRoomWithoutPushMessage", async (data) => {
+      if (!this.isChatboxOpened) {
+        const userId = { userId: data.userId };
+        await this.getInformationUserAndRoom(userId);
+      }
+    });
   },
   async mounted() {
     window.addEventListener("message", this.receiveDataRegisterRoomChat, false);
@@ -262,13 +353,19 @@ export default {
     });
   },
   computed: {
+    isBlocked() {
+      return !this.detailRoom.isMyBlock && this.detailRoom.isBlocked;
+    },
     canLoadMoreChatHistories() {
-      return this.currentPage <= this.detailRoom.totalPages;
+      return this.currentPage < this.detailRoom.totalPages - 1; //page index from 0
     }
   },
   methods: {
     toggleTools() {
       this.isToolsOpen = !this.isToolsOpen;
+      this.isClearChatModalOpen = false;
+      this.isBlockModalOpen = false;
+      this.isBlockMessageOpen = false;
     },
     closeTools() {
       this.isToolsOpen = false;
@@ -285,6 +382,10 @@ export default {
       this.isChatboxOpened = false;
       this.isSpinnerShowed = false;
       this.isToolsOpen = false;
+      this.isClearChatModalOpen = false;
+      this.isBlockModalOpen = false;
+      this.isBlockMessageOpen = false;
+      this.isBlockedWarning = false;
       this.isInitDataShowed = false;
       this.currentScrollContainerHeight = 0;
       this.currentPage = 0;
@@ -297,12 +398,13 @@ export default {
     async autoFocus() {
       if (this.isChatboxOpened) {
         const composer = await this.$refs.composer;
-        composer.focus();
+        if (composer) {
+          composer.focus();
+        }
       }
     },
     async updateScrollContainerHeight() {
       const container = await this.$el.querySelector("#scroll-container");
-      // console.log("update", container.scrollHeight);
       this.currentScrollContainerHeight = container.scrollHeight;
     },
     async scrollToEnd() {
@@ -324,6 +426,7 @@ export default {
       }
     },
     getInformationUserAndRoom(data) {
+      // data included {userId: <>, roomId: <>}
       apiServices.getInformationUserAndRoom(data.userId).then((response) => {
         if (response && response.data) {
           const data = userInformationDTO(response.data);
@@ -343,16 +446,8 @@ export default {
         if (response && response.data) {
           const data = roomDetailDTO(response.data);
           this.detailRoom = data;
-          // this.currentPage = this.currentPage + 1;
-          if (this.detailRoom.messages.length < 10) {
-            const pageNroomId = {
-              page: this.currentPage + 1,
-              roomId: this.detailRoom.roomId
-            };
-            this.getListMessageHistories(
-              pageNroomId,
-              this.currentScrollContainerHeight
-            );
+          if (!this.canLoadMoreChatHistories) {
+            this.isInitDataShowed = true;
           }
           this.isSpinnerShowed = false;
           this.scrollToEnd();
@@ -370,67 +465,141 @@ export default {
         .getListMessageHistories(pageNroomId)
         .then(async (response) => {
           if (response && response.data) {
-            this.isSpinnerShowed = false;
-            const data = response.data;
-            this.detailRoom.messages = await data
-              .reverse()
-              .concat(this.detailRoom.messages);
-            if (this.currentPage === 0) {
-              this.isInitDataShowed = true;
+            const amountNewPage =
+              response.totalPages - this.detailRoom.totalPages;
+            if (amountNewPage === 0) {
+              if (!this.canLoadMoreChatHistories) {
+                this.isInitDataShowed = true;
+              }
+              this.isSpinnerShowed = false;
+              const data = response.data;
+              this.detailRoom.messages = await data
+                .reverse()
+                .concat(this.detailRoom.messages)
+                .filter(function(item) {
+                  return this[item.messageId]
+                    ? false
+                    : (this[item.messageId] = true);
+                }, {});
+
+              await this.updateScrollContainerHeight();
+              const scrollPosition =
+                this.currentScrollContainerHeight - lastPosition - 39; // 39px is the size of spinner
+              container.scrollTo(0, scrollPosition);
+            } else {
+              this.detailRoom.totalPages = response.totalPages;
+              this.currentPage += amountNewPage;
+              if (this.canLoadMoreChatHistories) {
+                const pageNroomId = {
+                  page: this.currentPage,
+                  roomId: this.detailRoom.roomId
+                };
+                this.getListMessageHistories(
+                  pageNroomId,
+                  this.currentScrollContainerHeight
+                );
+              }
             }
-            await this.updateScrollContainerHeight();
-            const scrollPosition =
-              this.currentScrollContainerHeight - lastPosition - 39;
-            container.scrollTo(0, scrollPosition);
           }
         });
     },
     submitMessage(text) {
-      if (text) {
-        const newMessage = {
-          roomId: this.detailRoom.roomId,
-          message: text
-        };
-        const mockMessage = {
-          user: {
-            userId: this.selfUser.userId,
-            displayName: this.selfUser.displayName,
-            userPhotoUrl: this.selfUser.userPhotoUrl
-          },
-          roomId: this.detailRoom.roomId,
-          message: text,
-          createdDate: new Date()
-        };
-        this.detailRoom.messages.push(mockMessage);
-        this.scrollToEnd();
-        this.localMessage = "";
-        apiServices.sendMessage(newMessage).then((response) => {
-          if (response && response.data) {
-            this.detailRoom.messages.pop();
-            this.detailRoom.messages.push(response.data);
-          }
-        });
+      if (!this.isBlocked) {
+        if (text) {
+          const newMessage = {
+            roomId: this.detailRoom.roomId,
+            message: text
+          };
+          const mockMessage = {
+            user: {
+              userId: this.selfUser.userId,
+              displayName: this.selfUser.displayName,
+              userPhotoUrl: this.selfUser.userPhotoUrl
+            },
+            roomId: this.detailRoom.roomId,
+            message: text,
+            createdDate: new Date()
+          };
+          this.detailRoom.messages.push(mockMessage);
+          this.scrollToEnd();
+          this.localMessage = "";
+          apiServices.sendMessage(newMessage).then((response) => {
+            if (response && response.data) {
+              this.detailRoom.messages.pop();
+              this.detailRoom.messages.push(response.data);
+            }
+          });
+        }
+      } else {
+        this.isBlockedWarning = true;
       }
     },
-    toggleBlockModal(isToggled) {
-      if (isToggled) {
+    toggleClearChatModal(isOpened) {
+      if (isOpened) {
+        this.isClearChatModalOpen = true;
+        this.isToolsOpen = false;
+      } else {
+        this.isClearChatModalOpen = false;
+      }
+    },
+    toggleBlockModal(isOpened) {
+      if (isOpened) {
         this.isBlockModalOpen = true;
         this.isToolsOpen = false;
       } else {
         this.isBlockModalOpen = false;
       }
     },
-    toggleBlockChat() {
-      const dataBlock = {
-        roomId: this.detailRoom.roomId,
-        isBlock: false
-      };
-      apiServices.toggleBlockUser(dataBlock).then((response) => {
-        if (response && response.data) {
-          const data = response.data;
-          this.isBlock = data.isBlock;
+    closeBlockWaring() {
+      this.isBlockedWarning = false;
+    },
+    clearChat(roomId) {
+      apiServices.clearChat(roomId).then((response) => {
+        if (response && response.status === "OK") {
+          this.detailRoom.messages = [];
+          this.isClearChatModalOpen = false;
         }
       });
+    },
+    toggleBlockChat(state) {
+      // state should be <block> || <unblock>
+      if (state === "block") {
+        const dataBlock = {
+          roomId: this.detailRoom.roomId,
+          isBlock: true
+        };
+        apiServices.toggleBlockUser(dataBlock).then((response) => {
+          if (response && response.data) {
+            const data = response.data;
+            this.detailRoom.isMyBlock = data.isMyBlock;
+            this.detailRoom.isBlocked = data.isBlocked;
+
+            this.isBlockModalOpen = false;
+            this.isBlockMessageOpen = true;
+            setTimeout(() => {
+              this.isBlockMessageOpen = false;
+            }, 2000);
+          }
+        });
+      } else if (state === "unblock") {
+        const dataBlock = {
+          roomId: this.detailRoom.roomId,
+          isBlock: false
+        };
+        apiServices.toggleBlockUser(dataBlock).then((response) => {
+          if (response && response.data) {
+            const data = response.data;
+            this.detailRoom.isMyBlock = data.isMyBlock;
+            this.detailRoom.isBlocked = data.isBlocked;
+
+            this.isToolsOpen = false;
+            this.isBlockMessageOpen = true;
+            setTimeout(() => {
+              this.isBlockMessageOpen = false;
+            }, 2000);
+          }
+        });
+      }
     }
   }
 };

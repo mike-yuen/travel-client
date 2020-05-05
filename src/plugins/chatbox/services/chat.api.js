@@ -119,3 +119,16 @@ export const toggleBlockUser = (dataBlock) => {
     }
   });
 };
+
+export const clearChat = (roomId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.delete(`${API_URL.CLEAN_CHAT}/${roomId}`);
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
