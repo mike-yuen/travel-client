@@ -7,7 +7,9 @@
         Detail Room Demo
       </router-link>
     </div>
-    <div class="max-w-xs mx-auto"></div>
+    <div class="max-w-xs mx-auto">
+      <div id="g-recaptcha" class="g-recaptcha" :data-sitekey="sitekey"></div>
+    </div>
   </div>
 </template>
 
@@ -23,6 +25,12 @@ export default {
     MainSlider,
     SearchTabs
   },
+  data() {
+    return {
+      sitekey: "6LetMfMUAAAAADkh3b3DCi63-e34-sGzJZX1CQ19",
+      widgetId: 0
+    };
+  },
   computed: {
     ...mapGetters({
       user: "user/userState",
@@ -32,8 +40,32 @@ export default {
   methods: {
     testApi() {
       apiServices.authenticate();
+    },
+    reset(id) {
+      window.grecaptcha.reset(id);
+    },
+    initReCaptcha: function() {
+      let self = this;
+      setTimeout(function() {
+        if (typeof window.grecaptcha === "undefined") {
+          self.initReCaptcha();
+        } else {
+          self.widgetId = window.grecaptcha.render("g-recaptcha", {
+            sitekey: self.sitekey,
+            size: "checkbox",
+            callback: (response) => {
+              if (response) {
+                // console.log("response", response);
+                self.reset(self.widgetId);
+              }
+            }
+          });
+        }
+      }, 500);
     }
   },
-  created() {}
+  mounted() {
+    this.initReCaptcha();
+  }
 };
 </script>
