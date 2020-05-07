@@ -3,7 +3,10 @@
     <div class="chatbox__outer">
       <div class="chatbox__inner">
         <div class="chat-titlebar">
-          <div class="chat-titlebar__outer">
+          <div
+            class="chat-titlebar__outer"
+            :class="{ 'new-message': hasNewMessage }"
+          >
             <div class="chat-titlebar__inner">
               <Avatar
                 :size="35"
@@ -41,7 +44,9 @@
                             Clear chat
                           </a>
                         </li>
-                        <li v-if="!detailRoom.isMyBlock">
+                        <li
+                          v-if="!detailRoom.isMyBlock && !detailRoom.isBlocked"
+                        >
                           <a
                             href="javascript:void(0)"
                             v-on:click="toggleBlockModal(true)"
@@ -150,7 +155,7 @@
                 </div>
               </template>
               <template v-slot:action>
-                <Button v-on:onClick="closeBlockWaring()">Ok</Button>
+                <Button v-on:onClick="toggleBlockWarning('close')">Ok</Button>
               </template>
             </InformationModal>
           </div>
@@ -195,7 +200,7 @@
               </div>
             </div>
           </div>
-          <div class="composer">
+          <div class="composer" :class="{ 'composer--disabled': isMyBlock }">
             <form @submit.prevent="submitMessage(localMessage)">
               <div class="composer__outer">
                 <div class="composer__input">
@@ -203,11 +208,11 @@
                     ref="composer"
                     placeholder="Type your message here..."
                     v-model="localMessage"
-                    :disabled="detailRoom.isMyBlock && detailRoom.isBlocked"
+                    :disabled="isMyBlock"
                   />
                 </div>
                 <div class="composer__btn">
-                  <button type="submit">
+                  <button type="submit" :disabled="isMyBlock">
                     <img
                       :src="require('../assets/images/icon-send.svg')"
                       alt="Send"
@@ -255,6 +260,7 @@ export default {
       // data for calculating internal component, when add new one you should add it to <resetInternalData> function
       selfUser: "",
       localMessage: "",
+      hasNewMessage: false,
       isChatboxOpened: false,
       isSpinnerShowed: false,
       isToolsOpen: false,
@@ -307,6 +313,11 @@ export default {
           let newMessage =
             data.messagesFirebase[data.messagesFirebase.length - 1];
           if (!this.checkSelfID(newMessage.user.userId)) {
+            const composer = await this.$refs.composer;
+            console.log("composer.hasFocus()", composer);
+            if (composer && composer.hasFocus()) {
+              this.hasNewMessage = true;
+            }
             this.detailRoom.messages.push(newMessage);
             this.scrollToEnd();
           }
@@ -356,6 +367,9 @@ export default {
     isBlocked() {
       return !this.detailRoom.isMyBlock && this.detailRoom.isBlocked;
     },
+    isMyBlock() {
+      return this.detailRoom.isMyBlock && this.detailRoom.isBlocked;
+    },
     canLoadMoreChatHistories() {
       return this.currentPage < this.detailRoom.totalPages - 1; //page index from 0
     }
@@ -379,6 +393,7 @@ export default {
     },
     resetInternalData() {
       this.localMessage = "";
+      this.hasNewMessage = false;
       this.isChatboxOpened = false;
       this.isSpinnerShowed = false;
       this.isToolsOpen = false;
@@ -415,14 +430,17 @@ export default {
     },
     async receiveDataRegisterRoomChat(event) {
       const isJSON = isJSONString(event.data);
-      if (event.origin !== process.env.VUE_APP_BASE_URL || !isJSON) return;
-      const response = JSON.parse(event.data);
-      if (response.type === "sendDataRegisterRoomChat") {
-        const data = userInformationDTO(response.data);
-        if (data.roomId !== this.detailRoom.roomId) {
-          this.closeChatbox();
+      if (event.origin !== process.env.VUE_APP_BASE_URL || !isJSON) {
+        return;
+      } else {
+        const response = JSON.parse(event.data);
+        if (response.type === "sendDataRegisterRoomChat") {
+          const data = userInformationDTO(response.data);
+          if (data.roomId !== this.detailRoom.roomId) {
+            this.closeChatbox();
+          }
+          this.getInformationUserAndRoom(data);
         }
-        this.getInformationUserAndRoom(data);
       }
     },
     getInformationUserAndRoom(data) {
@@ -531,7 +549,7 @@ export default {
           });
         }
       } else {
-        this.isBlockedWarning = true;
+        this.toggleBlockWarning("open");
       }
     },
     toggleClearChatModal(isOpened) {
@@ -550,8 +568,14 @@ export default {
         this.isBlockModalOpen = false;
       }
     },
-    closeBlockWaring() {
-      this.isBlockedWarning = false;
+    toggleBlockWarning(state) {
+      // state should be <open> || <close>
+      if (state === "open") {
+        this.isBlockedWarning = true;
+        this.isToolsOpen = false;
+      } else if (state === "close") {
+        this.isBlockedWarning = false;
+      }
     },
     clearChat(roomId) {
       apiServices.clearChat(roomId).then((response) => {
@@ -574,6 +598,7 @@ export default {
             this.detailRoom.isMyBlock = data.isMyBlock;
             this.detailRoom.isBlocked = data.isBlocked;
 
+            this.localMessage = "";
             this.isBlockModalOpen = false;
             this.isBlockMessageOpen = true;
             setTimeout(() => {
