@@ -314,7 +314,6 @@ export default {
             data.messagesFirebase[data.messagesFirebase.length - 1];
           if (!this.checkSelfID(newMessage.user.userId)) {
             const composer = await this.$refs.composer;
-            console.log("composer.hasFocus()", composer);
             if (composer && composer.hasFocus()) {
               this.hasNewMessage = true;
             }
