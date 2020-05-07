@@ -6,5 +6,6 @@ export const API_URL = {
   GET_LIST_MESSAGE_HISTORIES: "chat/histories/",
   SEND_MESSAGE: "chat/send-message",
   TOGGLE_BLOCK: "chat/block-room",
+  CLEAN_CHAT: "chat/clean-chat",
   REPORT: "chat/report-room"
 };

@@ -21,8 +21,11 @@
   position: relative;
   z-index: 10;
   &__outer {
+    &.new-message {
+      background-color: #015ba5;
+    }
     position: relative;
-    padding: 5px 10px 5px;
+    padding: 7px 10px 7px;
     background-color: #7b8a9d;
     transition: background-color 0.4s;
     box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
@@ -156,6 +159,10 @@
   }
 }
 .composer {
+  &--disabled {
+    background-color: #eaeaea;
+    cursor: not-allowed;
+  }
   &__outer {
     display: flex;
     border-top: 1px solid #c9d0da;
@@ -172,9 +179,13 @@
       overflow-x: hidden;
       overflow-y: auto;
       cursor: text;
+      background-color: transparent;
       &:focus {
         outline: none;
         border: 0;
+      }
+      &:disabled {
+        cursor: not-allowed;
       }
     }
   }
@@ -194,38 +205,12 @@
         outline: none;
         border: 0;
       }
+      &:disabled {
+        &:hover {
+          background-color: #e0557d;
+        }
+        cursor: not-allowed;
+      }
     }
-  }
-}
-
-.block-modal {
-  color: #000;
-  width: calc(100% - 40px);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background-color: #fff;
-  transform: translate(-50%, -70%);
-  &__outer {
-    padding: 20px 25px;
-    font-size: 14px;
-    font-weight: 500;
-  }
-  &__warning {
-    text-align: center;
-  }
-  &__description {
-    padding-top: 10px;
-  }
-  &__action {
-    display: flex;
-    justify-content: center;
-    padding-top: 10px;
-  }
-  &__btn {
-    padding: 5px 20px;
-    color: #e0557d;
-    text-transform: uppercase;
-    cursor: pointer;
   }
 }
