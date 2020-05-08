@@ -1,5 +1,5 @@
 <template>
-  <div class="chatbox" v-show="isChatboxOpened">
+  <div class="chatbox" v-show="isChatboxOpened" v-on:click="onfocusChatbox()">
     <div class="chatbox__outer">
       <div class="chatbox__inner">
         <div class="chat-titlebar">
@@ -313,10 +313,8 @@ export default {
           let newMessage =
             data.messagesFirebase[data.messagesFirebase.length - 1];
           if (!this.checkSelfID(newMessage.user.userId)) {
-            const composer = await this.$refs.composer;
-            if (composer && composer.hasFocus()) {
-              this.hasNewMessage = true;
-            }
+            // const composer = await this.$refs.composer;
+            this.hasNewMessage = true;
             this.detailRoom.messages.push(newMessage);
             this.scrollToEnd();
           }
@@ -374,6 +372,10 @@ export default {
     }
   },
   methods: {
+    onfocusChatbox() {
+      this.autoFocus();
+      this.hasNewMessage = false;
+    },
     toggleTools() {
       this.isToolsOpen = !this.isToolsOpen;
       this.isClearChatModalOpen = false;
@@ -429,17 +431,14 @@ export default {
     },
     async receiveDataRegisterRoomChat(event) {
       const isJSON = isJSONString(event.data);
-      if (event.origin !== process.env.VUE_APP_BASE_URL || !isJSON) {
-        return;
-      } else {
-        const response = JSON.parse(event.data);
-        if (response.type === "sendDataRegisterRoomChat") {
-          const data = userInformationDTO(response.data);
-          if (data.roomId !== this.detailRoom.roomId) {
-            this.closeChatbox();
-          }
-          this.getInformationUserAndRoom(data);
+      if (event.origin !== process.env.VUE_APP_BASE_URL || !isJSON) return;
+      const response = JSON.parse(event.data);
+      if (response.type === "sendDataRegisterRoomChat") {
+        const data = userInformationDTO(response.data);
+        if (data.roomId !== this.detailRoom.roomId) {
+          this.closeChatbox();
         }
+        this.getInformationUserAndRoom(data);
       }
     },
     getInformationUserAndRoom(data) {

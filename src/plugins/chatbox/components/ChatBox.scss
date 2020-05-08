@@ -77,6 +77,7 @@
           background-color: #f2f1f6;
           box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 8px;
           ul {
+            margin-bottom: 0;
             padding: 10px 0 12px;
             list-style: none;
             li {
@@ -180,6 +181,8 @@
       overflow-y: auto;
       cursor: text;
       background-color: transparent;
+      outline: none;
+      border: 0;
       &:focus {
         outline: none;
         border: 0;
@@ -198,6 +201,8 @@
       padding: 7px 12px;
       border-radius: 10px;
       background-color: #e0557d;
+      outline: none;
+      border: 0;
       &:hover {
         background-color: #f7799d;
       }

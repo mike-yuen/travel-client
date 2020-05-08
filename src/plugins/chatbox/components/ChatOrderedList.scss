@@ -16,6 +16,9 @@
     font-weight: bold;
     padding-left: 15px;
     padding-right: 15px;
+    .chatlist__header {
+      margin: 0;
+    }
     a {
       display: flex;
       align-items: center;

@@ -2,7 +2,7 @@
   <div :class="[isListExpanded ? 'chatlist--expand' : '', 'chatlist']">
     <div class="chatlist__heading" v-on:click="toggleList">
       <a href="javascript:void(0)">
-        <span class="heading">Messages</span>
+        <span class="chatlist__header">Messages</span>
         <img
           :src="require('../assets/images/icon-chevron-up.svg')"
           alt="Expand List Chat"
@@ -30,12 +30,7 @@
             <a
               class="mainlist__inner"
               href="javascript:void(0)"
-              v-on:click="
-                selectChatAccount(
-                  account.latestMessage.user.userId,
-                  account.roomId
-                )
-              "
+              v-on:click="selectChatAccount(account.userId, account.roomId)"
             >
               <div class="mainlist__container">
                 <div class="mainlist__avatar">
@@ -183,8 +178,8 @@ export default {
             // console.log("data", userChatData);
             this.listenNewMessagesInRoom(
               userChatData.roomId,
-              userChatData.latestMessage.user.userId,
-              userChatData.latestMessage.messageId
+              userChatData.userId,
+              userChatData.latestMessageId
             );
           });
         }
@@ -225,6 +220,11 @@ export default {
             messagesFirebase
           });
           if (messagesFirebase.length > 0) {
+            const newMessage = messagesFirebase[messagesFirebase.length - 1];
+            const indexUser = self.chatList.data.findIndex(
+              (data) => data.roomId === roomId
+            );
+            self.chatList.data[indexUser].latestMessage = newMessage;
             self.orderToTop(self.chatList.data, "roomId", roomId);
           }
         });

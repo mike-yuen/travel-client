@@ -9,8 +9,8 @@
 ### - Intergrate API chat
 
 - update variable in .env.\* file or update in global variable of production server:
-  - VUE_APP_BASE_URL: url of current website included protocol and port (for local)
-  - VUE_APP_CHAT_API: url of api
+  - VUE_APP_BASE_URL: url of current website included protocol and port (for local) (without / at the end)
+  - VUE_APP_CHAT_API: url of api (have / at the end)
 
 ### - Import plugin to main JS file
 
@@ -63,7 +63,7 @@ When a new message comes, this friend will be moved to the top of the chat list.
 ## ChatBox.vue
 This component will show us the chat history between A(*) and his friend, E.g. user B.
 
-When A(*) chooses Block on the 3dots menu, a confirmation popup will be opened. If A(*) clicks "Block", A(*) CANNOT send message to B anymore(input message will be disabled).
+When A(*) chooses Block on the 3dots menu, a confirmation popup will be opened. If A( *) clicks "Block", A( *) CANNOT send message to B anymore(input message will be disabled).
 If B is blocked by A(*), when B tries to send message to A( *), he will receive a fail message.
 
 When A(*) chooses Clear chat, a confirmation popup will be opened. If A( *) clicks "Clear", the chat history in A( *)'s chat box will be cleaned. B's chat box still has the chat history.
