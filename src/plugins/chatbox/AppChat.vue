@@ -1,7 +1,7 @@
 <template>
   <div id="appchat">
     <ChatBox />
-    <ChatOrderedList />
+    <ChatOrderedList :mobileVersion="false" />
   </div>
 </template>
 

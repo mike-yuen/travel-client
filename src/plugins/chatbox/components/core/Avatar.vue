@@ -2,7 +2,7 @@
   <div class="avatar">
     <a href="javascript:void(0)" class="avatar__link">
       <div class="avatar__image" :style="[styleSize, styleRadius]">
-        <img :src="imageUrl" :alt="userName" @error="onLoadFailed" />
+        <img :src="imageUrl || defaultAvatar" :alt="userName" v-on:error="onLoadFailed" />
       </div>
     </a>
   </div>
@@ -52,6 +52,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$mobiles: 780px;
 .avatar {
   position: relative;
   &__image {
@@ -74,6 +75,14 @@ export default {
       right: 0;
       top: 0;
       width: 100%;
+    }
+  }
+}
+@media only screen and (max-width: $mobiles) {
+  .avatar {
+    &__image {
+      width: 40px !important;
+      height: 40px !important;
     }
   }
 }

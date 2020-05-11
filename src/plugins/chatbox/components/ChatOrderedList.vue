@@ -1,5 +1,11 @@
 <template>
-  <div :class="[isListExpanded ? 'chatlist--expand' : '', 'chatlist']">
+  <div
+    :class="[
+      isListExpanded || mobileVersion ? 'chatlist--expand' : '',
+      !mobileVersion ? 'chatlist--desktop' : '',
+      'chatlist'
+    ]"
+  >
     <div class="chatlist__heading" v-on:click="toggleList">
       <a href="javascript:void(0)">
         <span class="chatlist__header">Messages</span>
@@ -15,7 +21,7 @@
         />
       </a>
     </div>
-    <div class="mainlist" v-show="isListExpanded">
+    <div class="mainlist" v-show="isListExpanded || mobileVersion">
       <div v-if="chatList.data[0].roomId > 0">
         <transition-group
           class="mainlist__wrapper"
@@ -44,13 +50,15 @@
                   <!-- <SpinnerAlert :position="{ top: '7px', right: '-20px' }" /> -->
                 </div>
                 <div class="mainlist__seperate">
-                  <div class="mainlist__username">
-                    <span>{{ account.roomName }}</span>
-                  </div>
-                  <div class="mainlist__last-message">
-                    <span v-if="account.latestMessage">
-                      {{ account.latestMessage.message }}
-                    </span>
+                  <div class="mainlist__user">
+                    <div class="mainlist__username">
+                      <span>{{ account.roomName }}</span>
+                    </div>
+                    <div class="mainlist__last-message">
+                      <span v-if="account.latestMessage">
+                        {{ account.latestMessage.message }}
+                      </span>
+                    </div>
                   </div>
                   <div class="mainlist__timestamp">
                     <div v-if="account.latestMessage">
@@ -94,6 +102,12 @@ export default {
   components: {
     Avatar
     // SpinnerAlert
+  },
+  props: {
+    mobileVersion: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {
@@ -224,7 +238,9 @@ export default {
             const indexUser = self.chatList.data.findIndex(
               (data) => data.roomId === roomId
             );
-            self.chatList.data[indexUser].latestMessage = newMessage;
+            if (indexUser !== -1) {
+              self.chatList.data[indexUser].latestMessage = newMessage;
+            }
             self.orderToTop(self.chatList.data, "roomId", roomId);
           }
         });
@@ -266,12 +282,12 @@ export default {
                 roomId: newChat.roomId
               };
               if (!foundExistChat) {
-                self.listenNewMessagesInRoom(
+                await self.createItemInChatList(payloadDetailRoom);
+                await self.listenNewMessagesInRoom(
                   newChat.roomId,
                   friendId,
                   newChat.latestMessageId
                 );
-                await self.createItemInChatList(payloadDetailRoom);
                 EventBus.$emit("openRoomWithoutPushMessage", {
                   ...payloadDetailRoom
                 });
@@ -282,12 +298,15 @@ export default {
         });
     },
     createItemInChatList(data) {
+      const originData = data;
       apiServices.getDetailRoom(data).then((response) => {
         if (response && response.data) {
           const data = roomDetailDTO(response.data);
           const latestMessage = data.messages[0];
           const newItem = Object.assign({}, data);
           newItem.latestMessage = latestMessage;
+          newItem.latestMessageId = latestMessage.messageId;
+          newItem.userId = originData.userId;
           delete newItem.messages;
           this.chatList.data.unshift(newItem);
         }

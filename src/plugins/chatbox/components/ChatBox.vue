@@ -169,7 +169,6 @@
                 <div class="chatframe__init" v-show="isInitDataShowed">
                   <Avatar
                     :size="50"
-                    radius="5px"
                     :userName="userInformation.displayName"
                     :imageUrl="userInformation.userPhotoUrl"
                   />
@@ -447,10 +446,12 @@ export default {
         if (response && response.data) {
           const data = userInformationDTO(response.data);
           this.userInformation = data;
-          const dataId = {
-            userId: this.userInformation.userId,
-            roomId: this.userInformation.roomId
+          let dataId = {
+            userId: this.userInformation.userId
           };
+          if (data.roomId) {
+            dataId.roomId = this.userInformation.roomId;
+          }
           this.isChatboxOpened = true;
           this.isSpinnerShowed = true;
           this.getDetailRoom(dataId);

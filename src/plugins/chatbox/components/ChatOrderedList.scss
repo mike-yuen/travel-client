@@ -1,3 +1,4 @@
+$mobiles: 780px;
 .chatlist {
   position: fixed;
   bottom: 0;
@@ -80,6 +81,9 @@
     border-bottom: 1px solid #ddd;
     padding-bottom: 8px;
   }
+  &__user {
+    max-width: calc(100% - 80px);
+  }
   &__timestamp {
     font-size: 14px;
     line-height: 32px;
@@ -112,5 +116,50 @@
     font-size: 14px;
     color: #7b8a9d;
     cursor: pointer;
+  }
+}
+
+@media only screen and (max-width: $mobiles) {
+  .chatlist {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    &--desktop {
+      display: none;
+    }
+    &__heading {
+      display: none;
+    }
+  }
+  .mainlist {
+    height: 100%;
+    background-color: #f0f2f5;
+    &__wrapper {
+      padding: 0;
+    }
+    &__outer {
+      margin: 8px 5px;
+    }
+    &__inner {
+      background-color: #fff;
+    }
+    &__avatar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 55px;
+      width: 40px;
+    }
+    &__seperate {
+      align-items: center;
+      border: 0;
+    }
+    &__username {
+      font-weight: bold;
+    }
+    &__last-message {
+      display: block;
+    }
   }
 }

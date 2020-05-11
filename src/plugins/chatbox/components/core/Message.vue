@@ -1,14 +1,19 @@
 <template>
   <div :class="[self ? 'message--self' : '', 'message']">
-    <Avatar
-      :userName="data.user.displayName"
-      :imageUrl="data.user.userPhotoUrl"
-    />
-    <div class="message__outer">
-      <div class="message__content">{{ data.message }}</div>
-      <div class="message__timestamp">
-        <img :src="require('../../assets/images/icon-clock.svg')" alt="Time" />
-        <div>{{ data.createdDate | moment("MMM DD, h:mm A") }}</div>
+    <div class="message__wrapper">
+      <Avatar
+        :userName="data.user.displayName"
+        :imageUrl="data.user.userPhotoUrl"
+      />
+      <div class="message__outer">
+        <div class="message__content">{{ data.message }}</div>
+        <div class="message__timestamp">
+          <img
+            :src="require('../../assets/images/icon-clock.svg')"
+            alt="Time"
+          />
+          <div>{{ data.createdDate | moment("MMM DD, h:mm A") }}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -47,9 +52,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$mobiles: 780px;
 .message {
-  display: flex;
-  align-items: flex-start;
+  &__wrapper {
+    display: flex;
+    align-items: flex-start;
+  }
   &__outer {
     margin-left: 10px;
     margin-right: 0;
@@ -70,7 +78,9 @@ export default {
     }
   }
   &--self {
-    flex-direction: row-reverse;
+    .message__wrapper {
+      flex-direction: row-reverse;
+    }
     .message__outer {
       margin-left: 0;
       margin-right: 10px;
@@ -80,6 +90,20 @@ export default {
     }
     .message__timestamp {
       justify-content: flex-end;
+    }
+  }
+}
+@media only screen and (max-width: $mobiles) {
+  .message {
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+    &--self {
+      justify-content: flex-end;
+    }
+    &__wrapper {
+      width: 80%;
+      background-color: #fff;
     }
   }
 }

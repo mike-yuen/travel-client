@@ -32,11 +32,8 @@ export const getTokenLoginFirebase = () => {
 export const getDetailRoom = (dataId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { userId, roomId } = dataId;
-      const resp = await api.post(`${API_URL.GET_DETAIL_ROOM}`, {
-        userId,
-        roomId
-      });
+      // const { userId, roomId } = dataId;
+      const resp = await api.post(`${API_URL.GET_DETAIL_ROOM}`, dataId);
       if (resp) {
         resolve(resp);
       }
