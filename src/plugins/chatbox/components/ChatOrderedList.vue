@@ -261,18 +261,18 @@ export default {
           snapshot.docChanges().forEach(async function(change) {
             // Case New Room: Listen new room registered but has no message
 
-            // if (change.type === "added") {
-            // const newChat = await change.doc.data();
-            // const foundExistChat = await self.findExistChat(newChat.roomId);
-            // const friendId = await self.findFriendId(
-            //   newChat.participants,
-            //   userId
-            // );
-            // if (!foundExistChat && !newChat.latestMessageId) {
-            //   console.log("register new", newChat);
-            //   self.listenNewMessagesInRoom(newChat.roomId, friendId, 0);
-            // }
-            // }
+            if (change.type === "added") {
+              const newChat = await change.doc.data();
+              const foundExistChat = await self.findExistChat(newChat.roomId);
+              const friendId = await self.findFriendId(
+                newChat.participants,
+                userId
+              );
+              if (!foundExistChat && !newChat.latestMessageId) {
+                // console.log("register new", newChat);
+                self.listenNewMessagesInRoom(newChat.roomId, friendId, 0);
+              }
+            }
 
             // Case Modified Room: Listen all rooms registered and has message
             if (change.type === "modified") {
@@ -287,12 +287,15 @@ export default {
                 roomId: newChat.roomId
               };
               if (!foundExistChat) {
+                const latestMessageId = newChat.latestMessageId || 0;
                 await self.createItemInChatList(payloadDetailRoom);
-                await self.listenNewMessagesInRoom(
-                  newChat.roomId,
-                  friendId,
-                  newChat.latestMessageId
-                );
+                if (!latestMessageId) {
+                  await self.listenNewMessagesInRoom(
+                    newChat.roomId,
+                    friendId,
+                    latestMessageId
+                  );
+                }
                 EventBus.$emit("openRoomWithoutPushMessage", {
                   ...payloadDetailRoom
                 });
