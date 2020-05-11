@@ -94,7 +94,7 @@
                 <div>messages in this chat?</div>
               </template>
               <template v-slot:description>
-                <div>
+                <div class="chatframe__text-center">
                   This action can't be undone.
                 </div>
               </template>
@@ -166,7 +166,8 @@
               style="max-height: inherit"
             >
               <div class="chatframe__content">
-                <div class="chatframe__init" v-show="isInitDataShowed">
+                <!-- v-show="isInitDataShowed" -->
+                <div class="chatframe__init">
                   <Avatar
                     :size="50"
                     :userName="userInformation.displayName"
@@ -195,6 +196,7 @@
                     :data="message"
                     :self="checkSelfID(message.user.userId)"
                   />
+                  <TypingIndicator v-if="isSendingMessage" />
                 </div>
               </div>
             </div>
@@ -243,6 +245,7 @@ import Message from "./core/Message";
 import Button from "./core/Button";
 import ConfirmationModal from "./core/ConfirmationModal";
 import InformationModal from "./core/InformationModal";
+import TypingIndicator from "./core/TypingIndicator";
 
 export default {
   name: "Chatbox",
@@ -252,7 +255,8 @@ export default {
     Message,
     Button,
     ConfirmationModal,
-    InformationModal
+    InformationModal,
+    TypingIndicator
   },
   data() {
     return {
@@ -268,6 +272,7 @@ export default {
       isBlockMessageOpen: false,
       isBlockedWarning: false,
       isInitDataShowed: false,
+      isSendingMessage: false,
       currentScrollContainerHeight: 0,
       currentPage: 0,
 
@@ -314,9 +319,9 @@ export default {
           if (!this.checkSelfID(newMessage.user.userId)) {
             // const composer = await this.$refs.composer;
             this.hasNewMessage = true;
-            this.detailRoom.messages.push(newMessage);
-            this.scrollToEnd();
           }
+          this.detailRoom.messages.push(newMessage);
+          this.scrollToEnd();
         }
       }
     });
@@ -337,22 +342,24 @@ export default {
       container.addEventListener(
         "scroll",
         (e) => {
-          if (this.canLoadMoreChatHistories) {
-            let st = e.target.scrollTop;
-            // check lastScrollTop for already render component case - just scrolling up fires event
-            if (st < lastScrollTop && e.target.scrollTop === 0) {
-              this.isSpinnerShowed = true;
-              const pageNroomId = {
-                page: this.currentPage + 1,
-                roomId: this.userInformation.roomId
-              };
-              this.getListMessageHistories(
-                pageNroomId,
-                this.currentScrollContainerHeight
-              );
+          if (this.detailRoom.messages.length > 0) {
+            if (this.canLoadMoreChatHistories) {
+              let st = e.target.scrollTop;
+              // check lastScrollTop for already render component case - just scrolling up fires event
+              if (st < lastScrollTop && e.target.scrollTop === 0) {
+                this.isSpinnerShowed = true;
+                const pageNroomId = {
+                  page: this.currentPage + 1,
+                  roomId: this.userInformation.roomId
+                };
+                this.getListMessageHistories(
+                  pageNroomId,
+                  this.currentScrollContainerHeight
+                );
+              }
+              // For Mobile or negative scrolling
+              lastScrollTop = st <= 0 ? 0 : st;
             }
-            // For Mobile or negative scrolling
-            lastScrollTop = st <= 0 ? 0 : st;
           }
         },
         false
@@ -402,6 +409,7 @@ export default {
       this.isBlockMessageOpen = false;
       this.isBlockedWarning = false;
       this.isInitDataShowed = false;
+      this.isSendingMessage = false;
       this.currentScrollContainerHeight = 0;
       this.currentPage = 0;
 
@@ -520,32 +528,37 @@ export default {
           }
         });
     },
-    submitMessage(text) {
+    async submitMessage(text) {
       if (!this.isBlocked) {
         if (text) {
           const newMessage = {
             roomId: this.detailRoom.roomId,
             message: text
           };
-          const mockMessage = {
-            user: {
-              userId: this.selfUser.userId,
-              displayName: this.selfUser.displayName,
-              userPhotoUrl: this.selfUser.userPhotoUrl
-            },
-            roomId: this.detailRoom.roomId,
-            message: text,
-            createdDate: new Date()
-          };
-          this.detailRoom.messages.push(mockMessage);
-          this.scrollToEnd();
+          // const mockMessage = {
+          //   user: {
+          //     userId: this.selfUser.userId,
+          //     displayName: this.selfUser.displayName,
+          //     userPhotoUrl: this.selfUser.userPhotoUrl
+          //   },
+          //   roomId: this.detailRoom.roomId,
+          //   message: text,
+          //   createdDate: new Date()
+          // };
+          // this.detailRoom.messages.push(mockMessage);
           this.localMessage = "";
-          apiServices.sendMessage(newMessage).then((response) => {
-            if (response && response.data) {
-              this.detailRoom.messages.pop();
-              this.detailRoom.messages.push(response.data);
-            }
-          });
+          this.isSendingMessage = await true;
+          this.scrollToEnd();
+          apiServices
+            .sendMessage(newMessage)
+            .then((response) => {
+              if (response && response.data) {
+                this.isSendingMessage = false;
+              }
+            })
+            .catch(() => {
+              this.isSendingMessage = false;
+            });
         }
       } else {
         this.toggleBlockWarning("open");

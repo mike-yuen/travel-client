@@ -22,7 +22,7 @@
       </a>
     </div>
     <div class="mainlist" v-show="isListExpanded || mobileVersion">
-      <div v-if="chatList.data[0].roomId > 0">
+      <div v-if="chatList.data[0] && chatList.data[0].roomId > 0">
         <transition-group
           class="mainlist__wrapper"
           name="mainlist__outer"
@@ -107,6 +107,10 @@ export default {
     mobileVersion: {
       type: Boolean,
       default: true
+    },
+    hasFirebaseToken: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -256,18 +260,19 @@ export default {
         .onSnapshot(function(snapshot) {
           snapshot.docChanges().forEach(async function(change) {
             // Case New Room: Listen new room registered but has no message
-            if (change.type === "added") {
-              const newChat = await change.doc.data();
-              const foundExistChat = await self.findExistChat(newChat.roomId);
-              const friendId = await self.findFriendId(
-                newChat.participants,
-                userId
-              );
-              if (!foundExistChat && !newChat.latestMessageId) {
-                // console.log("register new", newChat);
-                self.listenNewMessagesInRoom(newChat.roomId, friendId, 0);
-              }
-            }
+
+            // if (change.type === "added") {
+            // const newChat = await change.doc.data();
+            // const foundExistChat = await self.findExistChat(newChat.roomId);
+            // const friendId = await self.findFriendId(
+            //   newChat.participants,
+            //   userId
+            // );
+            // if (!foundExistChat && !newChat.latestMessageId) {
+            //   console.log("register new", newChat);
+            //   self.listenNewMessagesInRoom(newChat.roomId, friendId, 0);
+            // }
+            // }
 
             // Case Modified Room: Listen all rooms registered and has message
             if (change.type === "modified") {

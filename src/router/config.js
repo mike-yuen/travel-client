@@ -3,12 +3,19 @@ const ClientTemplate = () => import("@/templates/ClientTemplate.vue");
 const Home = () => import("@/views/Home.vue");
 const Hotels = () => import("@/views/Hotels.vue");
 const HotelProperties = () => import("@/views/HotelProperties.vue");
+const ChatOrderedList = () =>
+  import("@/plugins/chatbox/components/ChatOrderedList.vue");
 
 const children = [
   {
     path: "/",
     name: "home",
     component: Home
+  },
+  {
+    path: "/chat",
+    name: "chat",
+    component: ChatOrderedList
   },
   {
     path: "/hotels",

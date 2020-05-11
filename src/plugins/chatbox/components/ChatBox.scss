@@ -1,4 +1,7 @@
 $mobiles: 780px;
+$pinky: #e0557d;
+$blue: #015ba5;
+
 .chatbox {
   position: fixed;
   bottom: 0;
@@ -23,7 +26,7 @@ $mobiles: 780px;
   z-index: 10;
   &__outer {
     &.new-message {
-      background-color: #015ba5;
+      background-color: $blue;
     }
     position: relative;
     padding: 7px 10px 7px;
@@ -121,6 +124,9 @@ $mobiles: 780px;
     background-color: rgba(210, 210, 210, 0.25);
     z-index: 5;
   }
+  &__text-center {
+    text-align: center;
+  }
   &__wrapper {
     background-color: transparent;
     display: flex;
@@ -150,7 +156,7 @@ $mobiles: 780px;
     min-height: 100%;
   }
   &__init {
-    display: flex;
+    display: none;
     margin-bottom: 15px;
   }
   &__info {
@@ -205,11 +211,11 @@ $mobiles: 780px;
     button {
       padding: 7px 12px;
       border-radius: 10px;
-      background-color: #e0557d;
+      background-color: $pinky;
       outline: none;
       border: 0;
       &:hover {
-        background-color: #f7799d;
+        background-color: rgba($pinky, 0.9);
       }
       &:focus {
         outline: none;
@@ -217,7 +223,7 @@ $mobiles: 780px;
       }
       &:disabled {
         &:hover {
-          background-color: #e0557d;
+          background-color: $pinky;
         }
         cursor: not-allowed;
       }

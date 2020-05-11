@@ -2,7 +2,11 @@
   <div class="avatar">
     <a href="javascript:void(0)" class="avatar__link">
       <div class="avatar__image" :style="[styleSize, styleRadius]">
-        <img :src="imageUrl || defaultAvatar" :alt="userName" v-on:error="onLoadFailed" />
+        <img
+          :src="imageUrl || defaultAvatar"
+          :alt="userName"
+          v-on:error="onLoadFailed"
+        />
       </div>
     </a>
   </div>
