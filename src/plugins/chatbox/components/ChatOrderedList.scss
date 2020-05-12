@@ -1,4 +1,6 @@
 $mobiles: 780px;
+$pinky: #e0557d;
+
 .chatlist {
   position: fixed;
   bottom: 0;
@@ -9,6 +11,9 @@ $mobiles: 780px;
   vertical-align: middle;
   transition: none;
   z-index: 10;
+  &--mobile {
+    display: none;
+  }
   &__heading {
     height: 50px;
     line-height: 50px;
@@ -62,8 +67,12 @@ $mobiles: 780px;
   &__inner {
     color: #333;
     display: block;
-    padding: 7px 0 5px;
+    padding: 7px 0 0;
+    margin-bottom: 5px;
     position: relative;
+    &.mainlist__inner--unread {
+      border: 1px solid $pinky;
+    }
   }
   &__container {
     padding: 0 15px;
@@ -121,6 +130,7 @@ $mobiles: 780px;
 
 @media only screen and (max-width: $mobiles) {
   .chatlist {
+    display: block;
     position: relative;
     top: 0;
     left: 0;

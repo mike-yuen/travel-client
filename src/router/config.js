@@ -3,8 +3,7 @@ const ClientTemplate = () => import("@/templates/ClientTemplate.vue");
 const Home = () => import("@/views/Home.vue");
 const Hotels = () => import("@/views/Hotels.vue");
 const HotelProperties = () => import("@/views/HotelProperties.vue");
-const ChatOrderedList = () =>
-  import("@/plugins/chatbox/components/ChatOrderedList.vue");
+const MobileChat = () => import("@/views/MobileChat.vue");
 
 const children = [
   {
@@ -15,7 +14,7 @@ const children = [
   {
     path: "/chat",
     name: "chat",
-    component: ChatOrderedList
+    component: MobileChat
   },
   {
     path: "/hotels",

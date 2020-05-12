@@ -9,7 +9,13 @@
         <div class="message__content">{{ data.message }}</div>
         <div class="message__timestamp">
           <img
+            class="clock--desktop"
             :src="require('../../assets/images/icon-clock.svg')"
+            alt="Time"
+          />
+          <img
+            class="clock--mobile"
+            :src="require('../../assets/images/icon-clock-mobile.svg')"
             alt="Time"
           />
           <div>{{ data.createdDate | moment("MMM DD, h:mm A") }}</div>
@@ -61,12 +67,12 @@ $mobiles: 780px;
   &__outer {
     margin-left: 10px;
     margin-right: 0;
-    margin-bottom: 15px;
+    margin-bottom: 17px;
   }
   &__content {
-    max-width: 156px;
+    max-width: 185px;
     overflow-wrap: break-word;
-    font-size: 14px;
+    font-size: 13px;
     color: #333;
     margin-bottom: 10px;
   }
@@ -75,6 +81,9 @@ $mobiles: 780px;
     color: #7d8b9a;
     img {
       margin-right: 5px;
+    }
+    .clock--mobile {
+      display: none;
     }
   }
   &--self {
@@ -100,10 +109,29 @@ $mobiles: 780px;
     margin-top: 10px;
     &--self {
       justify-content: flex-end;
+      .message__wrapper {
+        padding: 20px 10px 5px 15px;
+      }
+      .message__content {
+        text-align: left;
+      }
     }
     &__wrapper {
-      width: 80%;
+      max-width: 90%;
       background-color: #fff;
+      padding: 20px 15px 5px 10px;
+    }
+    &__content {
+      max-width: 100%;
+      font-size: 14px;
+    }
+    &__timestamp {
+      .clock--mobile {
+        display: block;
+      }
+      .clock--desktop {
+        display: none;
+      }
     }
   }
 }

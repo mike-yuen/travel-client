@@ -308,10 +308,11 @@ export default {
 
     EventBus.$on("newMessageInRoom", async (data) => {
       if (data.messagesFirebase.length > 0) {
-        if (!this.isChatboxOpened) {
-          const userId = { userId: data.userId };
-          await this.getInformationUserAndRoom(userId);
-        }
+        // if (!this.isChatboxOpened) {
+        //   const userId = { userId: data.userId };
+        //   await this.getInformationUserAndRoom(userId);
+        // }
+
         // Check listening to the correct room then add to chatlog
         if (data.roomId === this.detailRoom.roomId) {
           let newMessage =
@@ -326,12 +327,12 @@ export default {
       }
     });
 
-    EventBus.$on("openRoomWithoutPushMessage", async (data) => {
-      if (!this.isChatboxOpened) {
-        const userId = { userId: data.userId };
-        await this.getInformationUserAndRoom(userId);
-      }
-    });
+    // EventBus.$on("openRoomWithoutPushMessage", async (data) => {
+    //   if (!this.isChatboxOpened) {
+    //     const userId = { userId: data.userId };
+    //     await this.getInformationUserAndRoom(userId);
+    //   }
+    // });
   },
   async mounted() {
     window.addEventListener("message", this.receiveDataRegisterRoomChat, false);

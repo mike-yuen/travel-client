@@ -2,7 +2,7 @@
   <div
     :class="[
       isListExpanded || mobileVersion ? 'chatlist--expand' : '',
-      !mobileVersion ? 'chatlist--desktop' : '',
+      !mobileVersion ? 'chatlist--desktop' : 'chatlist--mobile',
       'chatlist'
     ]"
   >
@@ -35,6 +35,7 @@
           >
             <a
               class="mainlist__inner"
+              :class="[isUnread(account) ? 'mainlist__inner--unread' : '']"
               href="javascript:void(0)"
               v-on:click="selectChatAccount(account.userId, account.roomId)"
             >
@@ -94,6 +95,7 @@ import * as apiServices from "../services";
 import EventBus from "../utils/event-bus";
 import { chatListDTO, roomDetailDTO } from "../utils/helpers";
 import firebase from "../utils/firebase-sdk";
+
 import Avatar from "./core/Avatar";
 // import SpinnerAlert from "./core/SpinnerAlert";
 
@@ -157,7 +159,23 @@ export default {
       );
     }
   },
+  mounted() {
+    EventBus.$on("newMessageInRoom", async (dataFirebase) => {
+      const newMessage =
+        dataFirebase.messagesFirebase[dataFirebase.messagesFirebase.length - 1];
+      const indexUser = this.chatList.data.findIndex(
+        (data) => data.roomId === dataFirebase.roomId
+      );
+      if (indexUser !== -1) {
+        this.chatList.data[indexUser].latestMessage = newMessage;
+      }
+      this.orderToTop(this.chatList.data, "roomId", dataFirebase.roomId);
+    });
+  },
   methods: {
+    isUnread(user) {
+      return user.latestMessage && !user.latestMessage.isRead;
+    },
     toggleList() {
       this.isListExpanded = !this.isListExpanded;
     },
@@ -219,35 +237,28 @@ export default {
       array.sort((first) => first[`${property}`] === value && -1);
     },
     listenNewMessagesInRoom(roomId, userId, lastMessageId) {
-      const self = this;
-      firebase
-        .firestore()
-        .collection("rooms")
-        .doc(roomId.toString())
-        .collection("messages")
-        .where("messageId", ">", lastMessageId)
-        .onSnapshot(function(querySnapshot) {
-          let messagesFirebase = [];
-          querySnapshot.forEach(function(doc) {
-            messagesFirebase.push(doc.data());
-          });
-          // console.log("Current cities in CA: ", roomId, messagesFirebase);
-          EventBus.$emit("newMessageInRoom", {
-            roomId,
-            userId,
-            messagesFirebase
-          });
-          if (messagesFirebase.length > 0) {
-            const newMessage = messagesFirebase[messagesFirebase.length - 1];
-            const indexUser = self.chatList.data.findIndex(
-              (data) => data.roomId === roomId
-            );
-            if (indexUser !== -1) {
-              self.chatList.data[indexUser].latestMessage = newMessage;
+      if (!this.mobileVersion) {
+        firebase
+          .firestore()
+          .collection("rooms")
+          .doc(roomId.toString())
+          .collection("messages")
+          .where("messageId", ">", lastMessageId)
+          .onSnapshot(function(querySnapshot) {
+            let messagesFirebase = [];
+            querySnapshot.forEach(function(doc) {
+              messagesFirebase.push(doc.data());
+            });
+            // console.log("Current cities in CA: ", roomId, messagesFirebase);
+            if (messagesFirebase.length > 0) {
+              EventBus.$emit("newMessageInRoom", {
+                roomId,
+                userId,
+                messagesFirebase
+              });
             }
-            self.orderToTop(self.chatList.data, "roomId", roomId);
-          }
-        });
+          });
+      }
     },
 
     async listenNewChatInChatlist() {
@@ -296,9 +307,9 @@ export default {
                     latestMessageId
                   );
                 }
-                EventBus.$emit("openRoomWithoutPushMessage", {
-                  ...payloadDetailRoom
-                });
+                // EventBus.$emit("openRoomWithoutPushMessage", {
+                //   ...payloadDetailRoom
+                // });
                 // console.log("Modified", newChat);
               }
             }
