@@ -305,16 +305,13 @@ export default {
 
   async created() {
     this.selfUser = await storage.get("user");
-
     EventBus.$on("newMessageInRoom", async (data) => {
       if (data.messagesFirebase.length > 0) {
-        // if (!this.isChatboxOpened) {
-        //   const userId = { userId: data.userId };
-        //   await this.getInformationUserAndRoom(userId);
-        // }
-
         // Check listening to the correct room then add to chatlog
         if (data.roomId === this.detailRoom.roomId) {
+          if (this.isChatboxOpened) {
+            EventBus.$emit("isRoomOpened", this.detailRoom.roomId);
+          }
           let newMessage =
             data.messagesFirebase[data.messagesFirebase.length - 1];
           if (!this.checkSelfID(newMessage.user.userId)) {
@@ -394,6 +391,7 @@ export default {
     },
     closeChatbox() {
       this.isChatboxOpened = false;
+      this.markRead();
       this.resetInternalData();
     },
     checkSelfID(id) {
@@ -638,6 +636,9 @@ export default {
           }
         });
       }
+    },
+    markRead() {
+      apiServices.markRead(this.detailRoom.roomId);
     }
   }
 };

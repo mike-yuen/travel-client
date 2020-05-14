@@ -27,7 +27,7 @@ $pinky: #e0557d;
       align-items: center;
       margin: 0;
       &--unread {
-        display: none; //block
+        display: block; //block
         background-color: white;
         width: 20px;
         height: 20px;

@@ -142,3 +142,18 @@ export const clearChat = (roomId) => {
     }
   });
 };
+
+export const markRead = (roomId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.post(`${API_URL.MARK_READ}`, {
+        roomId: roomId
+      });
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

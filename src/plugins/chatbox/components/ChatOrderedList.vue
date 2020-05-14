@@ -11,9 +11,11 @@
       <a href="javascript:void(0)">
         <div class="chatlist__header">
           Messages
-          <span class="chatlist__header--unread">{{
-            chatList.countUserUnreadMessage
-          }}</span>
+          <span
+            class="chatlist__header--unread"
+            v-if="chatList.countUserUnreadMessage > 0"
+            >{{ chatList.countUserUnreadMessage }}</span
+          >
         </div>
         <img
           :src="require('../assets/images/icon-chevron-up-cyan.svg')"
@@ -69,7 +71,7 @@
                     <div class="mainlist__last-message">
                       <span v-if="account.latestMessage">
                         {{ account.latestMessage.message }}
-                        <!-- {{ account.countUnreadMessage }} -->
+                        <!-- <strong>{{ account.countUnreadMessage }}</strong> -->
                       </span>
                     </div>
                   </div>
@@ -131,6 +133,8 @@ export default {
     return {
       selfUser: "",
       isListExpanded: false,
+      roomIsOpened: 0,
+      roomsRegisteredNewCase: [],
       paramsChatList: {
         page: 0,
         limit: 10
@@ -177,6 +181,9 @@ export default {
     }
   },
   mounted() {
+    EventBus.$on("isRoomOpened", (data) => {
+      this.roomIsOpened = data;
+    });
     EventBus.$on("newMessageInRoom", async (dataFirebase) => {
       // console.log("dataFirebase", dataFirebase);
       const selfUserId = await this.selfUser.userId;
@@ -187,7 +194,10 @@ export default {
       );
       if (indexUser !== -1) {
         this.chatList.data[indexUser].latestMessage = newMessage;
-        if (newMessage.user.userId !== selfUserId) {
+        if (
+          dataFirebase.roomId !== this.roomIsOpened &&
+          newMessage.user.userId !== selfUserId
+        ) {
           this.chatList.data[indexUser].countUnreadMessage++;
           if (newMessage.countUnreadMessage <= 1) {
             this.chatList.countUserUnreadMessage++;
@@ -320,6 +330,11 @@ export default {
               if (!foundExistChat && !newChat.latestMessageId) {
                 // console.log("register new", newChat);
                 self.listenNewMessagesInRoom(newChat.roomId, friendId, 0);
+                if (
+                  self.roomsRegisteredNewCase.indexOf(newChat.roomId) === -1
+                ) {
+                  self.roomsRegisteredNewCase.push(newChat.roomId);
+                }
               }
             }
 
@@ -333,8 +348,10 @@ export default {
               );
               if (!foundExistChat) {
                 const latestMessageId = newChat.latestMessageId || 0;
+                const isNotRegisteredRoom =
+                  self.roomsRegisteredNewCase.indexOf(newChat.roomId) === -1;
                 await self.createItemInChatList(newChat.roomId);
-                if (latestMessageId) {
+                if (latestMessageId && isNotRegisteredRoom) {
                   await self.listenNewMessagesInRoom(
                     newChat.roomId,
                     friendId,
@@ -351,13 +368,12 @@ export default {
         });
     },
     createItemInChatList(roomId) {
-      apiServices.getRoomInChatList(roomId).then((response) => {
+      apiServices.getRoomInChatList(roomId).then(async (response) => {
         if (response && response.data) {
           // console.log("create item", response.data);
-          const data = response.data;
-          const newItem = Object.assign({}, data);
-          this.chatList.data.unshift(newItem);
-          if (data.countUnreadMessage <= 1) {
+          const data = await response.data;
+          this.chatList.data.unshift(data);
+          if (data.countUnreadMessage > 0) {
             this.chatList.countUserUnreadMessage++;
           }
         }
