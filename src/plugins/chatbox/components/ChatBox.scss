@@ -8,7 +8,7 @@ $blue: #015ba5;
   right: 285px;
   width: 300px; // considering
   box-shadow: none;
-  z-index: 40;
+  z-index: 1050;
   &__outer {
     font-size: 12px;
     line-height: 16px;
@@ -26,7 +26,7 @@ $blue: #015ba5;
   z-index: 10;
   &__outer {
     &.new-message {
-      background-color: $blue;
+      background-color: $pinky;
     }
     position: relative;
     padding: 7px 10px 7px;

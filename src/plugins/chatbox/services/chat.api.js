@@ -62,6 +62,19 @@ export const getChatList = (pagination) => {
   });
 };
 
+export const getRoomInChatList = (roomId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.get(`${API_URL.GET_CHAT_LIST + roomId}`);
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 export const getListMessageHistories = (dataGetList) => {
   return new Promise(async (resolve, reject) => {
     try {

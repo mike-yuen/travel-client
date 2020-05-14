@@ -23,7 +23,21 @@ $pinky: #e0557d;
     padding-left: 15px;
     padding-right: 15px;
     .chatlist__header {
+      display: flex;
+      align-items: center;
       margin: 0;
+      &--unread {
+        display: none; //block
+        background-color: white;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        border-radius: 50%;
+        color: $pinky;
+        text-align: center;
+        font-size: 12px;
+        margin-left: 10px;
+      }
     }
     a {
       display: flex;
@@ -35,6 +49,12 @@ $pinky: #e0557d;
     .chatlist__heading {
       color: white;
       background-color: #7b8a9d;
+    }
+  }
+  &--unread {
+    .chatlist__heading {
+      color: white;
+      background-color: $pinky;
     }
   }
 }
@@ -119,12 +139,16 @@ $pinky: #e0557d;
     white-space: nowrap;
   }
   &__loadmore {
-    display: block;
-    text-align: center;
-    padding: 5px;
-    font-size: 14px;
-    color: #7b8a9d;
-    cursor: pointer;
+    &:not([href]) {
+      display: block;
+      text-align: center;
+      padding: 5px;
+      padding-bottom: 10px;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: $pinky;
+      cursor: pointer;
+    }
   }
 }
 
@@ -135,6 +159,7 @@ $pinky: #e0557d;
     top: 0;
     left: 0;
     width: 100%;
+    border: 0;
     &--desktop {
       display: none;
     }

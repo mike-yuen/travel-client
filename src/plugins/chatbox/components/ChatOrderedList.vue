@@ -3,21 +3,32 @@
     :class="[
       isListExpanded || mobileVersion ? 'chatlist--expand' : '',
       !mobileVersion ? 'chatlist--desktop' : 'chatlist--mobile',
+      hasUnreadUser ? 'chatlist--unread' : '',
       'chatlist'
     ]"
   >
     <div class="chatlist__heading" v-on:click="toggleList">
       <a href="javascript:void(0)">
-        <span class="chatlist__header">Messages</span>
+        <div class="chatlist__header">
+          Messages
+          <span class="chatlist__header--unread">{{
+            chatList.countUserUnreadMessage
+          }}</span>
+        </div>
+        <img
+          :src="require('../assets/images/icon-chevron-up-cyan.svg')"
+          alt="Expand List Chat"
+          v-if="!isListExpanded && !hasUnreadUser"
+        />
         <img
           :src="require('../assets/images/icon-chevron-up.svg')"
           alt="Expand List Chat"
-          v-if="!isListExpanded"
+          v-if="!isListExpanded && hasUnreadUser"
         />
         <img
           :src="require('../assets/images/icon-chevron-down.svg')"
           alt="Collapse List Chat"
-          v-else
+          v-if="isListExpanded"
         />
       </a>
     </div>
@@ -58,6 +69,7 @@
                     <div class="mainlist__last-message">
                       <span v-if="account.latestMessage">
                         {{ account.latestMessage.message }}
+                        <!-- {{ account.countUnreadMessage }} -->
                       </span>
                     </div>
                   </div>
@@ -93,7 +105,7 @@
 import storage from "../utils/storage";
 import * as apiServices from "../services";
 import EventBus from "../utils/event-bus";
-import { chatListDTO, roomDetailDTO } from "../utils/helpers";
+import { chatListDTO } from "../utils/helpers";
 import firebase from "../utils/firebase-sdk";
 
 import Avatar from "./core/Avatar";
@@ -124,6 +136,8 @@ export default {
         limit: 10
       },
       chatList: {
+        countAllUnreadMessage: 0,
+        countUserUnreadMessage: 0,
         data: [
           {
             roomId: 0,
@@ -157,10 +171,15 @@ export default {
         this.chatList.data.length < this.chatList.totalElements &&
         this.paramsChatList.page < this.chatList.totalPages - 1 //page index from 0
       );
+    },
+    hasUnreadUser() {
+      return this.chatList.countUserUnreadMessage > 0;
     }
   },
   mounted() {
     EventBus.$on("newMessageInRoom", async (dataFirebase) => {
+      // console.log("dataFirebase", dataFirebase);
+      const selfUserId = await this.selfUser.userId;
       const newMessage =
         dataFirebase.messagesFirebase[dataFirebase.messagesFirebase.length - 1];
       const indexUser = this.chatList.data.findIndex(
@@ -168,13 +187,19 @@ export default {
       );
       if (indexUser !== -1) {
         this.chatList.data[indexUser].latestMessage = newMessage;
+        if (newMessage.user.userId !== selfUserId) {
+          this.chatList.data[indexUser].countUnreadMessage++;
+          if (newMessage.countUnreadMessage <= 1) {
+            this.chatList.countUserUnreadMessage++;
+          }
+        }
       }
       this.orderToTop(this.chatList.data, "roomId", dataFirebase.roomId);
     });
   },
   methods: {
     isUnread(user) {
-      return user.latestMessage && !user.latestMessage.isRead;
+      return user.countUnreadMessage > 0;
     },
     toggleList() {
       this.isListExpanded = !this.isListExpanded;
@@ -188,6 +213,18 @@ export default {
         }),
         process.env.VUE_APP_BASE_URL
       );
+      const indexUser = this.chatList.data.findIndex(
+        (data) => data.roomId === roomId
+      );
+      if (indexUser !== -1) {
+        if (this.chatList.data[indexUser].countUnreadMessage > 0) {
+          this.chatList.data[indexUser].countUnreadMessage = 0;
+          if (this.chatList.countUserUnreadMessage > 0) {
+            this.chatList.countUserUnreadMessage--;
+          }
+        }
+      }
+      // console.log("this.chatList", this.chatList.data);
     },
     getChatListForRendering(payload) {
       // payload included {page: <>, limit: 10}
@@ -209,6 +246,7 @@ export default {
               .filter(function(item) {
                 return this[item.roomId] ? false : (this[item.roomId] = true);
               }, {});
+            // console.log("room", this.chatList);
           }
           chatListData.map((userChatData) => {
             // console.log("data", userChatData);
@@ -293,14 +331,10 @@ export default {
                 newChat.participants,
                 userId
               );
-              const payloadDetailRoom = {
-                userId: friendId,
-                roomId: newChat.roomId
-              };
               if (!foundExistChat) {
                 const latestMessageId = newChat.latestMessageId || 0;
-                await self.createItemInChatList(payloadDetailRoom);
-                if (!latestMessageId) {
+                await self.createItemInChatList(newChat.roomId);
+                if (latestMessageId) {
                   await self.listenNewMessagesInRoom(
                     newChat.roomId,
                     friendId,
@@ -316,18 +350,16 @@ export default {
           });
         });
     },
-    createItemInChatList(data) {
-      const originData = data;
-      apiServices.getDetailRoom(data).then((response) => {
+    createItemInChatList(roomId) {
+      apiServices.getRoomInChatList(roomId).then((response) => {
         if (response && response.data) {
-          const data = roomDetailDTO(response.data);
-          const latestMessage = data.messages[0];
+          // console.log("create item", response.data);
+          const data = response.data;
           const newItem = Object.assign({}, data);
-          newItem.latestMessage = latestMessage;
-          newItem.latestMessageId = latestMessage.messageId;
-          newItem.userId = originData.userId;
-          delete newItem.messages;
           this.chatList.data.unshift(newItem);
+          if (data.countUnreadMessage <= 1) {
+            this.chatList.countUserUnreadMessage++;
+          }
         }
       });
     }

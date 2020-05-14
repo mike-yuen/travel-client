@@ -1,4 +1,6 @@
 export const chatListDTO = (data) => ({
+  countAllUnreadMessage: data.countAllUnreadMessage || 0,
+  countUserUnreadMessage: data.countUserUnreadMessage || 0,
   data: data.data || [],
   page: data.page || 0,
   limit: data.limit || 0,
