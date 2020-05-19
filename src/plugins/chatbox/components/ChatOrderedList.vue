@@ -36,11 +36,7 @@
     </div>
     <div class="mainlist" v-show="isListExpanded || mobileVersion">
       <div v-if="chatList.data[0] && chatList.data[0].roomId > 0">
-        <transition-group
-          class="mainlist__wrapper"
-          name="mainlist__outer"
-          tag="ul"
-        >
+        <ul class="mainlist__wrapper">
           <li
             class="mainlist__outer"
             v-for="account in chatList.data"
@@ -86,7 +82,7 @@
               </div>
             </a>
           </li>
-        </transition-group>
+        </ul>
         <a
           v-if="canLoadMoreChatList"
           v-on:click="loadMoreChatList"
@@ -372,9 +368,12 @@ export default {
         if (response && response.data) {
           // console.log("create item", response.data);
           const data = await response.data;
-          this.chatList.data.unshift(data);
-          if (data.countUnreadMessage > 0) {
-            this.chatList.countUserUnreadMessage++;
+          const foundExistChat = await this.findExistChat(roomId);
+          if (!foundExistChat) {
+            this.chatList.data.unshift(data);
+            if (data.countUnreadMessage > 0) {
+              this.chatList.countUserUnreadMessage++;
+            }
           }
         }
       });

@@ -249,6 +249,14 @@ $blue: #015ba5;
     &__wrapper {
       background-color: #f0f2f5;
       flex-basis: calc(100vh - 180px);
+      @supports (padding-top: constant(safe-area-inset-bottom)) {
+        --safe-area-inset-bottom: constant(safe-area-inset-bottom);
+        flex-basis: calc(100vh - 180px - var(--safe-area-inset-bottom));
+      }
+      @supports (padding-top: env(safe-area-inset-bottom)) {
+        --safe-area-inset-bottom: env(safe-area-inset-bottom);
+        flex-basis: calc(100vh - 180px - var(--safe-area-inset-bottom));
+      }
     }
     &__content {
       padding: 15px 12px 10px 12px;
