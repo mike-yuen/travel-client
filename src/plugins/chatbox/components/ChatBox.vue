@@ -159,7 +159,7 @@
               </template>
             </InformationModal>
           </div>
-          <div class="chatframe__wrapper">
+          <div class="chatframe__wrapper" :class="{ iphoneX: isIphoneX }">
             <div
               class="chatframe__overscroll"
               id="scroll-container"
@@ -234,7 +234,8 @@ import storage from "../utils/storage";
 import {
   isJSONString,
   userInformationDTO,
-  roomDetailDTO
+  roomDetailDTO,
+  iphoneXDetection
 } from "../utils/helpers";
 import EventBus from "../utils/event-bus";
 import * as apiServices from "../services";
@@ -365,6 +366,9 @@ export default {
     });
   },
   computed: {
+    isIphoneX() {
+      return iphoneXDetection();
+    },
     isBlocked() {
       return !this.detailRoom.isMyBlock && this.detailRoom.isBlocked;
     },
@@ -393,6 +397,7 @@ export default {
       this.isChatboxOpened = false;
       this.markRead();
       this.resetInternalData();
+      EventBus.$emit("isRoomOpened", 0);
     },
     checkSelfID(id) {
       return this.selfUser.userId === id;

@@ -182,13 +182,14 @@ export default {
     });
     EventBus.$on("newMessageInRoom", async (dataFirebase) => {
       // console.log("dataFirebase", dataFirebase);
-      const selfUserId = await this.selfUser.userId;
-      const newMessage =
-        dataFirebase.messagesFirebase[dataFirebase.messagesFirebase.length - 1];
-      const indexUser = this.chatList.data.findIndex(
+      const indexUser = await this.chatList.data.findIndex(
         (data) => data.roomId === dataFirebase.roomId
       );
       if (indexUser !== -1) {
+        const selfUserId = await this.selfUser.userId;
+        const newMessage = await dataFirebase.messagesFirebase[
+          dataFirebase.messagesFirebase.length - 1
+        ];
         this.chatList.data[indexUser].latestMessage = newMessage;
         if (
           dataFirebase.roomId !== this.roomIsOpened &&
