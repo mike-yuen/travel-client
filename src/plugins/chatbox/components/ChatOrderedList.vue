@@ -279,7 +279,13 @@ export default {
       return Object.keys(arrayId).find((data) => data != selfId);
     },
     orderToTop(array, property, value) {
-      array.sort((first) => first[`${property}`] === value && -1);
+      array.sort((first, second) => {
+        return first[property] === value
+          ? -1
+          : second[property] === value
+          ? 1
+          : 0;
+      });
     },
     listenNewMessagesInRoom(roomId, userId, lastMessageId) {
       if (!this.mobileVersion) {
@@ -382,8 +388,14 @@ export default {
   },
   async created() {
     this.selfUser = await storage.get("user");
-    await this.getChatListForRendering(this.paramsChatList);
-    this.listenNewChatInChatlist();
+  },
+  watch: {
+    hasFirebaseToken(newVal) {
+      if (newVal) {
+        this.getChatListForRendering(this.paramsChatList);
+        this.listenNewChatInChatlist();
+      }
+    }
   }
 };
 </script>
