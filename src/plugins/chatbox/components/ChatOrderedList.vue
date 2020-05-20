@@ -388,10 +388,14 @@ export default {
   },
   async created() {
     this.selfUser = await storage.get("user");
+    if (this.mobileVersion) {
+      this.getChatListForRendering(this.paramsChatList);
+      this.listenNewChatInChatlist();
+    }
   },
   watch: {
     hasFirebaseToken(newVal) {
-      if (newVal) {
+      if (!this.mobileVersion && newVal) {
         this.getChatListForRendering(this.paramsChatList);
         this.listenNewChatInChatlist();
       }

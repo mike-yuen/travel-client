@@ -72,6 +72,7 @@ $mobiles: 780px;
   &__content {
     max-width: 185px;
     overflow-wrap: break-word;
+    white-space: pre;
     font-size: 13px;
     color: #333;
     margin-bottom: 10px;
