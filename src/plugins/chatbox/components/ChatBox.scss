@@ -181,13 +181,15 @@ $blue: #015ba5;
   }
   &__input {
     flex: 1 1 auto;
-    input {
+    textarea {
+      resize: none;
       position: relative;
-      padding: 8px 8px 10px 10px;
+      padding: 12px 8px 10px 10px;
       width: 100%;
-      max-height: 90px;
+      max-height: 120px;
       min-height: 50px;
-      font-size: 16px;
+      line-height: 22px;
+      font-size: 15px;
       overflow-x: hidden;
       overflow-y: auto;
       cursor: text;
@@ -259,7 +261,7 @@ $blue: #015ba5;
   }
   .composer {
     &__input {
-      input {
+      textarea {
         min-height: 65px;
         &::-webkit-input-placeholder {
           color: black;

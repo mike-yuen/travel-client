@@ -92,8 +92,8 @@
         </a>
       </div>
       <div class="mainlist__placeholder" v-else>
-        <div>You haven't had any conversation yet.</div>
-        <div>Let's start a new chat on social wall.</div>
+        <div>No messages yet. Select a community</div>
+        <div>member and start a conversation!</div>
       </div>
     </div>
   </div>

@@ -205,12 +205,15 @@
             <form @submit.prevent="submitMessage(localMessage)">
               <div class="composer__outer">
                 <div class="composer__input">
-                  <input
+                  <textarea
                     ref="composer"
+                    rows="1"
                     placeholder="Type your message here..."
                     v-model="localMessage"
                     :disabled="isMyBlock"
-                  />
+                    @keyup.enter.exact="submitMessage(localMessage)"
+                    @keyup.ctrl.enter.exact="appendNewLine()"
+                  ></textarea>
                 </div>
                 <div class="composer__btn">
                   <button type="submit" :disabled="isMyBlock">
@@ -550,9 +553,8 @@ export default {
           //   createdDate: new Date()
           // };
           // this.detailRoom.messages.push(mockMessage);
-          this.localMessage = "";
+          this.localMessage = await "";
           this.isSendingMessage = await true;
-          this.scrollToEnd();
           apiServices
             .sendMessage(newMessage)
             .then((response) => {
@@ -567,6 +569,14 @@ export default {
       } else {
         this.toggleBlockWarning("open");
       }
+    },
+    appendNewLine() {
+      this.localMessage = `${this.localMessage}\n`;
+    },
+    async autoSizeComposer() {
+      const el = await this.$refs.composer;
+      el.style.cssText = "height:auto";
+      el.style.cssText = "height:" + el.scrollHeight + "px";
     },
     toggleClearChatModal(isOpened) {
       if (isOpened) {
@@ -644,6 +654,11 @@ export default {
     },
     markRead() {
       apiServices.markRead(this.detailRoom.roomId);
+    }
+  },
+  watch: {
+    localMessage() {
+      this.autoSizeComposer();
     }
   }
 };
