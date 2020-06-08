@@ -59,6 +59,7 @@ export default {
 $mobiles: 780px;
 .avatar {
   position: relative;
+  height: 55px;
   &__image {
     overflow: hidden;
     position: relative;

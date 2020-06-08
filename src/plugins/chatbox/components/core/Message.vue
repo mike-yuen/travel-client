@@ -6,7 +6,10 @@
         :imageUrl="data.user.userPhotoUrl"
       />
       <div class="message__outer">
-        <div class="message__content">{{ data.message }}</div>
+        <div
+          class="message__content"
+          :inner-html.prop="data.message | linkify"
+        ></div>
         <div class="message__timestamp">
           <img
             class="clock--desktop"
@@ -18,7 +21,14 @@
             :src="require('../../assets/images/icon-clock-mobile.svg')"
             alt="Time"
           />
-          <div>{{ data.createdDate | moment("MMM DD, h:mm A") }}</div>
+          <div>
+            {{
+              $moment
+                .utc(data.createdDate)
+                .local()
+                .fromNow(true)
+            }}
+          </div>
         </div>
       </div>
     </div>
@@ -26,6 +36,8 @@
 </template>
 
 <script>
+import { formatDateMomemt } from "../../utils/helpers";
+
 const Avatar = () => import("./Avatar");
 export default {
   name: "Message",
@@ -50,6 +62,9 @@ export default {
         };
       }
     }
+  },
+  created() {
+    formatDateMomemt(this);
   },
   components: {
     Avatar
@@ -80,6 +95,7 @@ $mobiles: 780px;
   &__timestamp {
     display: flex;
     color: #7d8b9a;
+    font-size: 11px;
     img {
       margin-right: 5px;
     }
@@ -123,7 +139,7 @@ $mobiles: 780px;
       padding: 20px 15px 5px 10px;
     }
     &__content {
-      max-width: 100%;
+      max-width: 260px;
       font-size: 14px;
     }
     &__timestamp {

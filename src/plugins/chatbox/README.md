@@ -5,6 +5,9 @@
 - npm install --save firebase
 - npm install --save axios
 - npm install --save vue-moment
+- npm install vue-click-outside
+- npm install node-sass
+- npm install sass-loader
 
 ### - Intergrate API chat
 

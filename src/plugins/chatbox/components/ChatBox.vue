@@ -2,7 +2,7 @@
   <div class="chatbox" v-show="isChatboxOpened" v-on:click="onfocusChatbox()">
     <div class="chatbox__outer">
       <div class="chatbox__inner">
-        <div class="chat-titlebar">
+        <div id="chat-titlebar" class="chat-titlebar">
           <div
             class="chat-titlebar__outer"
             :class="{ 'new-message': hasNewMessage }"
@@ -197,6 +197,11 @@
                     :self="checkSelfID(message.user.userId)"
                   />
                   <TypingIndicator v-if="isSendingMessage" />
+                  <InlineErrorMessage
+                    v-show="isErrorMessage && errorMessages.length > 0"
+                    v-html="errorMessages"
+                  >
+                  </InlineErrorMessage>
                 </div>
               </div>
             </div>
@@ -211,8 +216,18 @@
                     placeholder="Type your message here..."
                     v-model="localMessage"
                     :disabled="isMyBlock"
-                    @keyup.enter.exact="submitMessage(localMessage)"
-                    @keyup.ctrl.enter.exact="appendNewLine()"
+                    @keyup.enter.exact.prevent="submitMessage(localMessage)"
+                    @keypress.ctrl.enter.exact="appendNewLine()"
+                    v-if="!isMobile"
+                  ></textarea>
+                  <textarea
+                    ref="composer"
+                    rows="1"
+                    placeholder="Type your message here..."
+                    v-model="localMessage"
+                    :disabled="isMyBlock"
+                    @keyup.enter.exact="appendNewLine()"
+                    v-if="isMobile"
                   ></textarea>
                 </div>
                 <div class="composer__btn">
@@ -238,7 +253,8 @@ import {
   isJSONString,
   userInformationDTO,
   roomDetailDTO,
-  iphoneXDetection
+  iphoneXDetection,
+  isMobile
 } from "../utils/helpers";
 import EventBus from "../utils/event-bus";
 import * as apiServices from "../services";
@@ -250,6 +266,8 @@ import Button from "./core/Button";
 import ConfirmationModal from "./core/ConfirmationModal";
 import InformationModal from "./core/InformationModal";
 import TypingIndicator from "./core/TypingIndicator";
+import ClickOutside from "vue-click-outside";
+import InlineErrorMessage from "./core/InlineErrorMessage";
 
 export default {
   name: "Chatbox",
@@ -260,7 +278,8 @@ export default {
     Button,
     ConfirmationModal,
     InformationModal,
-    TypingIndicator
+    TypingIndicator,
+    InlineErrorMessage
   },
   data() {
     return {
@@ -279,6 +298,12 @@ export default {
       isSendingMessage: false,
       currentScrollContainerHeight: 0,
       currentPage: 0,
+      isMobile: false,
+      width: 0,
+      isAppDiv: false,
+      isDisplayContentDiv: false,
+      isErrorMessage: false,
+      errorMessages: "",
 
       // data object of user information - should only use userId & roomId
       userInformation: {
@@ -297,7 +322,7 @@ export default {
         roomName: "",
         roomPhotoUrl: "",
         messages: [],
-        limit: 0,
+        limit: 10,
         totalPages: 0,
         totalElements: 0,
         isBlocked: false,
@@ -306,7 +331,6 @@ export default {
       }
     };
   },
-
   async created() {
     this.selfUser = await storage.get("user");
     EventBus.$on("newMessageInRoom", async (data) => {
@@ -327,6 +351,18 @@ export default {
         }
       }
     });
+    this.isMobile = isMobile();
+    if (document.getElementById("app")) {
+      this.isAppDiv = true;
+    }
+    if (
+      document.getElementsByClassName("display-content") &&
+      document.getElementsByClassName("display-content")[0]
+    ) {
+      this.isDisplayContentDiv = true;
+    }
+    window.addEventListener("resize", this.handleResize);
+    this.handleResize();
 
     // EventBus.$on("openRoomWithoutPushMessage", async (data) => {
     //   if (!this.isChatboxOpened) {
@@ -350,8 +386,9 @@ export default {
               // check lastScrollTop for already render component case - just scrolling up fires event
               if (st < lastScrollTop && e.target.scrollTop === 0) {
                 this.isSpinnerShowed = true;
+                this.ceilPage();
                 const pageNroomId = {
-                  page: this.currentPage + 1,
+                  page: this.currentPage,
                   roomId: this.userInformation.roomId
                 };
                 this.getListMessageHistories(
@@ -366,6 +403,21 @@ export default {
         },
         false
       );
+      //listen 'Changing Profile' event
+      EventBus.$on("newChangeProfileDetailRoom", async (data) => {
+        //update room name and avatar
+        this.detailRoom.roomName = data.displayName;
+        this.detailRoom.roomPhotoUrl = data.userPhotoUrl;
+
+        //update room name and avatar in the history messages
+        this.detailRoom.messages.forEach((element, index) => {
+          if (element.user.userId == data.userUpdateProfileId) {
+            this.detailRoom.messages[index].user.displayName = data.displayName;
+            this.detailRoom.messages[index].user.userPhotoUrl =
+              data.userPhotoUrl;
+          }
+        });
+      });
     });
   },
   computed: {
@@ -388,19 +440,22 @@ export default {
       this.hasNewMessage = false;
     },
     toggleTools() {
-      this.isToolsOpen = !this.isToolsOpen;
-      this.isClearChatModalOpen = false;
-      this.isBlockModalOpen = false;
-      this.isBlockMessageOpen = false;
+      if (!this.isSpinnerShowed) {
+        this.isToolsOpen = !this.isToolsOpen;
+        this.isClearChatModalOpen = false;
+        this.isBlockModalOpen = false;
+        this.isBlockMessageOpen = false;
+      }
     },
     closeTools() {
       this.isToolsOpen = false;
     },
-    closeChatbox() {
-      this.isChatboxOpened = false;
-      this.markRead();
-      this.resetInternalData();
+    async closeChatbox() {
       EventBus.$emit("isRoomOpened", 0);
+      this.markRead();
+      this.isChatboxOpened = false;
+      this.resetInternalData();
+      this.handleDisplayParentContent("remove", "d-none");
     },
     checkSelfID(id) {
       return this.selfUser.userId === id;
@@ -449,13 +504,18 @@ export default {
       const response = JSON.parse(event.data);
       if (response.type === "sendDataRegisterRoomChat") {
         const data = userInformationDTO(response.data);
-        if (data.roomId !== this.detailRoom.roomId) {
+        if (
+          data.roomId !== this.detailRoom.roomId &&
+          this.detailRoom.roomId > 0
+        ) {
           this.closeChatbox();
         }
         this.getInformationUserAndRoom(data);
       }
     },
     getInformationUserAndRoom(data) {
+      this.isChatboxOpened = true;
+      this.isSpinnerShowed = true;
       // data included {userId: <>, roomId: <>}
       apiServices.getInformationUserAndRoom(data.userId).then((response) => {
         if (response && response.data) {
@@ -467,9 +527,12 @@ export default {
           if (data.roomId) {
             dataId.roomId = this.userInformation.roomId;
           }
-          this.isChatboxOpened = true;
-          this.isSpinnerShowed = true;
           this.getDetailRoom(dataId);
+        } else {
+          this.isErrorMessage = true;
+          this.errorMessages =
+            "<span>User isn't existed.<br/>Please refresh page to reload the list chat.</span>";
+          this.isSpinnerShowed = false;
         }
       });
     },
@@ -481,13 +544,15 @@ export default {
           if (!this.canLoadMoreChatHistories) {
             this.isInitDataShowed = true;
           }
-          this.isSpinnerShowed = false;
           this.scrollToEnd();
           this.autoFocus();
           this.updateScrollContainerHeight();
         } else {
           this.isInitDataShowed = true;
+          this.isErrorMessage = true;
+          this.errorMessages = "Room isn't existed";
         }
+        this.isSpinnerShowed = false;
       });
     },
     async getListMessageHistories(pageNroomId, lastPosition) {
@@ -505,6 +570,8 @@ export default {
               }
               this.isSpinnerShowed = false;
               const data = response.data;
+              //Retrieving data list and reversing data to show the lastest ones first
+              //And merging old records to new records
               this.detailRoom.messages = await data
                 .reverse()
                 .concat(this.detailRoom.messages)
@@ -537,22 +604,11 @@ export default {
     },
     async submitMessage(text) {
       if (!this.isBlocked) {
-        if (text) {
+        if (text.trim()) {
           const newMessage = {
             roomId: this.detailRoom.roomId,
             message: text
           };
-          // const mockMessage = {
-          //   user: {
-          //     userId: this.selfUser.userId,
-          //     displayName: this.selfUser.displayName,
-          //     userPhotoUrl: this.selfUser.userPhotoUrl
-          //   },
-          //   roomId: this.detailRoom.roomId,
-          //   message: text,
-          //   createdDate: new Date()
-          // };
-          // this.detailRoom.messages.push(mockMessage);
           this.localMessage = await "";
           this.isSendingMessage = await true;
           apiServices
@@ -607,6 +663,10 @@ export default {
       apiServices.clearChat(roomId).then((response) => {
         if (response && response.status === "OK") {
           this.detailRoom.messages = [];
+          this.detailRoom.totalElements = 0;
+          this.detailRoom.totalPages = 0;
+          this.currentPage = 0;
+          EventBus.$emit("isClearedRoom", roomId);
           this.isClearChatModalOpen = false;
         }
       });
@@ -654,12 +714,58 @@ export default {
     },
     markRead() {
       apiServices.markRead(this.detailRoom.roomId);
+    },
+    handleResize() {
+      this.width = window.innerWidth;
+    },
+    handleDisplayParentContent(action, className) {
+      action = action ? action : this.width <= 780 ? "add" : "remove";
+      className = !className ? "d-none" : className;
+
+      if (this.isAppDiv) {
+        document.getElementById("app").classList[action](className);
+      }
+
+      if (this.isDisplayContentDiv) {
+        document
+          .getElementsByClassName("display-content")[0]
+          .classList[action](className);
+      }
+    },
+    ceilPage() {
+      if (this.currentPage <= 0) {
+        const ceilPage =
+          this.detailRoom.messages.length / this.detailRoom.limit;
+        this.currentPage = Math.ceil(ceilPage);
+      } else {
+        this.currentPage += 1;
+      }
     }
   },
   watch: {
     localMessage() {
       this.autoSizeComposer();
+    },
+    width: {
+      handler() {
+        if (this.isChatboxOpened) {
+          this.handleDisplayParentContent(null, "d-none");
+        }
+      },
+      immediate: true
+    },
+    isChatboxOpened() {
+      if (this.isChatboxOpened) {
+        this.handleResize();
+        this.handleDisplayParentContent(null, "d-none");
+      }
     }
+  },
+  detroyed() {
+    window.removeEventListener("resize", this.handleResize);
+  },
+  directives: {
+    ClickOutside
   }
 };
 </script>
