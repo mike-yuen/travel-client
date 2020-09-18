@@ -4,6 +4,7 @@
       <Avatar
         :userName="data.user.displayName"
         :imageUrl="data.user.userPhotoUrl"
+        :isAdvisoryCouncil="data.user.isAdvisoryCouncil"
       />
       <div class="message__outer">
         <div
@@ -37,6 +38,7 @@
 
 <script>
 import { formatDateMomemt } from "../../utils/helpers";
+// import chatboxFilters from "../../utils/filters";
 
 const Avatar = () => import("./Avatar");
 export default {

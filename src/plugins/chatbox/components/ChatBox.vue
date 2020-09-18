@@ -12,6 +12,7 @@
                 :size="35"
                 :userName="detailRoom.roomName"
                 :imageUrl="detailRoom.roomPhotoUrl"
+                :isAdvisoryCouncil="detailRoom.isAdvisoryCouncil"
               />
               <div class="chat-titlebar__wrapper">
                 <div class="user-info">
@@ -40,9 +41,12 @@
                           <a
                             href="javascript:void(0)"
                             v-on:click="toggleClearChatModal(true)"
+                            v-bind:class="{
+                              'none-action-link':
+                                detailRoom.messages.length <= 0
+                            }"
+                            >Clear chat</a
                           >
-                            Clear chat
-                          </a>
                         </li>
                         <li
                           v-if="!detailRoom.isMyBlock && !detailRoom.isBlocked"
@@ -50,19 +54,19 @@
                           <a
                             href="javascript:void(0)"
                             v-on:click="toggleBlockModal(true)"
+                            >Block</a
                           >
-                            Block
-                          </a>
                         </li>
                         <li v-if="detailRoom.isMyBlock">
                           <a
                             href="javascript:void(0)"
                             v-on:click="toggleBlockChat('unblock')"
+                            >Unblock</a
                           >
-                            Unblock
-                          </a>
                         </li>
-                        <li><a href="javascript:void(0)">Report</a></li>
+                        <li>
+                          <a href="javascript:void(0)">Report</a>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -99,12 +103,17 @@
                 </div>
               </template>
               <template v-slot:action>
-                <Button v-on:onClick="toggleClearChatModal(false)">
-                  Cancel
-                </Button>
-                <Button v-on:onClick="clearChat(detailRoom.roomId)">
-                  Clear
-                </Button>
+                <Button v-on:onClick="toggleClearChatModal(false)"
+                  >Cancel</Button
+                >
+                <Button
+                  v-on:onClick="clearChat(detailRoom.roomId)"
+                  v-bind:class="{
+                    'none-action-link': isRemovingActionHrefLink
+                  }"
+                  >Clear</Button
+                >
+                <Spinner ref="spinner" :size="30" v-show="isSpinnerShowed" />
               </template>
             </ConfirmationModal>
           </div>
@@ -151,7 +160,8 @@
               </template>
               <template v-slot:description>
                 <div>
-                  Please try later or <a href="#">contact us</a> for details.
+                  Please try later or
+                  <a href="#">contact us</a> for details.
                 </div>
               </template>
               <template v-slot:action>
@@ -159,7 +169,11 @@
               </template>
             </InformationModal>
           </div>
-          <div class="chatframe__wrapper" :class="{ iphoneX: isIphoneX }">
+          <div
+            id="chatframe__wrapper"
+            class="chatframe__wrapper"
+            :class="{ iphoneX: isIphoneX }"
+          >
             <div
               class="chatframe__overscroll"
               id="scroll-container"
@@ -172,11 +186,10 @@
                     :size="50"
                     :userName="userInformation.displayName"
                     :imageUrl="userInformation.userPhotoUrl"
+                    :isAdvisoryCouncil="userInformation.isAdvisoryCouncil"
                   />
                   <div class="chatframe__info">
-                    <div class="quote">
-                      {{ userInformation.shortBio }}
-                    </div>
+                    <div class="quote">{{ userInformation.shortBio }}</div>
                     <div class="member">
                       <div class="member__since">Member since:</div>
                       <div>
@@ -200,8 +213,7 @@
                   <InlineErrorMessage
                     v-show="isErrorMessage && errorMessages.length > 0"
                     v-html="errorMessages"
-                  >
-                  </InlineErrorMessage>
+                  ></InlineErrorMessage>
                 </div>
               </div>
             </div>
@@ -216,6 +228,8 @@
                     placeholder="Type your message here..."
                     v-model="localMessage"
                     :disabled="isMyBlock"
+                    @focus="focusText()"
+                    @blur="blurText()"
                     @keyup.enter.exact.prevent="submitMessage(localMessage)"
                     @keypress.ctrl.enter.exact="appendNewLine()"
                     v-if="!isMobile"
@@ -226,6 +240,8 @@
                     placeholder="Type your message here..."
                     v-model="localMessage"
                     :disabled="isMyBlock"
+                    @focus="focusText()"
+                    @blur="blurText()"
                     @keyup.enter.exact="appendNewLine()"
                     v-if="isMobile"
                   ></textarea>
@@ -285,6 +301,7 @@ export default {
     return {
       // data for calculating internal component, when add new one you should add it to <resetInternalData> function
       selfUser: "",
+      windowHeightDefault: 0,
       localMessage: "",
       hasNewMessage: false,
       isChatboxOpened: false,
@@ -304,6 +321,7 @@ export default {
       isDisplayContentDiv: false,
       isErrorMessage: false,
       errorMessages: "",
+      isRemovingActionHrefLink: false,
 
       // data object of user information - should only use userId & roomId
       userInformation: {
@@ -346,6 +364,7 @@ export default {
             // const composer = await this.$refs.composer;
             this.hasNewMessage = true;
           }
+          this.isSendingMessage = false;
           this.detailRoom.messages.push(newMessage);
           this.scrollToEnd();
         }
@@ -435,6 +454,67 @@ export default {
     }
   },
   methods: {
+    isIOS() {
+      return (
+        (/iPad|iPhone|iPod/.test(navigator.platform) ||
+          (navigator.platform === "MacIntel" &&
+            navigator.maxTouchPoints > 1)) &&
+        !window.MSStream
+      );
+    },
+    setHeaderResize() {
+      if (this.isIOS()) {
+        setTimeout(() => {
+          this.windowHeightDefault = window.innerHeight;
+          this.removeHeaderFixed();
+          this.$refs.composer.blur();
+        }, 300);
+      }
+    },
+    setHeaderFixed() {
+      var interval = setInterval(() => {
+        if (this.windowHeightDefault < window.innerHeight) {
+          this.windowHeightDefault = window.innerHeight;
+        }
+        if (this.windowHeightDefault !== window.innerHeight) {
+          let titlebar = document.getElementById("chat-titlebar");
+          titlebar.style.top = pageYOffset + "px";
+          document.getElementById("chatframe__wrapper").style.marginTop =
+            pageYOffset + "px";
+          let scrollContainer = document.getElementById("scroll-container");
+          scrollContainer.scrollTop = scrollContainer.scrollHeight;
+          this.$refs.composer.ontouchmove = (event) => {
+            event.preventDefault();
+          };
+          titlebar.ontouchmove = (event) => {
+            event.preventDefault();
+          };
+          clearInterval(interval);
+        }
+      }, 300);
+      interval;
+    },
+    removeHeaderFixed() {
+      document.getElementById("chat-titlebar").style.top = "0px";
+      document.getElementById("chatframe__wrapper").style.marginTop = "0px";
+    },
+    focusText() {
+      if (this.isIOS() && window.innerWidth <= 780) {
+        this.setHeaderFixed();
+      }
+    },
+    blurText() {
+      if (this.isIOS() && window.innerWidth <= 780) {
+        setTimeout(() => {
+          if (
+            this.windowHeightDefault > window.innerHeight - 150 &&
+            this.windowHeightDefault < window.innerHeight + 150
+          ) {
+            this.removeHeaderFixed();
+          }
+        }, 300);
+      }
+    },
     onfocusChatbox() {
       this.autoFocus();
       this.hasNewMessage = false;
@@ -455,7 +535,12 @@ export default {
       this.markRead();
       this.isChatboxOpened = false;
       this.resetInternalData();
+      document.getElementsByName("viewport")[0].content =
+        "width=device-width, initial-scale=1";
       this.handleDisplayParentContent("remove", "d-none");
+      document
+        .getElementsByClassName("maincontainer")[0]
+        .classList.remove("articleoverlay");
     },
     checkSelfID(id) {
       return this.selfUser.userId === id;
@@ -635,10 +720,13 @@ export default {
       el.style.cssText = "height:" + el.scrollHeight + "px";
     },
     toggleClearChatModal(isOpened) {
+      const composer = this.$refs.composer;
       if (isOpened) {
+        composer.setAttribute("disabled", "");
         this.isClearChatModalOpen = true;
         this.isToolsOpen = false;
       } else {
+        composer.removeAttribute("disabled");
         this.isClearChatModalOpen = false;
       }
     },
@@ -660,6 +748,7 @@ export default {
       }
     },
     clearChat(roomId) {
+      this.isRemovingActionHrefLink = true;
       apiServices.clearChat(roomId).then((response) => {
         if (response && response.status === "OK") {
           this.detailRoom.messages = [];
@@ -668,6 +757,8 @@ export default {
           this.currentPage = 0;
           EventBus.$emit("isClearedRoom", roomId);
           this.isClearChatModalOpen = false;
+          this.isRemovingActionHrefLink = false;
+          this.$refs.composer.removeAttribute("disabled");
         }
       });
     },
@@ -748,6 +839,7 @@ export default {
     },
     width: {
       handler() {
+        this.setHeaderResize();
         if (this.isChatboxOpened) {
           this.handleDisplayParentContent(null, "d-none");
         }
@@ -757,6 +849,8 @@ export default {
     isChatboxOpened() {
       if (this.isChatboxOpened) {
         this.handleResize();
+        document.getElementsByName("viewport")[0].content =
+          "width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1";
         this.handleDisplayParentContent(null, "d-none");
       }
     }

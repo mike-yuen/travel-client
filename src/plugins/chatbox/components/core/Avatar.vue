@@ -1,11 +1,22 @@
 <template>
   <div class="avatar">
     <a href="javascript:void(0)" class="avatar__link">
-      <div class="avatar__image" :style="[styleSize, styleRadius]">
+      <div
+        class="avatar__image"
+        :class="isAdvisoryCouncil ? 'isAdvisoryCouncil' : ''"
+        :style="[styleSize, styleRadius]"
+      >
         <img
           :src="imageUrl || defaultAvatar"
           :alt="userName"
           v-on:error="onLoadFailed"
+          :style="styleRadius"
+        />
+        <img
+          class="advisoryIcon"
+          v-if="isAdvisoryCouncil"
+          :src="require('../../assets/images/advisory-icon.png')"
+          alt
         />
       </div>
     </a>
@@ -29,6 +40,10 @@ export default {
     },
     imageUrl: {
       type: String
+    },
+    isAdvisoryCouncil: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -61,7 +76,6 @@ $mobiles: 780px;
   position: relative;
   height: 55px;
   &__image {
-    overflow: hidden;
     position: relative;
     border: 1px solid #ddd;
     img {
@@ -69,6 +83,16 @@ $mobiles: 780px;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      &.advisoryIcon {
+        position: absolute;
+        width: 10px;
+        bottom: -5px;
+        right: 0;
+        height: 10px;
+        border: none;
+        background: transparent;
+        margin: 0;
+      }
     }
     &::after {
       border-radius: 50%;
@@ -80,6 +104,9 @@ $mobiles: 780px;
       right: 0;
       top: 0;
       width: 100%;
+    }
+    &.isAdvisoryCouncil {
+      border: 1.5px solid #e0557d;
     }
   }
 }

@@ -66,6 +66,7 @@
                     :size="32"
                     :userName="account.roomName"
                     :imageUrl="account.roomPhotoUrl"
+                    :isAdvisoryCouncil="account.isAdvisoryCouncil"
                   />
                   <!-- The below component I intended to use for indicating this user has a new message that still unread yet -->
                   <!-- Can be used with <isRead> in chatList.data -->
@@ -141,9 +142,7 @@ import * as apiServices from "../services";
 import EventBus from "../utils/event-bus";
 import { chatListDTO, formatDateMomemt } from "../utils/helpers";
 import firebase from "../utils/firebase-sdk";
-
 import Avatar from "./core/Avatar";
-// import SpinnerAlert from "./core/SpinnerAlert";
 
 export default {
   name: "ChatOrderedList",
@@ -169,7 +168,7 @@ export default {
       roomsRegisteredNewCase: [],
       paramsChatList: {
         page: 0,
-        limit: 10
+        limit: 60
       },
       chatList: {
         countAllUnreadMessage: 0,
@@ -474,6 +473,7 @@ export default {
       });
     },
     async listenNewChangeProfile() {
+      // const self = this;
       firebase
         .firestore()
         .collection("events")
@@ -485,6 +485,36 @@ export default {
               EventBus.$emit("newChangeProfileData", data);
             }
           });
+        });
+    },
+    async listenNewCounterInCommunity() {
+      const userId = await this.selfUser.userId;
+      firebase
+        .firestore()
+        .collection("posts")
+        .doc(userId.toString())
+        .onSnapshot(function(querySnapshot) {
+          const data = querySnapshot.data();
+          if (data) {
+            const countNewPost = data.countNewPost;
+            const isDisplay = countNewPost > 0 ? "inline-block" : "none";
+
+            if (document.getElementById("counter-community-desktop")) {
+              const swDesktop = document.getElementById(
+                "counter-community-desktop"
+              );
+              swDesktop.innerHTML = countNewPost;
+              swDesktop.style.display = isDisplay;
+            }
+
+            if (document.getElementById("counter-community-mobile")) {
+              const swMobile = document.getElementById(
+                "counter-community-mobile"
+              );
+              swMobile.innerHTML = countNewPost;
+              swMobile.style.display = isDisplay;
+            }
+          }
         });
     }
   },
@@ -502,6 +532,7 @@ export default {
         this.getChatListForRendering(this.paramsChatList);
         this.listenNewChatInChatlist();
         this.listenNewChangeProfile();
+        this.listenNewCounterInCommunity();
       }
     }
   }

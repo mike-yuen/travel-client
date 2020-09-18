@@ -15,7 +15,8 @@ export const userInformationDTO = (data) => ({
   userPhotoUrl: data.userPhotoUrl || "",
   shortBio: data.shortBio || "",
   memberSince: data.memberSince || "",
-  locationName: data.locationName || ""
+  locationName: data.locationName || "",
+  isAdvisoryCouncil: data.isAdvisoryCouncil || false
 });
 
 export const roomDetailDTO = (data) => ({
@@ -28,5 +29,6 @@ export const roomDetailDTO = (data) => ({
   totalElements: data.totalElements || 0,
   isBlocked: data.isBlocked || false,
   isReported: data.isReported || false,
-  isMyBlock: data.isMyBlock || false
+  isMyBlock: data.isMyBlock || false,
+  isAdvisoryCouncil: data.isAdvisoryCouncil || false
 });

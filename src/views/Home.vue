@@ -10,6 +10,7 @@
     <div class="max-w-xs mx-auto">
       <div id="g-recaptcha" class="g-recaptcha" :data-sitekey="sitekey"></div>
     </div>
+    <LinkPreview url="https://vuejs.org/" />
   </div>
 </template>
 
@@ -18,12 +19,14 @@ import { mapGetters } from "vuex";
 import * as apiServices from "@/services";
 import MainSlider from "@/components/slider/MainSlider";
 const SearchTabs = () => import("@/components/search-tabs/SearchTabs");
+const LinkPreview = () => import("@/components/link-preview/LinkPreview");
 
 export default {
   name: "home",
   components: {
     MainSlider,
-    SearchTabs
+    SearchTabs,
+    LinkPreview
   },
   data() {
     return {
