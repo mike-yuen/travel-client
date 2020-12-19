@@ -3,18 +3,12 @@ const ClientTemplate = () => import("@/templates/ClientTemplate.vue");
 const Home = () => import("@/views/Home.vue");
 const Hotels = () => import("@/views/Hotels.vue");
 const HotelProperties = () => import("@/views/HotelProperties.vue");
-const MobileChat = () => import("@/views/MobileChat.vue");
 
 const children = [
   {
     path: "/",
     name: "home",
     component: Home
-  },
-  {
-    path: "/chat",
-    name: "chat",
-    component: MobileChat
   },
   {
     path: "/hotels",

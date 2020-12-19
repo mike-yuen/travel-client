@@ -78,6 +78,7 @@ $mobiles: 780px;
   &__image {
     position: relative;
     border: 1px solid #ddd;
+    cursor: default;
     img {
       position: absolute;
       width: 100%;
@@ -86,8 +87,8 @@ $mobiles: 780px;
       &.advisoryIcon {
         position: absolute;
         width: 10px;
-        bottom: -5px;
-        right: 0;
+        bottom: -2px;
+        right: 1px;
         height: 10px;
         border: none;
         background: transparent;

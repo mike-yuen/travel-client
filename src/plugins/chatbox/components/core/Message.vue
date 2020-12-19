@@ -1,34 +1,44 @@
 <template>
-  <div :class="[self ? 'message--self' : '', 'message']">
-    <div class="message__wrapper">
-      <Avatar
-        :userName="data.user.displayName"
-        :imageUrl="data.user.userPhotoUrl"
-        :isAdvisoryCouncil="data.user.isAdvisoryCouncil"
-      />
-      <div class="message__outer">
-        <div
-          class="message__content"
-          :inner-html.prop="data.message | linkify"
-        ></div>
-        <div class="message__timestamp">
-          <img
-            class="clock--desktop"
-            :src="require('../../assets/images/icon-clock.svg')"
-            alt="Time"
-          />
-          <img
-            class="clock--mobile"
-            :src="require('../../assets/images/icon-clock-mobile.svg')"
-            alt="Time"
-          />
-          <div>
-            {{
-              $moment
-                .utc(data.createdDate)
-                .local()
-                .fromNow(true)
-            }}
+  <div v-if="!resend">
+    <div class="failed-send" v-if="data.isFail">
+      <span v-on:click="handleResend()">
+        Resend
+        <img
+          :src="require('../../assets/images/icon-resend.svg')"
+          alt="resend"
+        />
+      </span>
+    </div>
+    <div :class="[self ? 'message--self' : '', 'message']">
+      <div class="message__wrapper">
+        <Avatar
+          :userName="data.user.displayName"
+          :imageUrl="data.user.userPhotoUrl"
+          :isAdvisoryCouncil="data.user.isAdvisoryCouncil"
+        />
+        <div class="message__outer">
+          <div
+            class="message__content"
+            :inner-html.prop="data.message | linkify"
+          ></div>
+          <PreviewLink
+            v-for="(url, index) in listUrl"
+            :key="`url-${index}`"
+            :url="url"
+          >
+          </PreviewLink>
+          <div class="message__timestamp">
+            <img
+              class="clock--desktop"
+              :src="require('../../assets/images/icon-clock.svg')"
+              alt="Time"
+            />
+            <img
+              class="clock--mobile"
+              :src="require('../../assets/images/icon-clock-mobile.svg')"
+              alt="Time"
+            />
+            <div>{{ formatDateString(data.createdDate) }}</div>
           </div>
         </div>
       </div>
@@ -37,12 +47,19 @@
 </template>
 
 <script>
-import { formatDateMomemt } from "../../utils/helpers";
-// import chatboxFilters from "../../utils/filters";
-
+import { getDurationDate } from "../../utils/helpers";
+import chatboxFilters from "../../utils/filters";
+import { URL_REGEX } from "@/services/constants";
+import PreviewLink from "./PreviewLink";
 const Avatar = () => import("./Avatar");
 export default {
   name: "Message",
+  data() {
+    return {
+      resend: false,
+      listUrl: []
+    };
+  },
   props: {
     self: {
       type: Boolean,
@@ -66,10 +83,34 @@ export default {
     }
   },
   created() {
-    formatDateMomemt(this);
+    this.getValidUrl();
+  },
+  methods: {
+    formatDateString(date) {
+      return getDurationDate(this, date);
+    },
+    handleResend() {
+      this.$emit("handleResend", this.data.message);
+      const container = document.getElementById("scroll-container");
+      container.scrollTop = container.scrollHeight;
+      this.resend = true;
+    },
+    getValidUrl() {
+      const self = this;
+      self.listUrl = [];
+      self.data.message.replace(URL_REGEX, function(url) {
+        self.listUrl.push(url);
+      });
+    }
   },
   components: {
-    Avatar
+    Avatar,
+    PreviewLink
+  },
+  watch: {
+    data: function() {
+      this.getValidUrl();
+    }
   }
 };
 </script>
@@ -121,6 +162,23 @@ $mobiles: 780px;
     }
   }
 }
+.failed-send {
+  text-align: right;
+  margin: 8px 0 11px 40px;
+  span {
+    padding: 6px 12px;
+    border-radius: 5px;
+    background-color: #f0f2f5;
+    color: #f00;
+    cursor: pointer;
+  }
+  img {
+    width: 12px;
+    height: 12px;
+    margin-left: 3px;
+    margin-bottom: 5px;
+  }
+}
 @media only screen and (max-width: $mobiles) {
   .message {
     display: flex;
@@ -130,9 +188,6 @@ $mobiles: 780px;
       justify-content: flex-end;
       .message__wrapper {
         padding: 20px 10px 5px 15px;
-      }
-      .message__content {
-        text-align: left;
       }
     }
     &__wrapper {
@@ -152,6 +207,9 @@ $mobiles: 780px;
         display: none;
       }
     }
+  }
+  .failed-send {
+    margin: 20px 2px 0;
   }
 }
 </style>

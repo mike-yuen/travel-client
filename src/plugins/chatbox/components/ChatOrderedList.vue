@@ -94,10 +94,7 @@
                         v-if="account.latestMessage"
                       >
                         <span>{{
-                          $moment
-                            .utc(account.latestMessage.createdDate)
-                            .local()
-                            .fromNow(true)
+                          formatDateString(account.latestMessage.createdDate)
                         }}</span>
                       </div>
                       <div
@@ -140,7 +137,7 @@
 import storage from "../utils/storage";
 import * as apiServices from "../services";
 import EventBus from "../utils/event-bus";
-import { chatListDTO, formatDateMomemt } from "../utils/helpers";
+import { chatListDTO, getDurationDate } from "../utils/helpers";
 import firebase from "../utils/firebase-sdk";
 import Avatar from "./core/Avatar";
 
@@ -222,7 +219,7 @@ export default {
         (data) => data.roomId === dataFirebase.roomId
       );
       if (indexUser > -1) {
-        // const selfUserId = await this.selfUser.userId;
+        const selfUserId = await this.selfUser.userId;
         const newMessage = await dataFirebase.messagesFirebase[
           dataFirebase.messagesFirebase.length - 1
         ];
@@ -259,7 +256,7 @@ export default {
     });
     EventBus.$on("newChangeProfileData", (data) => {
       if (this.chatList.data.length > 0) {
-        const indexChatList = this.chatList.data.findIndex((value) => {
+        const indexChatList = this.chatList.data.findIndex((value, index) => {
           return value.userId == data.userUpdateProfileId;
         });
         if (indexChatList > -1) {
@@ -274,6 +271,9 @@ export default {
     });
   },
   methods: {
+    formatDateString(date) {
+      return getDurationDate(this, date);
+    },
     checkRoomIsAvailable(roomId) {
       if (
         this.roomIsOpened <= 0 ||
@@ -473,7 +473,7 @@ export default {
       });
     },
     async listenNewChangeProfile() {
-      // const self = this;
+      const self = this;
       firebase
         .firestore()
         .collection("events")
@@ -520,7 +520,6 @@ export default {
   },
   async created() {
     this.selfUser = await storage.get("user");
-    formatDateMomemt(this);
     if (this.mobileVersion) {
       this.getChatListForRendering(this.paramsChatList);
       this.listenNewChatInChatlist();

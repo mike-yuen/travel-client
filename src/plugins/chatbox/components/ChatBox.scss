@@ -33,7 +33,6 @@ $blue: #015ba5;
     background-color: #7b8a9d;
     transition: background-color 0.4s;
     box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
     z-index: 3;
   }
   &__inner {
@@ -42,6 +41,9 @@ $blue: #015ba5;
     position: relative;
     .avatar {
       height: 40px;
+      a {
+        cursor: default;
+      }
     }
   }
   &__wrapper {
@@ -67,6 +69,9 @@ $blue: #015ba5;
       span {
         font-weight: 500;
         white-space: nowrap;
+      }
+      a {
+        cursor: default;
       }
     }
     .tools {
@@ -221,6 +226,7 @@ $blue: #015ba5;
       background-color: $pinky;
       outline: none;
       border: 0;
+      cursor: pointer;
       &:hover {
         background-color: rgba($pinky, 0.9);
       }
@@ -232,7 +238,8 @@ $blue: #015ba5;
         &:hover {
           background-color: $pinky;
         }
-        cursor: not-allowed;
+        cursor: default;
+        opacity: .6;
       }
     }
   }

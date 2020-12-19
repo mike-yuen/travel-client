@@ -208,6 +208,7 @@
                     :key="`message-${index}`"
                     :data="message"
                     :self="checkSelfID(message.user.userId)"
+                    v-on:handleResend="submitMessage"
                   />
                   <TypingIndicator v-if="isSendingMessage" />
                   <InlineErrorMessage
@@ -247,7 +248,7 @@
                   ></textarea>
                 </div>
                 <div class="composer__btn">
-                  <button type="submit" :disabled="isMyBlock">
+                  <button type="submit" :disabled="isMyBlock || !localMessage">
                     <img
                       :src="require('../assets/images/icon-send.svg')"
                       alt="Send"
@@ -631,7 +632,9 @@ export default {
           }
           this.scrollToEnd();
           this.autoFocus();
-          this.updateScrollContainerHeight();
+          setTimeout(() => {
+            this.updateScrollContainerHeight();
+          });
         } else {
           this.isInitDataShowed = true;
           this.isErrorMessage = true;
@@ -705,6 +708,12 @@ export default {
             })
             .catch(() => {
               this.isSendingMessage = false;
+              let sendFailed = {
+                message: newMessage.message,
+                user: this.selfUser ? this.selfUser : storage.get("user"),
+                isFail: true
+              };
+              this.detailRoom.messages.push(sendFailed);
             });
         }
       } else {
