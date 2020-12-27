@@ -1,10 +1,14 @@
+$mobiles: 780px;
+$pinky: #e0557d;
+$blue: #015ba5;
+
 .chatbox {
   position: fixed;
   bottom: 0;
   right: 285px;
   width: 300px; // considering
   box-shadow: none;
-  z-index: 10;
+  z-index: 1600;
   &__outer {
     font-size: 12px;
     line-height: 16px;
@@ -22,20 +26,25 @@
   z-index: 10;
   &__outer {
     &.new-message {
-      background-color: #015ba5;
+      background-color: $pinky;
     }
     position: relative;
     padding: 7px 10px 7px;
     background-color: #7b8a9d;
     transition: background-color 0.4s;
     box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
     z-index: 3;
   }
   &__inner {
     display: flex;
     min-height: 28px;
     position: relative;
+    .avatar {
+      height: 40px;
+      a {
+        cursor: default;
+      }
+    }
   }
   &__wrapper {
     display: flex;
@@ -47,15 +56,22 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+      max-width: calc(100% - 50px);
     }
     .username {
       min-width: 0;
       font-size: 16px;
       line-height: normal;
+      color: white;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
       span {
-        color: white;
         font-weight: 500;
         white-space: nowrap;
+      }
+      a {
+        cursor: default;
       }
     }
     .tools {
@@ -77,6 +93,7 @@
           background-color: #f2f1f6;
           box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 8px;
           ul {
+            margin-bottom: 0;
             padding: 10px 0 12px;
             list-style: none;
             li {
@@ -115,6 +132,9 @@
     background-color: rgba(210, 210, 210, 0.25);
     z-index: 5;
   }
+  &__text-center {
+    text-align: center;
+  }
   &__wrapper {
     background-color: transparent;
     display: flex;
@@ -144,7 +164,7 @@
     min-height: 100%;
   }
   &__init {
-    display: flex;
+    display: none;
     margin-bottom: 15px;
   }
   &__info {
@@ -169,17 +189,23 @@
   }
   &__input {
     flex: 1 1 auto;
-    input {
+    textarea {
+      resize: none;
       position: relative;
-      padding: 8px 8px 10px 10px;
+      padding: 12px 8px 10px 10px;
       width: 100%;
-      max-height: 90px;
+      max-height: 120px;
       min-height: 50px;
-      font-size: 16px;
+      line-height: 15px;
+      font-size: 15px;
       overflow-x: hidden;
       overflow-y: auto;
       cursor: text;
       background-color: transparent;
+      outline: none;
+      border: 0;
+      color: #4b4b4b;
+      font-family: larsseit;
       &:focus {
         outline: none;
         border: 0;
@@ -197,9 +223,12 @@
     button {
       padding: 7px 12px;
       border-radius: 10px;
-      background-color: #e0557d;
+      background-color: $pinky;
+      outline: none;
+      border: 0;
+      cursor: pointer;
       &:hover {
-        background-color: #f7799d;
+        background-color: rgba($pinky, 0.9);
       }
       &:focus {
         outline: none;
@@ -207,10 +236,72 @@
       }
       &:disabled {
         &:hover {
-          background-color: #e0557d;
+          background-color: $pinky;
         }
-        cursor: not-allowed;
+        cursor: default;
+        opacity: .6;
       }
+    }
+  }
+}
+@media only screen and (max-width: $mobiles) {
+  .chatbox {
+    top: 0;
+    right: 0;
+    width: 100%;
+  }
+  .chat-titlebar {
+    &__outer {
+      background-color: #006dc7;
+    }
+    &__inner {
+      min-height: 45px;
+    }
+  }
+  .chatbox__outer, .chatbox__inner{
+	  height: 100%;
+  }
+  .chatbox__inner {
+    display: flex;
+    flex-direction: column;
+  }
+  .chatframe {
+    // height: calc(100vh - 115px);
+    height: 100%;
+    &__wrapper {
+      background-color: #f0f2f5;
+      //flex-basis: calc(100vh - 180px);
+      &.iphoneX {
+        //flex-basis: calc(100vh - 240px);
+      }
+    }
+    &__content {
+      padding: 15px 12px 10px 12px;
+    }
+  }
+  .composer {
+    &__input {
+      textarea {
+        min-height: 65px;
+        &::-webkit-input-placeholder {
+          color: black;
+        }
+        &:-ms-input-placeholder {
+          color: black;
+        }
+        &::placeholder {
+          color: black;
+        }
+      }
+    }
+  }
+}
+
+.tool__more-option {
+  li {
+    display: none;
+    &:first-child {
+      display: block;
     }
   }
 }

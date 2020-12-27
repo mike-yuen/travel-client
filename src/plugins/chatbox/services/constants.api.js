@@ -7,5 +7,6 @@ export const API_URL = {
   SEND_MESSAGE: "chat/send-message",
   TOGGLE_BLOCK: "chat/block-room",
   CLEAN_CHAT: "chat/clean-chat",
-  REPORT: "chat/report-room"
+  REPORT: "chat/report-room",
+  MARK_READ: "chat/mark-read-messages"
 };

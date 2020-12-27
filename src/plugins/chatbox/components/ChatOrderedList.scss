@@ -1,3 +1,6 @@
+$mobiles: 780px;
+$pinky: #e0557d;
+
 .chatlist {
   position: fixed;
   bottom: 0;
@@ -8,6 +11,9 @@
   vertical-align: middle;
   transition: none;
   z-index: 10;
+  &--mobile {
+    display: none;
+  }
   &__heading {
     height: 50px;
     line-height: 50px;
@@ -16,6 +22,23 @@
     font-weight: bold;
     padding-left: 15px;
     padding-right: 15px;
+    .chatlist__header {
+      display: flex;
+      align-items: center;
+      margin: 0;
+      &--unread {
+        display: block; //block
+        background-color: white;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        border-radius: 50%;
+        color: $pinky;
+        text-align: center;
+        font-size: 12px;
+        margin-left: 10px;
+      }
+    }
     a {
       display: flex;
       align-items: center;
@@ -26,6 +49,12 @@
     .chatlist__heading {
       color: white;
       background-color: #7b8a9d;
+    }
+  }
+  &--unread {
+    .chatlist__heading {
+      color: white;
+      background-color: $pinky;
     }
   }
 }
@@ -58,8 +87,11 @@
   &__inner {
     color: #333;
     display: block;
-    padding: 7px 0 5px;
+    padding: 10px 0 0;
     position: relative;
+    &.mainlist__inner--unread {
+      border: 1px solid $pinky;
+    }
   }
   &__container {
     padding: 0 15px;
@@ -68,8 +100,9 @@
   &__avatar {
     position: relative;
     float: left;
-    height: 32px;
-    width: 32px;
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
   }
   &__seperate {
     display: flex;
@@ -77,37 +110,118 @@
     border-bottom: 1px solid #ddd;
     padding-bottom: 8px;
   }
+  &__user {
+    max-width: calc(100% - 80px);
+  }
   &__timestamp {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 32px;
-    margin: 0 1px 0 15px;
+    margin: 0 1px 0 5px;
     text-align: right;
+  }
+  &__count-message {
+    display: flex;
+    width: 75px;
+    flex-direction: column;
+    justify-content: center;
+    height: 40px;
+  }
+  &__timestamp-day {
+    width: 100%;
+    line-height: 18px;
+    text-align: center;
+  }
+  &__timestamp-count {
+    display: flex;
+    justify-content: center;
+  }
+  &__span-count {
+    text-align: center;
+    line-height: 20px;
+    background-color: #e0557d;
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    font-size: 11px;
+    color: #FFF;
+    display: block;
   }
   &__username {
     display: block;
-    font-size: 15px;
-    line-height: 32px;
-    padding-left: 12px;
+    font-size: 13px;
+    line-height: 20px;
+    padding-left: 6px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    font-weight: 700;
   }
   &__last-message {
     color: #4b4f56;
-    display: none;
     font-size: 13px;
-    line-height: 18px;
+    line-height: 20px;
     overflow: hidden;
-    padding-left: 12px;
+    padding-left: 6px;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   &__loadmore {
+    &:not([href]) {
+      display: block;
+      text-align: center;
+      padding: 5px;
+      padding-bottom: 10px;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: $pinky;
+      cursor: pointer;
+    }
+  }
+}
+
+@media only screen and (max-width: $mobiles) {
+  .chatlist {
     display: block;
-    text-align: center;
-    padding: 5px;
-    font-size: 14px;
-    color: #7b8a9d;
-    cursor: pointer;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border: 0;
+    &--desktop {
+      display: none;
+    }
+    &__heading {
+      display: none;
+    }
+  }
+  .mainlist {
+    height: 100%;
+    background-color: #f0f2f5;
+    &__wrapper {
+      padding: 0;
+    }
+    &__outer {
+      margin: 8px 5px;
+    }
+    &__inner {
+      background-color: #fff;
+    }
+    &__avatar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 55px;
+      width: 40px;
+    }
+    &__seperate {
+      align-items: center;
+      border: 0;
+    }
+    &__username {
+      font-weight: bold;
+    }
+    &__last-message {
+      display: block;
+    }
   }
 }

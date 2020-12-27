@@ -11,7 +11,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.button {
+a.button:not([href]) {
   padding: 5px 20px;
   color: #e0557d;
   cursor: pointer;

@@ -2,7 +2,7 @@
   <div class="client">
     <NavigatorTop class="z-30" />
     <MenuDesktop class="hidden lg:block z-20" />
-    <main class="block relative bg-white min-h-screen pb-20 outline-none">
+    <main class="block relative bg-white min-h-screen pb-0 outline-none">
       <router-view />
     </main>
     <Footer />

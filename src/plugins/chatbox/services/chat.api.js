@@ -32,11 +32,8 @@ export const getTokenLoginFirebase = () => {
 export const getDetailRoom = (dataId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { userId, roomId } = dataId;
-      const resp = await api.post(`${API_URL.GET_DETAIL_ROOM}`, {
-        userId,
-        roomId
-      });
+      // const { userId, roomId } = dataId;
+      const resp = await api.post(`${API_URL.GET_DETAIL_ROOM}`, dataId);
       if (resp) {
         resolve(resp);
       }
@@ -56,6 +53,19 @@ export const getChatList = (pagination) => {
           limit: limit
         }
       });
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const getRoomInChatList = (roomId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.get(`${API_URL.GET_CHAT_LIST + roomId}`);
       if (resp) {
         resolve(resp);
       }
@@ -124,6 +134,21 @@ export const clearChat = (roomId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const resp = await api.delete(`${API_URL.CLEAN_CHAT}/${roomId}`);
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const markRead = (roomId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.post(`${API_URL.MARK_READ}`, {
+        roomId: roomId
+      });
       if (resp) {
         resolve(resp);
       }

@@ -1,40 +1,63 @@
 <template>
-  <div :class="[isListExpanded ? 'chatlist--expand' : '', 'chatlist']">
+  <div
+    :class="[
+      isListExpanded || mobileVersion ? 'chatlist--expand' : '',
+      !mobileVersion ? 'chatlist--desktop' : 'chatlist--mobile',
+      hasUnreadUser ? 'chatlist--unread' : '',
+      'chatlist'
+    ]"
+  >
     <div class="chatlist__heading" v-on:click="toggleList">
       <a href="javascript:void(0)">
-        <span class="heading">Messages</span>
+        <div class="chatlist__header">
+          Messages
+          <span
+            class="chatlist__header--unread"
+            v-if="chatList.countAllUnreadMessage > 0"
+            >{{
+              chatList.countAllUnreadMessage > 99
+                ? "99+"
+                : chatList.countAllUnreadMessage
+            }}</span
+          >
+        </div>
+        <img
+          :src="require('../assets/images/icon-chevron-up-cyan.svg')"
+          alt="Expand List Chat"
+          v-if="!isListExpanded && !hasUnreadUser"
+        />
         <img
           :src="require('../assets/images/icon-chevron-up.svg')"
           alt="Expand List Chat"
-          v-if="!isListExpanded"
+          v-if="!isListExpanded && hasUnreadUser"
         />
         <img
           :src="require('../assets/images/icon-chevron-down.svg')"
           alt="Collapse List Chat"
-          v-else
+          v-if="isListExpanded"
         />
       </a>
     </div>
-    <div class="mainlist" v-show="isListExpanded">
-      <div v-if="chatList.data[0].roomId > 0">
-        <transition-group
-          class="mainlist__wrapper"
-          name="mainlist__outer"
-          tag="ul"
-        >
+    <div class="mainlist" v-show="isListExpanded || mobileVersion">
+      <div v-if="chatList.data[0] && chatList.data[0].roomId > 0">
+        <ul class="mainlist__wrapper">
           <li
             class="mainlist__outer"
             v-for="account in chatList.data"
             :key="account.roomId"
+            :id="account.roomId"
           >
             <a
               class="mainlist__inner"
+              :class="[
+                isUnread(account, account.roomId)
+                  ? 'mainlist__inner--unread'
+                  : '',
+                account.isHidden == true ? 'd-none' : ''
+              ]"
               href="javascript:void(0)"
-              v-on:click="
-                selectChatAccount(
-                  account.latestMessage.user.userId,
-                  account.roomId
-                )
+              v-on:click.prevent="
+                selectChatAccount(account.userId, account.roomId)
               "
             >
               <div class="mainlist__container">
@@ -43,43 +66,68 @@
                     :size="32"
                     :userName="account.roomName"
                     :imageUrl="account.roomPhotoUrl"
+                    :isAdvisoryCouncil="account.isAdvisoryCouncil"
                   />
                   <!-- The below component I intended to use for indicating this user has a new message that still unread yet -->
                   <!-- Can be used with <isRead> in chatList.data -->
                   <!-- <SpinnerAlert :position="{ top: '7px', right: '-20px' }" /> -->
                 </div>
                 <div class="mainlist__seperate">
-                  <div class="mainlist__username">
-                    <span>{{ account.roomName }}</span>
-                  </div>
-                  <div class="mainlist__last-message">
-                    <span v-if="account.latestMessage">
-                      {{ account.latestMessage.message }}
-                    </span>
+                  <div class="mainlist__user">
+                    <div class="mainlist__username">
+                      <span>{{ account.roomName }}</span>
+                    </div>
+                    <div class="mainlist__last-message">
+                      <span
+                        v-if="account.latestMessage"
+                        v-bind:class="{
+                          'font-weight-bold': account.countUnreadMessage > 0
+                        }"
+                        >{{ account.latestMessage.message }}</span
+                      >
+                    </div>
                   </div>
                   <div class="mainlist__timestamp">
-                    <div v-if="account.latestMessage">
-                      {{
-                        account.latestMessage.createdDate | moment("MM/DD/YY")
-                      }}
+                    <div class="mainlist__count-message">
+                      <div
+                        class="mainlist__timestamp-day"
+                        v-if="account.latestMessage"
+                      >
+                        <span>{{
+                          formatDateString(account.latestMessage.createdDate)
+                        }}</span>
+                      </div>
+                      <div
+                        class="mainlist__timestamp-count"
+                        v-show="account.countUnreadMessage > 0"
+                      >
+                        <span
+                          class="mainlist__span-count"
+                          v-show="isUnread(account, account.roomId)"
+                          >{{
+                            account.countUnreadMessage > 99
+                              ? "99+"
+                              : account.countUnreadMessage
+                          }}</span
+                        >
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </a>
           </li>
-        </transition-group>
+        </ul>
         <a
           v-if="canLoadMoreChatList"
           v-on:click="loadMoreChatList"
           class="mainlist__loadmore"
+          >Load more</a
         >
-          Load more
-        </a>
       </div>
       <div class="mainlist__placeholder" v-else>
-        <div>You haven't had any conversation yet.</div>
-        <div>Let's start a new chat on social wall.</div>
+        <div>No messages yet. Select a community</div>
+        <div>member and start a conversation!</div>
       </div>
     </div>
   </div>
@@ -89,10 +137,9 @@
 import storage from "../utils/storage";
 import * as apiServices from "../services";
 import EventBus from "../utils/event-bus";
-import { chatListDTO, roomDetailDTO } from "../utils/helpers";
+import { chatListDTO, getDurationDate } from "../utils/helpers";
 import firebase from "../utils/firebase-sdk";
 import Avatar from "./core/Avatar";
-// import SpinnerAlert from "./core/SpinnerAlert";
 
 export default {
   name: "ChatOrderedList",
@@ -100,15 +147,29 @@ export default {
     Avatar
     // SpinnerAlert
   },
+  props: {
+    mobileVersion: {
+      type: Boolean,
+      default: true
+    },
+    hasFirebaseToken: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       selfUser: "",
       isListExpanded: false,
+      roomIsOpened: 0,
+      roomsRegisteredNewCase: [],
       paramsChatList: {
         page: 0,
-        limit: 10
+        limit: 60
       },
       chatList: {
+        countAllUnreadMessage: 0,
+        countUserUnreadMessage: 0,
         data: [
           {
             roomId: 0,
@@ -126,7 +187,8 @@ export default {
               createdDate: "",
               isRead: false
             },
-            isBlocked: false
+            isBlocked: false,
+            isHidden: false
           }
         ],
         page: 0,
@@ -142,13 +204,110 @@ export default {
         this.chatList.data.length < this.chatList.totalElements &&
         this.paramsChatList.page < this.chatList.totalPages - 1 //page index from 0
       );
+    },
+    hasUnreadUser() {
+      return this.chatList.countAllUnreadMessage > 0;
     }
   },
+  mounted() {
+    EventBus.$on("isRoomOpened", (data) => {
+      this.roomIsOpened = data;
+    });
+    EventBus.$on("newMessageInRoom", async (dataFirebase) => {
+      // console.log('dataFirebase', dataFirebase);
+      const indexUser = await this.chatList.data.findIndex(
+        (data) => data.roomId === dataFirebase.roomId
+      );
+      if (indexUser > -1) {
+        const selfUserId = await this.selfUser.userId;
+        const newMessage = await dataFirebase.messagesFirebase[
+          dataFirebase.messagesFirebase.length - 1
+        ];
+        this.chatList.data[indexUser].latestMessage = newMessage;
+
+        if (newMessage.countUnreadMessage > 0) {
+          const newCountUserUnreadMessage = newMessage.countUnreadMessage;
+          //update new the total of unread messages by user
+          //will plus the total number of new messages (in 'latestMessage' group)
+          //and will minus the total number of new messages
+          const isRoomAvailable = this.checkRoomIsAvailable(
+            dataFirebase.roomId
+          );
+
+          if (isRoomAvailable) {
+            this.chatList.countAllUnreadMessage +=
+              newCountUserUnreadMessage -
+              this.chatList.data[indexUser].countUnreadMessage;
+
+            //update the last total of the unread messages by user
+            this.chatList.data[
+              indexUser
+            ].countUnreadMessage = newCountUserUnreadMessage;
+          }
+
+          //if the selected room was hidden before, it will be set to display again
+          this.setHiddenRoomInList(dataFirebase.roomId, false);
+        }
+      }
+      this.orderToTop(this.chatList.data, "roomId", dataFirebase.roomId);
+    });
+    EventBus.$on("isClearedRoom", (data) => {
+      this.setHiddenRoomInList(data, true);
+    });
+    EventBus.$on("newChangeProfileData", (data) => {
+      if (this.chatList.data.length > 0) {
+        const indexChatList = this.chatList.data.findIndex((value, index) => {
+          return value.userId == data.userUpdateProfileId;
+        });
+        if (indexChatList > -1) {
+          this.chatList.data[indexChatList].roomName = data.displayName;
+          this.chatList.data[indexChatList].roomPhotoUrl = data.userPhotoUrl;
+          if (this.roomIsOpened > 0) {
+            data.detailUserRoomId = this.chatList.data[indexChatList].roomId;
+            EventBus.$emit("newChangeProfileDetailRoom", data);
+          }
+        }
+      }
+    });
+  },
   methods: {
+    formatDateString(date) {
+      return getDurationDate(this, date);
+    },
+    checkRoomIsAvailable(roomId) {
+      if (
+        this.roomIsOpened <= 0 ||
+        (this.roomIsOpened > 0 && roomId > 0 && roomId !== this.roomIsOpened)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    isUnread(user, roomId) {
+      const isRoomAvailable = this.checkRoomIsAvailable(roomId);
+      return isRoomAvailable ? user.countUnreadMessage > 0 : false;
+    },
     toggleList() {
       this.isListExpanded = !this.isListExpanded;
     },
     selectChatAccount(userId, roomId) {
+      this.roomIsOpened = roomId;
+      const indexUser = this.chatList.data.findIndex(
+        (data) => data.roomId === roomId
+      );
+      //select room to chat by room id
+      //find an index of user on list
+      if (indexUser !== -1) {
+        //update the total of the unread messages on list chat
+        this.chatList.countAllUnreadMessage -= this.chatList.data[
+          indexUser
+        ].countUnreadMessage;
+        //reset the total of the unread messages of selected user by user id and room id
+        this.chatList.data[indexUser].countUnreadMessage = 0;
+      }
+      //config to send and register room chat by user id and room id
+      //if it don't display, it will be displayed
       const dataRegisterChat = { userId: userId, roomId: roomId };
       window.postMessage(
         JSON.stringify({
@@ -178,13 +337,14 @@ export default {
               .filter(function(item) {
                 return this[item.roomId] ? false : (this[item.roomId] = true);
               }, {});
+            //console.log("room", this.chatList);
           }
           chatListData.map((userChatData) => {
-            // console.log("data", userChatData);
+            //console.log("data", userChatData);
             this.listenNewMessagesInRoom(
               userChatData.roomId,
-              userChatData.latestMessage.user.userId,
-              userChatData.latestMessage.messageId
+              userChatData.userId,
+              userChatData.latestMessageId
             );
           });
         }
@@ -203,33 +363,38 @@ export default {
       return Object.keys(arrayId).find((data) => data != selfId);
     },
     orderToTop(array, property, value) {
-      array.sort((first) => first[`${property}`] === value && -1);
+      array.sort((first, second) => {
+        return first[property] === value
+          ? -1
+          : second[property] === value
+          ? 1
+          : 0;
+      });
     },
     listenNewMessagesInRoom(roomId, userId, lastMessageId) {
-      const self = this;
-      firebase
-        .firestore()
-        .collection("rooms")
-        .doc(roomId.toString())
-        .collection("messages")
-        .where("messageId", ">", lastMessageId)
-        .onSnapshot(function(querySnapshot) {
-          let messagesFirebase = [];
-          querySnapshot.forEach(function(doc) {
-            messagesFirebase.push(doc.data());
+      if (!this.mobileVersion) {
+        firebase
+          .firestore()
+          .collection("rooms")
+          .doc(roomId.toString())
+          .collection("messages")
+          .where("messageId", ">", lastMessageId)
+          .onSnapshot(function(querySnapshot) {
+            let messagesFirebase = [];
+            querySnapshot.forEach(function(doc) {
+              messagesFirebase.push(doc.data());
+            });
+            // console.log('messagesFirebase',messagesFirebase)
+            if (messagesFirebase.length > 0) {
+              EventBus.$emit("newMessageInRoom", {
+                roomId,
+                userId,
+                messagesFirebase
+              });
+            }
           });
-          // console.log("Current cities in CA: ", roomId, messagesFirebase);
-          EventBus.$emit("newMessageInRoom", {
-            roomId,
-            userId,
-            messagesFirebase
-          });
-          if (messagesFirebase.length > 0) {
-            self.orderToTop(self.chatList.data, "roomId", roomId);
-          }
-        });
+      }
     },
-
     async listenNewChatInChatlist() {
       const self = this,
         userId = await this.selfUser.userId;
@@ -250,54 +415,125 @@ export default {
               if (!foundExistChat && !newChat.latestMessageId) {
                 // console.log("register new", newChat);
                 self.listenNewMessagesInRoom(newChat.roomId, friendId, 0);
+                if (
+                  self.roomsRegisteredNewCase.indexOf(newChat.roomId) === -1
+                ) {
+                  self.roomsRegisteredNewCase.push(newChat.roomId);
+                }
               }
             }
 
             // Case Modified Room: Listen all rooms registered and has message
             if (change.type === "modified") {
               const newChat = await change.doc.data();
+              // console.log("register modified", newChat);
               const foundExistChat = await self.findExistChat(newChat.roomId);
               const friendId = await self.findFriendId(
                 newChat.participants,
                 userId
               );
-              const payloadDetailRoom = {
-                userId: friendId,
-                roomId: newChat.roomId
-              };
               if (!foundExistChat) {
-                self.listenNewMessagesInRoom(
-                  newChat.roomId,
-                  friendId,
-                  newChat.latestMessageId
-                );
-                await self.createItemInChatList(payloadDetailRoom);
-                EventBus.$emit("openRoomWithoutPushMessage", {
-                  ...payloadDetailRoom
-                });
-                // console.log("Modified", newChat);
+                const latestMessageId = newChat.latestMessageId || 0;
+                const isNotRegisteredRoom =
+                  self.roomsRegisteredNewCase.indexOf(newChat.roomId) === -1;
+                await self.createItemInChatList(newChat.roomId);
+                if (latestMessageId && isNotRegisteredRoom) {
+                  await self.listenNewMessagesInRoom(
+                    newChat.roomId,
+                    friendId,
+                    latestMessageId
+                  );
+                }
               }
             }
           });
         });
     },
-    createItemInChatList(data) {
-      apiServices.getDetailRoom(data).then((response) => {
+    //create new listening for new user which don't exit in list chat
+    createItemInChatList(roomId) {
+      apiServices.getRoomInChatList(roomId).then(async (response) => {
         if (response && response.data) {
-          const data = roomDetailDTO(response.data);
-          const latestMessage = data.messages[0];
-          const newItem = Object.assign({}, data);
-          newItem.latestMessage = latestMessage;
-          delete newItem.messages;
-          this.chatList.data.unshift(newItem);
+          const data = await response.data;
+          const foundExistChat = await this.findExistChat(roomId);
+          if (!foundExistChat) {
+            this.chatList.data.unshift(data);
+            if (data.countUnreadMessage > 0) {
+              this.chatList.countAllUnreadMessage += data.countUnreadMessage;
+            }
+          }
         }
       });
+    },
+    setHiddenRoomInList(roomId, isHidden) {
+      this.chatList.data.forEach((current, index) => {
+        if (current.roomId == roomId) {
+          current.isHidden = isHidden ? isHidden : false;
+          return this.$set(this.chatList.data, index, current);
+        }
+      });
+    },
+    async listenNewChangeProfile() {
+      const self = this;
+      firebase
+        .firestore()
+        .collection("events")
+        .where("eventType", "==", "eventUpdateProfile")
+        .onSnapshot(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            const data = doc.data();
+            if (Object.keys(data).length > 0 && data.constructor === Object) {
+              EventBus.$emit("newChangeProfileData", data);
+            }
+          });
+        });
+    },
+    async listenNewCounterInCommunity() {
+      const userId = await this.selfUser.userId;
+      firebase
+        .firestore()
+        .collection("posts")
+        .doc(userId.toString())
+        .onSnapshot(function(querySnapshot) {
+          const data = querySnapshot.data();
+          if (data) {
+            const countNewPost = data.countNewPost;
+            const isDisplay = countNewPost > 0 ? "inline-block" : "none";
+
+            if (document.getElementById("counter-community-desktop")) {
+              const swDesktop = document.getElementById(
+                "counter-community-desktop"
+              );
+              swDesktop.innerHTML = countNewPost;
+              swDesktop.style.display = isDisplay;
+            }
+
+            if (document.getElementById("counter-community-mobile")) {
+              const swMobile = document.getElementById(
+                "counter-community-mobile"
+              );
+              swMobile.innerHTML = countNewPost;
+              swMobile.style.display = isDisplay;
+            }
+          }
+        });
     }
   },
   async created() {
     this.selfUser = await storage.get("user");
-    await this.getChatListForRendering(this.paramsChatList);
-    this.listenNewChatInChatlist();
+    if (this.mobileVersion) {
+      this.getChatListForRendering(this.paramsChatList);
+      this.listenNewChatInChatlist();
+    }
+  },
+  watch: {
+    hasFirebaseToken(newVal) {
+      if (newVal) {
+        this.getChatListForRendering(this.paramsChatList);
+        this.listenNewChatInChatlist();
+        this.listenNewChangeProfile();
+        this.listenNewCounterInCommunity();
+      }
+    }
   }
 };
 </script>

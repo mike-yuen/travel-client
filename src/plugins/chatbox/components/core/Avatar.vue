@@ -1,8 +1,23 @@
 <template>
   <div class="avatar">
     <a href="javascript:void(0)" class="avatar__link">
-      <div class="avatar__image" :style="[styleSize, styleRadius]">
-        <img :src="imageUrl" :alt="userName" @error="onLoadFailed" />
+      <div
+        class="avatar__image"
+        :class="isAdvisoryCouncil ? 'isAdvisoryCouncil' : ''"
+        :style="[styleSize, styleRadius]"
+      >
+        <img
+          :src="imageUrl || defaultAvatar"
+          :alt="userName"
+          v-on:error="onLoadFailed"
+          :style="styleRadius"
+        />
+        <img
+          class="advisoryIcon"
+          v-if="isAdvisoryCouncil"
+          :src="require('../../assets/images/advisory-icon.png')"
+          alt
+        />
       </div>
     </a>
   </div>
@@ -25,6 +40,10 @@ export default {
     },
     imageUrl: {
       type: String
+    },
+    isAdvisoryCouncil: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -52,17 +71,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$mobiles: 780px;
 .avatar {
   position: relative;
+  height: 55px;
   &__image {
-    overflow: hidden;
     position: relative;
     border: 1px solid #ddd;
+    cursor: default;
     img {
       position: absolute;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      &.advisoryIcon {
+        position: absolute;
+        width: 10px;
+        bottom: -2px;
+        right: 1px;
+        height: 10px;
+        border: none;
+        background: transparent;
+        margin: 0;
+      }
     }
     &::after {
       border-radius: 50%;
@@ -74,6 +105,17 @@ export default {
       right: 0;
       top: 0;
       width: 100%;
+    }
+    &.isAdvisoryCouncil {
+      border: 1.5px solid #e0557d;
+    }
+  }
+}
+@media only screen and (max-width: $mobiles) {
+  .avatar {
+    &__image {
+      width: 40px !important;
+      height: 40px !important;
     }
   }
 }

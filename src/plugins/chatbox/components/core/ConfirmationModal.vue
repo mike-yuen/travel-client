@@ -24,6 +24,7 @@ export default {
 .confirmation-modal {
   color: #000;
   width: calc(100% - 40px);
+  max-width: 260px;
   position: absolute;
   top: 50%;
   left: 50%;

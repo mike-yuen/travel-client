@@ -1,4 +1,6 @@
 export const chatListDTO = (data) => ({
+  countAllUnreadMessage: data.countAllUnreadMessage || 0,
+  countUserUnreadMessage: data.countUserUnreadMessage || 0,
   data: data.data || [],
   page: data.page || 0,
   limit: data.limit || 0,
@@ -13,7 +15,8 @@ export const userInformationDTO = (data) => ({
   userPhotoUrl: data.userPhotoUrl || "",
   shortBio: data.shortBio || "",
   memberSince: data.memberSince || "",
-  locationName: data.locationName || ""
+  locationName: data.locationName || "",
+  isAdvisoryCouncil: data.isAdvisoryCouncil || false
 });
 
 export const roomDetailDTO = (data) => ({
@@ -26,5 +29,6 @@ export const roomDetailDTO = (data) => ({
   totalElements: data.totalElements || 0,
   isBlocked: data.isBlocked || false,
   isReported: data.isReported || false,
-  isMyBlock: data.isMyBlock || false
+  isMyBlock: data.isMyBlock || false,
+  isAdvisoryCouncil: data.isAdvisoryCouncil || false
 });
