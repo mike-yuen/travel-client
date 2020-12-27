@@ -4,9 +4,10 @@ export const iphoneXDetection = () => {
   return iPhone && aspect.toFixed(3) === "0.462";
 };
 
+/* eslint-disable */
 export const isMobile = () => {
   let check = false;
-  (function(a) {
+  (function (a) {
     if (
       /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
         a
@@ -19,3 +20,4 @@ export const isMobile = () => {
   })(navigator.userAgent || navigator.vendor || window.opera);
   return check;
 };
+/* eslint-enable */

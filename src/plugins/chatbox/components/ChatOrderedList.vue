@@ -219,7 +219,6 @@ export default {
         (data) => data.roomId === dataFirebase.roomId
       );
       if (indexUser > -1) {
-        const selfUserId = await this.selfUser.userId;
         const newMessage = await dataFirebase.messagesFirebase[
           dataFirebase.messagesFirebase.length - 1
         ];
@@ -256,7 +255,7 @@ export default {
     });
     EventBus.$on("newChangeProfileData", (data) => {
       if (this.chatList.data.length > 0) {
-        const indexChatList = this.chatList.data.findIndex((value, index) => {
+        const indexChatList = this.chatList.data.findIndex((value) => {
           return value.userId == data.userUpdateProfileId;
         });
         if (indexChatList > -1) {
@@ -473,7 +472,6 @@ export default {
       });
     },
     async listenNewChangeProfile() {
-      const self = this;
       firebase
         .firestore()
         .collection("events")

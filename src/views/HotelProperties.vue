@@ -24,7 +24,7 @@
             <div class="mr-3">
               <StarRating :rating="rating" />
             </div>
-            
+
             <button>
               <div class="flex">
                 <img

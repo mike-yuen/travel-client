@@ -48,7 +48,6 @@
 
 <script>
 import { getDurationDate } from "../../utils/helpers";
-import chatboxFilters from "../../utils/filters";
 import { URL_REGEX } from "@/services/constants";
 import PreviewLink from "./PreviewLink";
 const Avatar = () => import("./Avatar");
