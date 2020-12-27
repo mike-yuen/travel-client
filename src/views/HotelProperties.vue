@@ -24,9 +24,7 @@
             <div class="mr-3">
               <StarRating :rating="rating" />
             </div>
-
-            <!-- <iframe style="margin: 0; padding: 0; border: 0; width: 100%; height: 1600px;" src="//www.tripadvisor.com/WidgetEmbed-cdspropertydetail?locationId=424268&partnerId=fcdfe76073dc436aad9244439bac88be&display=true"/> -->
-
+            
             <button>
               <div class="flex">
                 <img

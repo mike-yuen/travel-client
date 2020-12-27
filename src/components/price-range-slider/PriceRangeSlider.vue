@@ -1,13 +1,8 @@
 <template>
   <div>
-    <p class="font-bold mb-3">Price per night [AUD]</p>
-    <div
-      class="border-2 w-full px-8 pt-15 pb-10 lg:px-0 lg:pt-10 lg:pb-10 lg:border-0 lg:w-10/12 flex items-center justify-center flex-col"
-    >
+    <span class="relative">${{ minValue }} - ${{ maxValue }} </span>
+    <div class="border-2 w-full lg:border-0 pt-4 pb-4 mb-4">
       <div class="track-container w-full relative cursor-pointer h-2">
-        <span class="absolute -top-3rem"
-          >${{ minValue }} - ${{ maxValue }}</span
-        >
         <Track
           class="track block absolute w-full bg-gray-500 top-1/2"
           ref="_vpcTrack"
@@ -146,7 +141,7 @@ export default {
     },
 
     trackWidthMin() {
-      return "left:" + this.valueToPercent(this.minValue) + "%";
+      return "left: calc(" + this.valueToPercent(this.minValue) + "%  + 12px)";
     },
 
     trackWidthMax() {

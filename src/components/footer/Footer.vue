@@ -1,5 +1,5 @@
 <template>
-  <footer id="footer" class="block relative pt-2 pb-8 bg-white">
+  <footer id="footer" class="block relative pt-0 pb-8 bg-white">
     <div
       class="relative py-8 px-0 mb-4 md:mb-12 bg-gray-100 border-t border-b border-gray-300"
     >

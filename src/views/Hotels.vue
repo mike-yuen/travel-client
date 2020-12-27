@@ -1,38 +1,81 @@
 <template>
-  <div>
-    <!-- <NavigatorTop /> -->
-    <!-- <MenuDesktop /> -->
-    <div class="lg:flex container mx-auto px-2">
-      <div class="w-full lg:w-1/4 p-2 lg:p-0">
-        <div class="lg:hidden" @click="showFilter">show filter</div>
-        <div :class="{ 'hidden lg:block': !filter }">
-          <PriceRangeSlider
-            :hotels="hotels"
-            :step="5"
-            v-on:priceReceive="(...price) => this.priceReceive(...price)"
-          />
-          <p>price range: {{ priceRange }}</p>
-          <HotelRatingFilter />
-          <TripAdvisorRating />
-          <HotelPropertyFilter />
-          <Facilities />
+  <div id="hotels" style="background-color: #f4f5f6">
+    <div class="relative w-full max-w-7xl mx-auto">
+      <div class="block py-8 min-h-20">
+        <h1 class="text-3xl font-bold m-0 mb-2">
+          Hotels in Saint-Aunes, France
+        </h1>
+        <div class="css-d785tk-Box e5f71i10">
+          <div class="css-l6j7gi-Box-Flex em8yo161">
+            <div data-testid="result-count" class="css-bx7fxa-Box e5f71i10">
+              Showing 1 available out of 3 properties
+            </div>
+          </div>
+          <div class="css-1ev36eu-Box e5f71i10">
+            <div class="css-72bb8v-Box-Flex em8yo160">
+              <div class="css-18aidf3-Box e1sqdzo10"></div>
+              <div class="css-iczpqk-Box e1sqdzo10"></div>
+              <div class="css-c4dzg2-Box e1sqdzo10"></div>
+              <div class="css-wiinfk-Box e1sqdzo10"></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="w-full lg:w-3/4">
-        <HotelCard
-          v-for="(hotel, index) in hotels"
-          :key="index"
-          :hotel="hotel"
-          :loading="loading"
-        />
+      <div class="lg:flex">
+        <div class="w-full lg:w-3/10 p-0 lg:pr-8 lg:mr-12">
+          <div class="hidden lg:block">
+            <div class="p-0 mb-4 border-b border-gray-50">
+              <div class="mb-4">
+                <div class="flex justify-between">
+                  <div>
+                    <h2 class="font-bold m-0 p-0">
+                      Filter properties
+                    </h2>
+                  </div>
+                  <div>
+                    <button type="button" class="focus:outline-none">
+                      <span class="underline">Reset all filters</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-0 mb-4 border-b border-gray-50">
+              <p class="font-bold mb-3">Price per night [AUD]</p>
+              <PriceRangeSlider
+                :hotels="hotels"
+                :step="5"
+                v-on:priceReceive="(...price) => this.priceReceive(...price)"
+              />
+            </div>
+            <div class="p-0 pb-4 mb-4 border-b border-gray-50">
+              <HotelRatingFilter />
+            </div>
+            <div class="p-0 pb-4 mb-4 border-b border-gray-50">
+              <TripAdvisorRating />
+            </div>
+            <div class="p-0 pb-4 mb-4 border-b border-gray-50">
+              <HotelPropertyFilter />
+            </div>
+            <div class="p-0 pb-4 mb-4">
+              <Facilities />
+            </div>
+          </div>
+        </div>
+        <div class="w-full lg:w-7/10">
+          <HotelCard
+            v-for="(hotel, index) in hotels"
+            :key="index"
+            :hotel="hotel"
+            :loading="loading"
+          />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import NavigatorTop from "@/components/navigator/NavigatorTop";
-// import MenuDesktop from "@/components/menu/MenuDesktop";
 const HotelCard = () => import("@/components/hotel-card/HotelCard");
 const HotelRatingFilter = () =>
   import("@/components/advanced-filter/HotelRating");
@@ -47,8 +90,6 @@ const PriceRangeSlider = () =>
 export default {
   name: "Hotels",
   components: {
-    // NavigatorTop,
-    // MenuDesktop,
     HotelCard,
     PriceRangeSlider,
     HotelRatingFilter,
@@ -59,11 +100,10 @@ export default {
   data() {
     return {
       loading: true,
-      filter: false,
       priceRange: null,
       hotels: [
         {
-          title: "Hotel",
+          title: "The Westin Resort & Spa Cancun",
           country: "VietNam",
           tripadvisorImage:
             "https://www.tripadvisor.com/img/cdsi/img2/ratings/traveler/4.5-15969-4.svg",
@@ -79,7 +119,7 @@ export default {
           icons: ["phone", "car"]
         },
         {
-          title: "Hotel 2",
+          title: "The Westin Resort & Spa Cancun",
           country: "US",
           tripadvisorImage:
             "https://www.tripadvisor.com/img/cdsi/img2/ratings/traveler/4.5-15969-4.svg",
@@ -95,7 +135,7 @@ export default {
           icons: ["book", "car"]
         },
         {
-          title: "Hotel 3",
+          title: "The Westin Resort & Spa Cancun",
           country: "US",
           tripadvisorImage:
             "https://www.tripadvisor.com/img/cdsi/img2/ratings/traveler/4.5-15969-4.svg",
@@ -123,10 +163,6 @@ export default {
 
     priceReceive(...price) {
       this.priceRange = price;
-    },
-
-    showFilter() {
-      this.filter = !this.filter;
     }
   },
 

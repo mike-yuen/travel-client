@@ -97,14 +97,16 @@ export default {
 
 <style>
 .thumbnails {
-  margin: 0 -5px;
-  width: calc(100% + 10px);
+  padding-top: 5px;
+  margin: 0 0 0 -2px;
+  width: calc(100% + 2px);
 }
 </style>
 
 <style lang="scss" scoped>
-.agile {
+/deep/ .agile {
   &__nav-button {
+    display: none;
     background: transparent;
     border: none;
     color: #ccc;
