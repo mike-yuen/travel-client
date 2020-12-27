@@ -5,7 +5,6 @@ export const getDurationDate = (self, date) => {
   return fromDate.locale("en").from(toDate, true);
 };
 export const formatDateMomemt = (self, formatDate) => {
-  const _this = self;
   self.$moment.locale("en", {
     relativeTime: {
       past: "%s ago",
