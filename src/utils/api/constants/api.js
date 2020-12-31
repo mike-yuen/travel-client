@@ -3,7 +3,7 @@ export const API_URL = {
   TOKEN: "token/",
   TOKEN_REFRESH: "token/refresh/",
   // hotel
-  HOTEL: "profiles/full-profile/",
+  CITIES: "api/master-data/cities",
   // user
   USER: "profiles/full-profile/"
 };

@@ -1,5 +1,5 @@
 <template>
-  <div id="hotels" style="background-color: #f4f5f6">
+  <div id="hotels" class="pb-8" style="background-color: #f4f5f6">
     <div class="relative w-full max-w-7xl mx-auto">
       <div class="block py-8 min-h-20">
         <h1 class="text-3xl font-bold m-0 mb-2">
@@ -65,7 +65,6 @@
         <div class="w-full lg:w-7/10">
           <SortType
             :optionsSelect="optionsSelectSort"
-            :optionsRadio="optionsRadioSort"
             v-on:sortValue="(...value) => this.sortValue(...value)"
           />
           <HotelCard
@@ -74,13 +73,13 @@
             :hotel="hotel"
             :loading="loading"
           />
+          <Pagination
+            v-model="page"
+            :page-count="hotels.length"
+            :margin-pages="2"
+            :page-range="5"
+          />
         </div>
-        <Pagination
-          v-model="page"
-          :page-count="hotels.length"
-          :margin-pages="2"
-          :page-range="5"
-        />
       </div>
     </div>
   </div>
@@ -121,10 +120,6 @@ export default {
         { label: "Highest Price", value: "price_desc" },
         { label: "Lowest Price", value: "price_asc" },
         { label: "TripAdvisor Rating", value: "tripadvisor" }
-      ],
-      optionsRadioSort: [
-        { label: "Use Cash", value: "cash" },
-        { label: "Use Points", value: "points" }
       ],
       page: 1,
       loading: true,

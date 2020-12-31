@@ -1,5 +1,7 @@
-const hotelState = (state) => state.hotelState;
+import { GETTERS } from "./const";
 
-export default {
-  hotelState
+export const getters = {
+  [GETTERS.GET_CITIES]: (state) => {
+    return state.cities;
+  }
 };

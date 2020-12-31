@@ -74,9 +74,6 @@
               </div>
               <div class="hidden lg:flex mt-10">
                 <div v-for="(icon, index) in hotel.icons" :key="index">
-                  <div
-                    class="rounded-full h-8 w-8 text-sm flex items-center justify-center bg-gray-300 mr-2"
-                  ></div>
                   <div class="hidden lg:flex mt-2">
                     <div v-for="(icon, index) in hotel.icons" :key="index">
                       <div
@@ -87,27 +84,23 @@
                     </div>
                   </div>
                 </div>
-                <div
-                  class="lg:float-right lg:text-right lg:w-5/12 mt-3 lg:mt-0"
-                >
-                  <p class="">
-                    <span class>{{ hotel.numberOfNights }} night</span>
-                    from (AUD)
-                  </p>
-
-                  <p class="line-through text-gray-500 ">
-                    ${{ hotel.discount }}
-                  </p>
-                  <p class="text-red-600 text-4xl font-bold t">
-                    ${{ hotel.price }}
-                  </p>
-                  <p class="">
-                    Earn
-                    <span class="font-semibold">{{ hotel.points }}</span> Quatas
-                    Points^
-                  </p>
-                </div>
               </div>
+            </div>
+            <div class="lg:float-right lg:text-right lg:w-5/12 mt-3 lg:mt-0">
+              <p class="">
+                <span class>{{ hotel.numberOfNights }} night</span>
+                from (AUD)
+              </p>
+
+              <p class="line-through text-gray-500 ">${{ hotel.discount }}</p>
+              <p class="text-red-600 text-4xl font-bold t">
+                ${{ hotel.price }}
+              </p>
+              <p class="">
+                Earn
+                <span class="font-semibold">{{ hotel.points }}</span> Quatas
+                Points^
+              </p>
             </div>
           </div>
         </div>
