@@ -13,3 +13,16 @@ export const getCities = () => {
     }
   });
 };
+
+export const getHotel = (hotelId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.get(`${API_URL.HOTEL}/${hotelId}`);
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

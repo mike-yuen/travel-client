@@ -7,8 +7,27 @@ export const actions = {
       apiServices
         .getCities()
         .then((resp) => {
-          console.log("_____________", resp);
           commit(MUTATORS.SET_CITIES, resp);
+          resolve({
+            code: 200,
+            data: resp
+          });
+        })
+        .catch((err) => {
+          resolve({
+            code: err.code,
+            err: err
+          });
+        });
+    });
+  },
+
+  [ACTIONS.GET_HOTEL]: ({ commit }, hotelId) => {
+    return new Promise((resolve) => {
+      apiServices
+        .getHotel(hotelId)
+        .then((resp) => {
+          commit(MUTATORS.SET_HOTEL, resp);
           resolve({
             code: 200,
             data: resp
