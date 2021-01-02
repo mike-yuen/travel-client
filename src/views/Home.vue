@@ -3,7 +3,12 @@
     <MainSlider />
     <SearchTabs />
     <div class="text-center text-2xl font-bold pt-6">
-      <router-link :to="{ name: 'hotel-properties', params: { hotelId: '1' } }">
+      <router-link
+        :to="{
+          name: 'hotel-properties',
+          params: { hotelId: 'fa089516-6f8a-4be8-a90e-2f19d8fc6f0f' }
+        }"
+      >
         Detail Room Demo
       </router-link>
     </div>

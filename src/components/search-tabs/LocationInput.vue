@@ -27,14 +27,14 @@
               @click="selectItem(item)"
             >
               <div>
-                <strong>{{ item }}</strong
+                <strong>{{ item.name }}</strong
                 ><span>, Vietnam</span>
               </div>
             </styled-item>
-            <styled-item>
+            <styled-item v-if="!cities.length">
               <div>
-                <span>We can't find a matching location for </span
-                ><strong>''</strong><span></span>
+                <span>We can't find a matching location for </span>
+                <strong>''</strong><span></span>
               </div>
             </styled-item>
           </ul>
@@ -90,11 +90,14 @@ export default {
     isExpanded: {
       type: Boolean,
       default: false
+    },
+    cities: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
-      cities: ["Ha Noi City", "Ho Chi Minh City"],
       valueInput: "",
       isOpenSelector: false
     };
@@ -115,7 +118,7 @@ export default {
   methods: {
     isValidKeyword(keyword) {
       const validKeywordLength = keyword.replace(/\s/g, "").length;
-      return validKeywordLength > 2;
+      return validKeywordLength > -1;
     },
     onClickInput(keyword) {
       this.isOpenSelector = !!this.isValidKeyword(keyword);
@@ -125,7 +128,7 @@ export default {
     },
     selectItem(item) {
       this.dataValue = item;
-      this.valueInput = item + ", VietNam";
+      this.valueInput = item.name + ", VietNam";
       this.isOpenSelector = false;
     },
     onKeyupInput(keyword) {

@@ -16,25 +16,6 @@
         </option>
       </select>
     </div>
-    <div class="w-1/3 mr-2 justify-end flex">
-      <label
-        :for="radio.value"
-        class="border-2 border-blue-200 hover:border-gray-300 bg-transparent hover:bg-gray-300 self-center py-3 px-4 cursor-pointer"
-        :class="{ 'border-gray-300 bg-gray-300': radioSort == radio.value }"
-        v-for="(radio, index) in optionsRadio"
-        :key="index"
-      >
-        {{ radio.label }}
-        <input
-          type="radio"
-          class="hidden"
-          :value="radio.value"
-          :id="radio.value"
-          name="radio_sort"
-          v-model="radioSort"
-        />
-      </label>
-    </div>
   </div>
 </template>
 
@@ -44,23 +25,19 @@ export default {
 
   data() {
     return {
-      selectSort: "",
-      radioSort: ""
+      selectSort: ""
     };
   },
 
   props: {
     optionsSelect: {
       Type: Object
-    },
-    optionsRadio: {
-      Type: Object
     }
   },
 
   methods: {
     clickSelectSort() {
-      this.valueBack(this.selectSort, this.radioSort);
+      this.valueBack(this.selectSort);
     },
 
     valueBack(...value) {

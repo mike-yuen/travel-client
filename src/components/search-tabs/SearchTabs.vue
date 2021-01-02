@@ -46,6 +46,7 @@
                       placeholder="Where would you like to stay?"
                       :isExpanded="isExpanded"
                       v-model="locationData"
+                      :cities="cityList"
                     />
                   </div>
                   <div class="w-full md:w-2/3 pt-1">
@@ -117,6 +118,9 @@ import GuestInput from "./GuestInput";
 import fecha from "fecha";
 
 import styled from "vue-styled-components";
+import { mapActions, mapGetters } from "vuex";
+import { ACTIONS, GETTERS } from "@/store/modules/hotel/const";
+
 const TabsWrapper = styled.div`
   position: absolute;
   @media (max-width: 768px) {
@@ -151,7 +155,7 @@ export default {
     return {
       isExpanded: false,
       isSelectedTab: false,
-      locationData: "",
+      locationData: {},
       guestData: {
         adults: 2,
         children: 0,
@@ -169,8 +173,17 @@ export default {
     } else {
       this.isSelectedTab = false;
     }
+    this.getCities();
+  },
+  computed: {
+    ...mapGetters("hotel", {
+      cityList: GETTERS.GET_CITIES
+    })
   },
   methods: {
+    ...mapActions("hotel", {
+      getCities: ACTIONS.GET_CITIES
+    }),
     onExpandTabs() {
       this.isExpanded = true;
     },

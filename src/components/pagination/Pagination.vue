@@ -3,7 +3,7 @@
     <div class="lg:w-1/3 sm:w-1/1 self-center">
       Showing 1 - 20 of {{ pageCount }} available properties
     </div>
-    <div class="lg:w-2/3 sm:w-1/1">
+    <div class="lg:w-2/3 sm:w-1/1 justify-end">
       <ul :class="containerClass" v-if="!noLiSurround">
         <li
           v-if="firstLastButton"
