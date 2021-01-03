@@ -2,7 +2,7 @@
   <div class="relative w-full">
     <div class="flex justify-between" v-if="label">
       <label class="block text-base pb-1" :for="id" v-show="showLabel">
-        {{ label }}
+        <slot name="label">{{ label }}</slot>
       </label>
       <a
         v-if="action && action.name"
@@ -13,6 +13,39 @@
         {{ action.name }}
       </a>
     </div>
+    <styled-select
+      :id="id"
+      :name="id"
+      :ref="id"
+      :placeholder="placeholder"
+      class="w-full text-lg rounded-0 placeholder-gray-600"
+      autocomplete="off"
+      v-model="dataValue"
+      :errors="errors"
+      v-if="useAs === 'select'"
+    >
+      <option
+        v-for="(option, index) in selectOptions"
+        :key="`option-${index}`"
+        :value="option.value"
+      >
+        {{ option.label }}
+      </option>
+    </styled-select>
+    <styled-textarea
+      :id="id"
+      :name="id"
+      :ref="id"
+      :placeholder="placeholder"
+      :rows="5"
+      class="w-full text-lg rounded-0 placeholder-gray-600"
+      autocomplete="off"
+      v-model="dataValue"
+      :errors="errors"
+      :useAs="useAs"
+      v-if="useAs === 'textarea'"
+    >
+    </styled-textarea>
     <styled-input
       :id="id"
       :name="id"
@@ -32,6 +65,7 @@
       @keypress="onKeyPress($event)"
       @keyup.enter.stop.prevent="$emit('enter')"
       :readonly="readonly"
+      v-if="useAs === 'input'"
     />
     <styled-icon
       :class="'fa fa-' + icon.code"
@@ -44,9 +78,9 @@
 
 <script>
 import styled from "vue-styled-components";
-const inputProps = { errors: Array };
+const inputProps = { errors: Array, useAs: String };
 const StyledInput = styled("input", inputProps)`
-  height: 48px;
+  ${(props) => (props.useAs === "textarea" ? `height: auto;` : `height: 48px;`)}
   color: #323232;
   line-height: 25.5px;
   padding: 10.5px 14px 12px;
@@ -62,6 +96,9 @@ const StyledInput = styled("input", inputProps)`
     `border-color: #ed710b!important;
     box-shadow: none!important;`}
 `;
+
+const StyledSelect = StyledInput.withComponent("select");
+const StyledTextarea = StyledInput.withComponent("textarea");
 
 const StyledIcon = styled.i`
   position: absolute;
@@ -79,6 +116,8 @@ export default {
   name: "Input",
   components: {
     "styled-input": StyledInput,
+    "styled-select": StyledSelect,
+    "styled-textarea": StyledTextarea,
     "styled-icon": StyledIcon
   },
   props: {
@@ -101,12 +140,8 @@ export default {
       type: String
     },
     value: {},
-    errors: {
-      type: Array
-    },
-    action: {
-      type: Object
-    },
+    errors: { type: Array },
+    action: { type: Object },
     disableKeyPress: {
       type: Boolean,
       default: false
@@ -120,9 +155,11 @@ export default {
         };
       }
     },
-    readonly: {
-      type: Boolean,
-      default: false
+    readonly: { type: Boolean, default: false },
+    useAs: { type: String, default: "input" },
+    selectOptions: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
