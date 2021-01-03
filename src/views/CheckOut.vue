@@ -7,8 +7,9 @@
           Change your selection
         </div>
       </button>
-      <div class="flex">
-        <div>
+
+      <div class="lg:flex">
+        <div class="w-full lg:w-7/10 p-0 lg:mr-12">
           <h1 class="css-7090fq-Heading-Heading-Text e1cffud31">
             Let's review your booking and pay
           </h1>
@@ -174,7 +175,7 @@
           </div>
         </div>
         <!-- Summary -->
-        <div class="css-12ro669-Box e5f71i10">
+        <div class="w-full lg:w-3/10">
           <div class="css-4w8ji6-Box e5f71i10">
             <div class="css-w36d82-Box-Flex e6hqxet0">
               <div class="css-198r94m-Box e1oiga0p0">

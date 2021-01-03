@@ -1,5 +1,5 @@
 <template>
-  <div :id="'hotel-properties' + hotelId">
+  <div :id="'hotel-properties-' + hotelId">
     <div class="relative w-full max-w-7xl mx-auto">
       <div class="pt-6 px-4">
         <div class="flex justify-center p-4 bg-cyan-150">
@@ -166,43 +166,49 @@
         </div>
       </div>
     </div>
-    <hr />
-    <div class="css-htgaco-Box ewdbxdh2">
-      <span data-testid="property-name" class="css-cyw1xf-Text e7qkkfc0">
-        Grand Hyatt Melbourne
-      </span>
-      <h2
-        data-testid="property-availability-header"
-        class="css-jamh29-Heading-Heading-Text e1cffud32"
-      >
-        Choose your room
-      </h2>
-      <div class="css-bbc9qn-Box-Flex e6hqxet0">
-        <div class="css-1rorslp-Box-Flex ewdbxdh1">
-          <div
-            data-testid="available-room-type-count"
-            class="css-bx7fxa-Box e5f71i10"
-          >
-            Showing 4 available out of 10 rooms
-          </div>
-          <div class="css-1ev36eu-Box e5f71i10">&nbsp;for your stay</div>
+    <div class="relative w-full max-w-7xl mx-auto">
+      <hr class="my-10 mx-4" />
+    </div>
+    <div class="relative w-full max-w-7xl mx-auto">
+      <div class="text-center">
+        <span class="font-normal text-xl"> {{ hotel.hotelName }} Hotel </span>
+        <h2 class="font-bold text-3xl">
+          Choose your room
+        </h2>
+        <div class="text-sm">
+          Showing {{ hotel.availableRooms.length }} available out of
+          {{ hotel.availableRooms.length }} rooms for your stay
         </div>
-        <div class="css-1ys4q01-Box-Flex ewdbxdh0">
-          <div class="css-18aidf3-Box e1sqdzo10"></div>
-          <div class="css-iczpqk-Box e1sqdzo10"></div>
-          <div class="css-c4dzg2-Box e1sqdzo10"></div>
-          <div class="css-iczpqk-Box e1sqdzo10"></div>
-          <div class="css-smc3lk-Box e1sqdzo10"></div>
-        </div>
+      </div>
+      <div class="relative w-full max-w-xl mx-auto mt-4 mb-8">
+        <DatePicker
+          showYear
+          isExpanded
+          smallSize
+          :hoveringTooltip="false"
+          :maxNights="21"
+          v-model="dateData"
+        />
       </div>
     </div>
     <div class="bg-gray-200 py-6">
       <div class="relative w-full max-w-7xl mx-auto">
-        <RoomCardGeneral
+        <div class="mb-4 mx-4 text-center">
+          <span class="font-bold text-2xl">
+            There are {{ hotel.availableRooms.length }} rooms available for your
+            stay
+          </span>
+        </div>
+        <div
           v-for="(room, index) in hotel.availableRooms"
           :key="`room-${index}`"
-          :roomData="room"
-        />
+        >
+          <hr class="my-8 mx-4" />
+          <RoomCardGeneral
+            :roomData="room"
+            @select="handleSelectRoom(room.roomId)"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -211,6 +217,7 @@
 <script>
 import HotelPropertySlider from "@/components/slider/HotelPropertySlider";
 const StarRating = () => import("@/components/core-ui/rating/StarRating");
+const DatePicker = () => import("@/components/core-ui/datepicker/DatePicker");
 const RoomCardGeneral = () => import("@/components/room-card/RoomCardGeneral");
 
 import { mapActions, mapGetters } from "vuex";
@@ -219,6 +226,7 @@ import { ACTIONS, GETTERS } from "@/store/modules/hotel/const";
 export default {
   name: "HotelProperties",
   components: {
+    DatePicker,
     HotelPropertySlider,
     StarRating,
     RoomCardGeneral
@@ -226,7 +234,11 @@ export default {
   data() {
     return {
       hotelId: "",
-      rating: 3.5
+      rating: 3.5,
+      dateData: {
+        checkIn: new Date(),
+        checkOut: new Date(new Date().valueOf() + 1000 * 3600 * 24)
+      }
     };
   },
 
@@ -245,7 +257,10 @@ export default {
   methods: {
     ...mapActions("hotel", {
       getHotel: ACTIONS.GET_HOTEL
-    })
+    }),
+    handleSelectRoom(roomId) {
+      this.$router.push({ path: `/checkout/${roomId}` });
+    }
   }
 };
 </script>
