@@ -27,8 +27,8 @@
               @click="selectItem(item)"
             >
               <div>
-                <strong>{{ item.name }}</strong
-                ><span>, Vietnam</span>
+                <strong>{{ item.name }}</strong>
+                <span>, Vietnam</span>
               </div>
             </styled-item>
             <styled-item v-if="!cities.length">

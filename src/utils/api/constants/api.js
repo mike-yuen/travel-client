@@ -4,6 +4,7 @@ export const API_URL = {
   TOKEN_REFRESH: "token/refresh/",
   // hotel
   CITIES: "api/master-data/cities",
+  ROOM_TYPES: "api/master-data/room-types",
   HOTELS: "api/hotels",
   HOTEL: "api/hotel",
   // user

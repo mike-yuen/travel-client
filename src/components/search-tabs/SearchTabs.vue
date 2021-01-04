@@ -118,8 +118,8 @@ import GuestInput from "./GuestInput";
 import fecha from "fecha";
 
 import styled from "vue-styled-components";
-import { mapActions, mapGetters } from "vuex";
-import { ACTIONS, GETTERS } from "@/store/modules/hotel/const";
+import { mapGetters } from "vuex";
+import { GETTERS } from "@/store/modules/hotel/const";
 
 const TabsWrapper = styled.div`
   position: absolute;
@@ -173,7 +173,6 @@ export default {
     } else {
       this.isSelectedTab = false;
     }
-    this.getCities();
   },
   computed: {
     ...mapGetters("hotel", {
@@ -181,9 +180,6 @@ export default {
     })
   },
   methods: {
-    ...mapActions("hotel", {
-      getCities: ACTIONS.GET_CITIES
-    }),
     onExpandTabs() {
       this.isExpanded = true;
     },

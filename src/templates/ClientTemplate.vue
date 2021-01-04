@@ -12,9 +12,11 @@
 <script>
 import NavigatorTop from "@/components/navigator/NavigatorTop";
 import MenuDesktop from "@/components/menu/MenuDesktop";
-
 //lazy-loading components && code split
 const Footer = () => import("@/components/footer/Footer");
+
+import { mapActions } from "vuex";
+import { ACTIONS } from "@/store/modules/hotel/const";
 
 export default {
   name: "ClientTemplate",
@@ -22,6 +24,16 @@ export default {
     NavigatorTop,
     MenuDesktop,
     Footer
+  },
+  created() {
+    this.getCities();
+    this.getRoomTypes();
+  },
+  methods: {
+    ...mapActions("hotel", {
+      getCities: ACTIONS.GET_CITIES,
+      getRoomTypes: ACTIONS.GET_ROOM_TYPES
+    })
   }
 };
 </script>

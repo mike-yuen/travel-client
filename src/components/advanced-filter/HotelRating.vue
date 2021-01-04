@@ -13,7 +13,7 @@
           )
         }"
       >
-        <Radio :data="rate" v-model="value" />
+        <Radio :data="rate" v-model="dataValue" />
       </div>
     </div>
   </div>
@@ -24,19 +24,24 @@ const Radio = () => import("@/components/core-ui/checkbox/Radio");
 
 export default {
   name: "HotelRating",
+  components: {
+    Radio
+  },
+  props: {
+    value: Number
+  },
   data() {
     return {
-      value: 4,
       rates: [
         {
           label: "5 out of 5 rating",
           checked: false,
-          value: 1
+          value: 5
         },
         {
           label: "4 out of 5 rating & up",
           checked: false,
-          value: 2
+          value: 4
         },
         {
           label: "3 out of 5 rating & up",
@@ -46,13 +51,20 @@ export default {
         {
           label: "All ratings",
           checked: true,
-          value: 4
+          value: 0
         }
       ]
     };
   },
-  components: {
-    Radio
+  computed: {
+    dataValue: {
+      get() {
+        return this.value || 0;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
+    }
   }
 };
 </script>
