@@ -36,7 +36,12 @@
                 </span>
               </div>
             </div>
-            <form autocomplete="off" novalidate="" class="hotel-form">
+            <form
+              autocomplete="off"
+              novalidate=""
+              class="hotel-form"
+              @submit="handleSubmit"
+            >
               <div class="search-wrapper">
                 <div class="md:flex w-full">
                   <div class="w-full md:w-1/3 pt-1 px-4">
@@ -76,7 +81,9 @@
                     />
                   </div>
                   <div class="w-full xl:w-1/2 md:pt-12 pt-6 px-4">
-                    <Button class="uppercase font-bold">Find your hotel</Button>
+                    <Button class="uppercase font-bold">
+                      Find your hotel
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -84,14 +91,20 @@
           </div>
         </Tab>
         <Tab name="Manage booking" icon="clipboard-list-check">
-          dasdasdadasdasdadas
+          <div class="px-4">
+            This function is not available.
+          </div>
         </Tab>
         <Tab name="Check-in" icon="user-check">
-          aasdkjahshdkasjdhsdsakjhdkasjhdkjas
+          <div class="px-4">
+            This function is not available.
+          </div>
         </Tab>
-        <Tab name="Hotel status" icon="history"
-          >aasdkjahshdkasjdhsdsakjhdkasjhdkjas</Tab
-        >
+        <Tab name="Hotel status" icon="history">
+          <div class="px-4">
+            This function is not available.
+          </div>
+        </Tab>
       </Tabs>
       <div
         class="lg:block hidden absolute text-white font-bold text-center top-0 right-auto cursor-pointer outline-none"
@@ -118,8 +131,8 @@ import GuestInput from "./GuestInput";
 import fecha from "fecha";
 
 import styled from "vue-styled-components";
-import { mapGetters } from "vuex";
-import { GETTERS } from "@/store/modules/hotel/const";
+import { mapGetters, mapActions } from "vuex";
+import { GETTERS, ACTIONS } from "@/store/modules/hotel/const";
 
 const TabsWrapper = styled.div`
   position: absolute;
@@ -180,6 +193,9 @@ export default {
     })
   },
   methods: {
+    ...mapActions("hotel", {
+      setBaseQuery: ACTIONS.SET_BASE_QUERY
+    }),
     onExpandTabs() {
       this.isExpanded = true;
     },
@@ -191,6 +207,22 @@ export default {
         return fecha.format(date, "YYYY-MM-DD");
       }
       return "";
+    },
+    handleSubmit(e) {
+      e.preventDefault();
+      const query = {
+        cityId: this.locationData.id,
+        date: [
+          fecha.format(this.dateData.checkIn, "YYYY-MM-DD"),
+          fecha.format(this.dateData.checkOut, "YYYY-MM-DD")
+        ],
+        guestCount:
+          this.guestData.adults +
+          this.guestData.children +
+          this.guestData.infants
+      };
+      this.setBaseQuery(query);
+      this.$router.push({ path: "/hotels", query: query });
     }
   }
 };

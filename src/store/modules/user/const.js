@@ -1,24 +1,24 @@
 /* STATE - START */
 
 export const STATE = {
-  authInfo: {}
+  token: {}
 };
 /* STATE - END */
 
 /* GETTERS - START */
 export const GETTERS = {
-  GET_AUTH: "GET_AUTH"
+  GET_TOKEN: "GET_TOKEN"
 };
 /* GETTERS - END */
 
 /* ACTIONS - START */
 export const ACTIONS = {
-  SET_AUTH: "SET_AUTH"
+  LOGIN: "LOGIN"
 };
 /* ACTIONS - END */
 
 /* MUTATIONS - START */
 export const MUTATORS = {
-  SET_AUTH: "SET_AUTH"
+  SET_TOKEN: "SET_TOKEN"
 };
 /* MUTATIONS - END */

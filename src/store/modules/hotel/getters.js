@@ -10,6 +10,9 @@ export const getters = {
   [GETTERS.GET_BASE_QUERY]: (state) => {
     return state.baseQuery;
   },
+  [GETTERS.GET_DEFAULT_FILTER_QUERY]: (state) => {
+    return state.defaultFilterQuery;
+  },
   [GETTERS.GET_FILTER_QUERY]: (state) => {
     return state.filterQuery;
   },

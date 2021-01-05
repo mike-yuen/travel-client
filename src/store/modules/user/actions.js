@@ -4,13 +4,13 @@ import storage from "@/utils/storage";
 import { LUX_AUTH_INFO } from "@/utils/constants";
 
 export const actions = {
-  [ACTIONS.SET_AUTH]: ({ commit }, authInfo) => {
+  [ACTIONS.LOGIN]: ({ commit }, authInfo) => {
     return new Promise((resolve) => {
       apiServices
-        .authenticate(authInfo)
+        .login(authInfo)
         .then((resp) => {
-          commit(MUTATORS.SET_AUTH, resp);
-          storage.save(LUX_AUTH_INFO, resp);
+          commit(MUTATORS.SET_TOKEN, resp.data);
+          storage.save(LUX_AUTH_INFO, resp.data);
           resolve({
             code: 200,
             data: resp

@@ -122,14 +122,13 @@ export default {
       loading: true,
       priceRange: null,
       query: {
-        cityId: "",
-        guestCount: 0,
         roomTypeIds: [],
         rating: 0,
         pageSize: 10,
         pageIndex: 1,
         sort: ""
-      }
+      },
+      autoUpdate: false
     };
   },
 
@@ -162,26 +161,42 @@ export default {
       this.filter = !this.filter;
     },
 
+    getHotelsQuery(query) {
+      this.setFilterQuery(query);
+      this.getHotels({ ...this.baseQuery, ...query });
+      this.$router.replace({
+        path: "/hotels",
+        query: { ...this.baseQuery, ...query }
+      });
+    },
+
     resetFilter() {
       this.resetFilterQuery();
       this.query = { ...this.baseQuery, ...this.defaultFilterQuery };
     }
   },
 
-  created() {
-    this.getHotels(this.filterQuery);
+  async created() {
+    const routeQuery = this.$route.query;
+    await this.setBaseQuery({
+      cityId: routeQuery.cityId,
+      date: routeQuery.date,
+      guestCount: routeQuery.guestCount
+    });
+    await this.getHotelsQuery(routeQuery);
+    this.query.roomTypeIds = routeQuery.roomTypeIds || [];
+    this.query.rating = routeQuery.rating || 0;
+    this.query.pageSize = routeQuery.pageSize || 10;
+    this.query.pageIndex = routeQuery.pageIndex || 1;
+    this.query.sort = routeQuery.sort || "";
+    this.autoUpdate = true;
   },
 
   watch: {
     query: {
       deep: true,
       handler(val) {
-        this.getHotels(val);
-        this.setFilterQuery(val);
-        this.$router.replace({
-          path: "/hotels",
-          query: val
-        });
+        if (this.autoUpdate) this.getHotelsQuery(val);
       }
     }
   }

@@ -1,15 +1,10 @@
 import api from "@/utils/api";
 import { API_URL } from "@/utils/api/constants";
 
-export const authenticate = (userInfo) => {
+export const login = (payload) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { username, email, password } = userInfo;
-      const resp = await api.post(`${API_URL.TOKEN}`, {
-        username: username.toLowerCase(),
-        email,
-        password
-      });
+      const resp = await api.post(`${API_URL.LOGIN}`, payload);
       if (resp) {
         resolve(resp);
       }
