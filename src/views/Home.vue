@@ -16,8 +16,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import * as apiServices from "@/services";
 import MainSlider from "@/components/slider/MainSlider";
 const SearchTabs = () => import("@/components/search-tabs/SearchTabs");
 
@@ -27,16 +25,7 @@ export default {
     MainSlider,
     SearchTabs
   },
-  computed: {
-    ...mapGetters({
-      user: "user/userState",
-      hotel: "hotel/hotelState"
-    })
-  },
-  methods: {
-    testApi() {
-      apiServices.authenticate();
-    }
-  }
+  computed: {},
+  methods: {}
 };
 </script>

@@ -13,3 +13,16 @@ export const login = (payload) => {
     }
   });
 };
+
+export const getCurrentUser = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.get(`${API_URL.CURRENT_USER}`);
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

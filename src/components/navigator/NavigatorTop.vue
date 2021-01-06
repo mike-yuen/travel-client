@@ -31,8 +31,12 @@
           >
             <i
               class="faf fa-github-alt flex items-center justify-center w-6 h-6 "
-            ></i>
+            />
           </a>
+
+          <div v-if="Object.keys(currentUser).length">
+            {{ currentUser.displayName }}
+          </div>
 
           <div class="md:hidden flex items-center">
             <MenuMobileHandle @toggle="toggle()" />
@@ -64,6 +68,8 @@ import SubNavigator from "./SubNavigator";
 import LoginRibbon from "./LoginRibbon";
 import MenuMobileHandle from "../menu/MenuMobileHandle";
 import MenuMobile from "../menu/MenuMobile";
+import { mapGetters } from "vuex";
+import { GETTERS } from "@/store/modules/user/const";
 
 export default {
   name: "NavigatorTop",
@@ -88,6 +94,11 @@ export default {
         { name: "Help", path: "/help" }
       ]
     };
+  },
+  computed: {
+    ...mapGetters("user", {
+      currentUser: GETTERS.GET_CURRENT_USER
+    })
   },
   methods: {
     toggle() {

@@ -23,5 +23,30 @@ export const actions = {
           });
         });
     });
+  },
+
+  [ACTIONS.GET_CURRENT_USER]: ({ commit }) => {
+    return new Promise((resolve) => {
+      apiServices
+        .getCurrentUser()
+        .then((resp) => {
+          commit(MUTATORS.SET_CURRENT_USER, resp);
+          resolve({
+            code: 200,
+            data: resp
+          });
+        })
+        .catch((err) => {
+          resolve({
+            code: err.code,
+            err: err
+          });
+        });
+    });
+  },
+
+  [ACTIONS.LOGOUT]: async ({ commit }) => {
+    await localStorage.removeItem("userToken");
+    commit(MUTATORS.SET_CURRENT_USER, {});
   }
 };
