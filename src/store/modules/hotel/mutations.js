@@ -18,5 +18,8 @@ export const mutations = {
   },
   [MUTATORS.SET_HOTEL]: (state, payload) => {
     state.hotel = payload;
+  },
+  [MUTATORS.SET_BOOKING_DETAIL]: (state, payload) => {
+    state.bookingDetail = payload;
   }
 };

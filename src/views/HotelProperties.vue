@@ -180,15 +180,27 @@
           {{ hotel.availableRooms.length }} rooms for your stay
         </div>
       </div>
-      <div class="relative w-full max-w-xl mx-auto mt-4 mb-8">
-        <DatePicker
-          showYear
-          isExpanded
-          smallSize
-          :hoveringTooltip="false"
-          :maxNights="21"
-          v-model="dateData"
-        />
+      <div class="relative w-full max-w-4xl mx-auto mt-4 mb-8">
+        <div class="md:flex flex-wrap">
+          <div class="md:w-2/3">
+            <DatePicker
+              showYear
+              isExpanded
+              smallSize
+              :hoveringTooltip="false"
+              :maxNights="21"
+              v-model="dateData"
+            />
+          </div>
+          <div class="md:w-1/3">
+            <GuestInput
+              id="guest-input"
+              label="Guests"
+              isExpanded
+              v-model="guestData"
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div class="bg-gray-200 py-6">
@@ -206,7 +218,7 @@
           <hr class="my-8 mx-4" />
           <RoomCardGeneral
             :roomData="room"
-            @select="handleSelectRoom(room.roomId)"
+            @select="handleSelectRoom(room)"
           />
         </div>
       </div>
@@ -218,6 +230,7 @@
 import HotelPropertySlider from "@/components/slider/HotelPropertySlider";
 const StarRating = () => import("@/components/core-ui/rating/StarRating");
 const DatePicker = () => import("@/components/core-ui/datepicker/DatePicker");
+const GuestInput = () => import("@/components/search-tabs/GuestInput");
 const RoomCardGeneral = () => import("@/components/room-card/RoomCardGeneral");
 
 import { mapActions, mapGetters } from "vuex";
@@ -228,6 +241,7 @@ export default {
   components: {
     DatePicker,
     HotelPropertySlider,
+    GuestInput,
     StarRating,
     RoomCardGeneral
   },
@@ -238,13 +252,25 @@ export default {
       dateData: {
         checkIn: new Date(),
         checkOut: new Date(new Date().valueOf() + 1000 * 3600 * 24)
+      },
+      guestData: {
+        adults: 2,
+        children: 0,
+        infants: 0
       }
     };
   },
 
   created() {
     const params = this.$route.params;
+    const query = this.$route.query;
     this.hotelId = params.hotelId;
+    if (query.date && query.date.length)
+      this.dateData = {
+        checkIn: new Date(JSON.parse(query.date).checkIn),
+        checkOut: new Date(JSON.parse(query.date).checkOut)
+      };
+    if (query.guestCount) this.guestData = JSON.parse(query.guestCount);
     this.getHotel(this.hotelId);
   },
 
@@ -258,8 +284,17 @@ export default {
     ...mapActions("hotel", {
       getHotel: ACTIONS.GET_HOTEL
     }),
-    handleSelectRoom(roomId) {
-      this.$router.push({ path: `/checkout/${roomId}` });
+    handleSelectRoom(room) {
+      const payload = {
+        hotelId: this.hotelId,
+        dateData: JSON.stringify(this.dateData),
+        guestData: JSON.stringify(this.guestData),
+        room: JSON.stringify(room)
+      };
+      this.$router.push({
+        path: `/checkout/${room.roomId}`,
+        query: payload
+      });
     }
   }
 };

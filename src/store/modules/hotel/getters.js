@@ -21,5 +21,8 @@ export const getters = {
   },
   [GETTERS.GET_HOTEL]: (state) => {
     return state.hotel;
+  },
+  [GETTERS.GET_BOOKING_DETAIL]: (state) => {
+    return state.bookingDetail;
   }
 };

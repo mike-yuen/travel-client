@@ -71,3 +71,44 @@ export const getHotel = (hotelId) => {
     }
   });
 };
+
+export const getBookingDetail = (params) => {
+  const {
+    hotelId,
+    dateFrom,
+    dateTo,
+    guestCount,
+    room
+  } = params;
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.get(`${API_URL.BOOKING_DETAIL}`, {
+        params: {
+          HotelId: hotelId,
+          DateFrom: dateFrom,
+          DateTo: dateTo,
+          GuestCount: guestCount,
+          RoomId: room.roomId,
+        }
+      });
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+export const booking = (payload) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.post(`${API_URL.BOOKING}`, payload);
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

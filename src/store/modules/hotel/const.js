@@ -6,7 +6,11 @@ export const STATE = {
   baseQuery: {
     cityId: "",
     date: [],
-    guestCount: 0
+    guestCount: {
+      adults: 2,
+      children: 0,
+      infants: 0
+    }
   },
   defaultFilterQuery: {
     roomTypeIds: [],
@@ -23,7 +27,8 @@ export const STATE = {
     sort: ""
   },
   hotels: [],
-  hotel: {}
+  hotel: {},
+  bookingDetail: {}
 };
 /* STATE - END */
 
@@ -35,7 +40,8 @@ export const GETTERS = {
   GET_DEFAULT_FILTER_QUERY: "GET_DEFAULT_FILTER_QUERY",
   GET_FILTER_QUERY: "GET_FILTER_QUERY",
   GET_HOTELS: "GET_HOTELS",
-  GET_HOTEL: "GET_HOTEL"
+  GET_HOTEL: "GET_HOTEL",
+  GET_BOOKING_DETAIL: "GET_BOOKING_DETAIL",
 };
 /* GETTERS - END */
 
@@ -47,7 +53,9 @@ export const ACTIONS = {
   SET_FILTER_QUERY: "SET_FILTER_QUERY",
   RESET_FILTER_QUERY: "RESET_FILTER_QUERY",
   GET_HOTELS: "GET_HOTELS",
-  GET_HOTEL: "GET_HOTEL"
+  GET_HOTEL: "GET_HOTEL",
+  GET_BOOKING_DETAIL: "GET_BOOKING_DETAIL",
+  BOOKING: "BOOKING",
 };
 /* ACTIONS - END */
 
@@ -58,6 +66,7 @@ export const MUTATORS = {
   SET_BASE_QUERY: "SET_BASE_QUERY",
   SET_FILTER_QUERY: "SET_FILTER_QUERY",
   SET_HOTELS: "SET_HOTELS",
-  SET_HOTEL: "SET_HOTEL"
+  SET_HOTEL: "SET_HOTEL",
+  SET_BOOKING_DETAIL: "SET_BOOKING_DETAIL",
 };
 /* MUTATIONS - END */

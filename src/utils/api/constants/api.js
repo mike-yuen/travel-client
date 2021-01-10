@@ -4,6 +4,8 @@ export const API_URL = {
   ROOM_TYPES: "api/master-data/room-types",
   HOTELS: "api/hotels",
   HOTEL: "api/hotel",
+  BOOKING_DETAIL: "api/booking/detail",
+  BOOKING: "api/booking",
   // user
   LOGIN: "api/user/login",
   CURRENT_USER: "api/user/current-user"

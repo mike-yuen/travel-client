@@ -212,14 +212,8 @@ export default {
       e.preventDefault();
       const query = {
         cityId: this.locationData.id,
-        date: [
-          fecha.format(this.dateData.checkIn, "YYYY-MM-DD"),
-          fecha.format(this.dateData.checkOut, "YYYY-MM-DD")
-        ],
-        guestCount:
-          this.guestData.adults +
-          this.guestData.children +
-          this.guestData.infants
+        date: JSON.stringify(this.dateData),
+        guestCount: JSON.stringify(this.guestData)
       };
       this.setBaseQuery(query);
       this.$router.push({ path: "/hotels", query: query });

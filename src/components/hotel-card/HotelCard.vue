@@ -1,11 +1,11 @@
 <template>
-  <router-link :to="`/hotel-properties/${hotel.id}`">
+  <a @click="viewDetail">
     <div class="max-w-full mx-auto p-2 cursor-pointer">
       <div class="border-solid border-1 shadow-lg rounded">
         <div class="lg:flex rounded">
           <div class="rounded" style="flex-basis: 15rem;">
             <img
-              :src="hotel.hotelImage"
+              :src="hotel.url"
               class="w-full object-cover rounded"
               :alt="hotel.title"
               style="width: 15rem; height: 14rem"
@@ -61,10 +61,12 @@
         </div>
       </div>
     </div>
-  </router-link>
+  </a>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { GETTERS } from "@/store/modules/hotel/const";
 const RatingStar = () => import("@/components/hotel-card/RatingStar.vue");
 
 export default {
@@ -79,6 +81,19 @@ export default {
     },
     hotel: {
       type: Object
+    }
+  },
+  computed: {
+    ...mapGetters("hotel", {
+      baseQuery: GETTERS.GET_BASE_QUERY
+    })
+  },
+  methods: {
+    viewDetail() {
+      this.$router.push({
+        path: `/hotel-properties/${this.hotel.id}`,
+        query: this.baseQuery
+      });
     }
   }
 };

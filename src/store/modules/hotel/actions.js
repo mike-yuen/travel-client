@@ -92,5 +92,44 @@ export const actions = {
           });
         });
     });
+  },
+
+  [ACTIONS.GET_BOOKING_DETAIL]: ({ commit }, params) => {
+    return new Promise((resolve) => {
+      apiServices
+        .getBookingDetail(params)
+        .then((resp) => {
+          commit(MUTATORS.SET_BOOKING_DETAIL, resp);
+          resolve({
+            code: 200,
+            data: resp
+          });
+        })
+        .catch((err) => {
+          resolve({
+            code: err.code,
+            err: err
+          });
+        });
+    });
+  },
+  // eslint-disable-next-line
+  [ACTIONS.BOOKING]: ({ commit }, payload) => {
+    return new Promise((resolve) => {
+      apiServices
+        .booking(payload)
+        .then((resp) => {
+          resolve({
+            code: 200,
+            data: resp
+          });
+        })
+        .catch((err) => {
+          resolve({
+            code: err.code,
+            err: err
+          });
+        });
+    });
   }
 };
