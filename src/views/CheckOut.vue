@@ -16,7 +16,7 @@
         </div>
         <!-- Summary -->
         <div class="w-full lg:w-3/10">
-          <CheckoutSummary />
+          <CheckoutSummary :bookingData="bookingDetail" />
         </div>
       </div>
     </div>

@@ -216,10 +216,7 @@
           :key="`room-${index}`"
         >
           <hr class="my-8 mx-4" />
-          <RoomCardGeneral
-            :roomData="room"
-            @select="handleSelectRoom(room)"
-          />
+          <RoomCardGeneral :roomData="room" @select="handleSelectRoom(room)" />
         </div>
       </div>
     </div>

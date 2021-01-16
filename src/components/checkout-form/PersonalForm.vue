@@ -176,9 +176,9 @@
             </span>
           </div>
         </div>
-        <Button type="submit" className="w-auto font-bold bg-red-0 px-6"
-          >Continue</Button
-        >
+        <Button type="submit" className="w-auto font-bold bg-red-0 px-6">
+          Continue
+        </Button>
       </form>
     </div>
   </div>

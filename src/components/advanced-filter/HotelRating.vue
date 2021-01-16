@@ -28,7 +28,7 @@ export default {
     Radio
   },
   props: {
-    value: Number
+    value: [String, Number]
   },
   data() {
     return {

@@ -119,7 +119,7 @@ export default {
 
   computed: {
     priceArray() {
-      return [50, 500];
+      return [0, 200];
     },
     min() {
       return Math.min.apply(null, this.priceArray);

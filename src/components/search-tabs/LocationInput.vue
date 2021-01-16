@@ -22,7 +22,7 @@
             style="max-height: 242px"
           >
             <styled-item
-              v-for="(item, index) in cities"
+              v-for="(item, index) in cityList"
               :key="index"
               @click="selectItem(item)"
             >
@@ -113,6 +113,11 @@ export default {
     },
     hasKeyword() {
       return this.valueInput.replace(/\s/g, "").length > 0;
+    },
+    cityList() {
+      return this.cities.filter((city) =>
+        city.name.toLowerCase().includes(this.valueInput.trim().toLowerCase())
+      );
     }
   },
   methods: {

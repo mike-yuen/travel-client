@@ -87,7 +87,7 @@ export default {
       type: Object
     },
     value: {
-      type: Number || String || Boolean
+      type: [Number, String, Boolean]
     }
   },
   computed: {

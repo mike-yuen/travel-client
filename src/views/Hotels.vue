@@ -47,10 +47,10 @@
             <div class="p-0 mb-4 border-b border-gray-50">
               <p class="font-bold mb-3">Price per night [USD]</p>
               <PriceRangeSlider
-                :priceMin="90"
-                :priceMax="400"
+                :priceMin="query.priceFrom"
+                :priceMax="query.priceTo"
                 :step="10"
-                v-on:priceReceive="(...price) => this.priceReceive(...price)"
+                @priceReceive="(...price) => this.priceReceive(...price)"
               />
             </div>
             <div class="p-0 pb-4 mb-4 border-b border-gray-50">
@@ -122,6 +122,8 @@ export default {
       loading: true,
       priceRange: null,
       query: {
+        priceFrom: 0,
+        priceTo: 200,
         roomTypeIds: [],
         rating: 0,
         pageSize: 10,
@@ -151,6 +153,8 @@ export default {
 
     priceReceive(...price) {
       this.priceRange = price;
+      this.$set(this.query, "priceFrom", this.priceRange[0]);
+      this.$set(this.query, "priceTo", this.priceRange[1]);
     },
 
     sortValue(...value) {
@@ -162,8 +166,14 @@ export default {
     },
 
     getHotelsQuery(query) {
+      const baseQueryAPI = { ...this.baseQuery };
+      if (this.baseQuery.guestCount) {
+        const guestData = JSON.parse(this.baseQuery.guestCount);
+        baseQueryAPI.guestCount =
+          guestData.adults + guestData.children + guestData.infants;
+      }
       this.setFilterQuery(query);
-      this.getHotels({ ...this.baseQuery, ...query });
+      this.getHotels({ ...baseQueryAPI, ...query });
       this.$router.replace({
         path: "/hotels",
         query: { ...this.baseQuery, ...query }
@@ -183,13 +193,17 @@ export default {
       date: routeQuery.date,
       guestCount: routeQuery.guestCount
     });
-    await this.getHotelsQuery(routeQuery);
-    this.query.roomTypeIds = routeQuery.roomTypeIds || [];
+    this.query.roomTypeIds = routeQuery.roomTypeIds
+      ? typeof routeQuery.roomTypeIds === "string"
+        ? [routeQuery.roomTypeIds]
+        : routeQuery.roomTypeIds
+      : [];
     this.query.rating = routeQuery.rating || 0;
     this.query.pageSize = routeQuery.pageSize || 10;
     this.query.pageIndex = routeQuery.pageIndex || 1;
     this.query.sort = routeQuery.sort || "";
     this.autoUpdate = true;
+    await this.getHotelsQuery(this.query);
   },
 
   watch: {

@@ -13,7 +13,7 @@
           <div class="flex">
             <div class="flex flex-col w-full">
               <span class="text-lg font-bold">
-                Pa'Xa Mama Hotel Boutique
+                {{ bookingData.hotelName }}
               </span>
               <div class="flex mt-2">
                 <StarRating :rating="4" class="mr-3" />
@@ -43,15 +43,15 @@
     >
       <div class="bg-white px-8">
         <div class="py-6 border-b">
-          <span class="text-lg">2 adults</span>
+          <span class="text-lg">{{ bookingData.guestCount }} guests</span>
           <div class="flex flex-col">
             <div class="flex justify-between mb-1">
               <span class="text-lg">Check-in</span>
-              <span class="text-lg font-bold">Sun 27 Dec, 2020</span>
+              <span class="text-lg font-bold">{{ dateFrom }}</span>
             </div>
             <div class="flex justify-between mb-1">
               <span class="text-lg">Check-out</span>
-              <span class="text-lg font-bold">Mon 28 Dec, 2020</span>
+              <span class="text-lg font-bold">{{ dateTo }}</span>
             </div>
           </div>
           <div class="mb-1">
@@ -81,7 +81,7 @@
           <div class="flex text-lg">
             <div>
               <span class="font-bold">$</span>
-              <span class="font-bold">50.80</span>
+              <span class="font-bold">{{ bookingData.totals }}</span>
             </div>
             <div class="ml-1">
               <span class="font-bold">USD</span>
@@ -97,12 +97,30 @@
 </template>
 
 <script>
+import fecha from "fecha";
 const StarRating = () => import("@/components/core-ui/rating/StarRating");
 
 export default {
   name: "CheckoutSummary",
   components: {
     StarRating
+  },
+  props: {
+    bookingData: {}
+  },
+  computed: {
+    dateFrom() {
+      return fecha.format(
+        new Date(this.bookingData.dateFrom),
+        "ddd DD MMM, YYYY"
+      );
+    },
+    dateTo() {
+      return fecha.format(
+        new Date(this.bookingData.dateTo),
+        "ddd DD MMM, YYYY"
+      );
+    }
   }
 };
 </script>

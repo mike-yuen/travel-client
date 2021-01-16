@@ -45,7 +45,7 @@
               <div class="lg:float-right lg:text-right lg:w-5/12 mt-3 lg:mt-0">
                 <p><span class>1 night</span> from (USD)</p>
                 <p class="line-through text-gray-500 ">
-                  ${{ hotel.smallestPrice * 1.1 }}
+                  ${{ Math.floor(hotel.smallestPrice * 1.1) }}
                 </p>
                 <p class="text-red-600 text-4xl font-bold t">
                   ${{ hotel.smallestPrice }}

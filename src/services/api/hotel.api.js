@@ -31,6 +31,8 @@ export const getHotels = (payload) => {
   const {
     cityId,
     guestCount,
+    priceFrom,
+    priceTo,
     roomTypeIds,
     rating,
     pageSize,
@@ -43,6 +45,8 @@ export const getHotels = (payload) => {
         params: {
           CityId: cityId,
           GuestCount: guestCount,
+          PriceFrom: priceFrom,
+          PriceTo: priceTo,
           RoomTypeIds: roomTypeIds,
           Rating: rating,
           PageSize: pageSize,
@@ -73,13 +77,7 @@ export const getHotel = (hotelId) => {
 };
 
 export const getBookingDetail = (params) => {
-  const {
-    hotelId,
-    dateFrom,
-    dateTo,
-    guestCount,
-    room
-  } = params;
+  const { hotelId, dateFrom, dateTo, guestCount, room } = params;
   return new Promise(async (resolve, reject) => {
     try {
       const resp = await api.get(`${API_URL.BOOKING_DETAIL}`, {
@@ -88,7 +86,7 @@ export const getBookingDetail = (params) => {
           DateFrom: dateFrom,
           DateTo: dateTo,
           GuestCount: guestCount,
-          RoomId: room.roomId,
+          RoomId: room.roomId
         }
       });
       if (resp) {
