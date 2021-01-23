@@ -32,7 +32,12 @@ export const STATE = {
   },
   hotels: [],
   hotel: {},
-  bookingDetail: {}
+  bookingDetail: {},
+  payment: {
+    bookingId: "",
+    clientSecret: "",
+    paymentIntentId: ""
+  }
 };
 /* STATE - END */
 
@@ -45,7 +50,8 @@ export const GETTERS = {
   GET_FILTER_QUERY: "GET_FILTER_QUERY",
   GET_HOTELS: "GET_HOTELS",
   GET_HOTEL: "GET_HOTEL",
-  GET_BOOKING_DETAIL: "GET_BOOKING_DETAIL"
+  GET_BOOKING_DETAIL: "GET_BOOKING_DETAIL",
+  GET_PAYMENT: "GET_PAYMENT"
 };
 /* GETTERS - END */
 
@@ -59,7 +65,8 @@ export const ACTIONS = {
   GET_HOTELS: "GET_HOTELS",
   GET_HOTEL: "GET_HOTEL",
   GET_BOOKING_DETAIL: "GET_BOOKING_DETAIL",
-  BOOKING: "BOOKING"
+  BOOKING: "BOOKING",
+  CONFIRM_BOOKING: "CONFIRM_BOOKING"
 };
 /* ACTIONS - END */
 
@@ -71,6 +78,7 @@ export const MUTATORS = {
   SET_FILTER_QUERY: "SET_FILTER_QUERY",
   SET_HOTELS: "SET_HOTELS",
   SET_HOTEL: "SET_HOTEL",
-  SET_BOOKING_DETAIL: "SET_BOOKING_DETAIL"
+  SET_BOOKING_DETAIL: "SET_BOOKING_DETAIL",
+  SET_PAYMENT: "SET_PAYMENT"
 };
 /* MUTATIONS - END */

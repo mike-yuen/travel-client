@@ -11,8 +11,8 @@
           <h1 class="pt-10 mb-8 text-3xl font-bold">
             Let's review your booking and pay
           </h1>
-          <PersonalForm v-model="user" />
-          <button @click="handleBooking">TEST</button>
+          <PersonalForm v-model="user" @submit="handleBooking" />
+          <Stripe />
         </div>
         <!-- Summary -->
         <div class="w-full lg:w-3/10">
@@ -28,15 +28,21 @@ import fecha from "fecha";
 const CheckoutSummary = () =>
   import("@/components/checkout-form/CheckoutSummary");
 const PersonalForm = () => import("@/components/checkout-form/PersonalForm");
+const Stripe = () => import("@/components/checkout-form/Stripe");
 
 import { mapActions, mapGetters } from "vuex";
 import { ACTIONS, GETTERS } from "@/store/modules/hotel/const";
+import {
+  GETTERS as GETTERS_USER,
+  MUTATORS as MUTATORS_USER
+} from "@/store/modules/user/const";
 
 export default {
   name: "CheckOut",
   components: {
     CheckoutSummary,
-    PersonalForm
+    PersonalForm,
+    Stripe
   },
   data() {
     return {
@@ -53,15 +59,14 @@ export default {
       room: {},
       user: {
         title: "Mr",
-        firstName: "",
-        lastName: "",
-        address: "",
+        name: "",
+        email: "",
         phone: ""
       }
     };
   },
-  created() {
-    // const params = this.$route.params;
+  async created() {
+    // @handle get booking detail
     const query = this.$route.query;
     this.hotelId = query.hotelId;
     if (query.dateData && query.dateData.length)
@@ -71,7 +76,6 @@ export default {
       };
     if (query.guestData) this.guestData = JSON.parse(query.guestData);
     query.room ? (this.room = JSON.parse(query.room)) : this.$router.go(-1);
-
     this.getBookingDetail({
       hotelId: this.hotelId,
       dateFrom: fecha.format(this.dateData.checkIn, "YYYY-MM-DD"),
@@ -84,9 +88,24 @@ export default {
     });
   },
 
+  mounted() {
+    this.$store.subscribe((mutation) => {
+      if (mutation.type === `user/${MUTATORS_USER.SET_CURRENT_USER}`) {
+        this.setUser();
+      }
+    });
+    this.$nextTick(() => {
+      this.setUser();
+    });
+  },
+
   computed: {
     ...mapGetters("hotel", {
-      bookingDetail: GETTERS.GET_BOOKING_DETAIL
+      bookingDetail: GETTERS.GET_BOOKING_DETAIL,
+      payment: GETTERS.GET_PAYMENT
+    }),
+    ...mapGetters("user", {
+      currentUser: GETTERS_USER.GET_CURRENT_USER
     })
   },
   methods: {
@@ -94,6 +113,13 @@ export default {
       getBookingDetail: ACTIONS.GET_BOOKING_DETAIL,
       booking: ACTIONS.BOOKING
     }),
+
+    setUser() {
+      this.user.title = this.currentUser.male ? "Mr." : "Mrs.";
+      this.user.name = this.currentUser.displayName || "";
+      this.user.email = this.currentUser.email || "";
+      this.user.phone = this.currentUser.phone || "";
+    },
 
     handleBooking() {
       const payload = {

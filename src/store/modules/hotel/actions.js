@@ -119,6 +119,26 @@ export const actions = {
       apiServices
         .booking(payload)
         .then((resp) => {
+          commit(MUTATORS.SET_PAYMENT, resp);
+          resolve({
+            code: 200,
+            data: resp
+          });
+        })
+        .catch((err) => {
+          resolve({
+            code: err.code,
+            err: err
+          });
+        });
+    });
+  },
+  // eslint-disable-next-line
+  [ACTIONS.CONFIRM_BOOKING]: ({ commit }, payload) => {
+    return new Promise((resolve) => {
+      apiServices
+        .confirmBooking(payload)
+        .then((resp) => {
           resolve({
             code: 200,
             data: resp

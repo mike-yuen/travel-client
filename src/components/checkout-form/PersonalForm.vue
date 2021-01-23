@@ -14,80 +14,36 @@
       </div>
     </div>
     <div class="p-8">
-      <form>
-        <div class="pb-8 mb-8 border-b">
+      <form @submit="onSubmit">
+        <div class="mb-8 border-b">
           <div class="mb-8">
             <div class="flex">
               <div class="w-full md:w-1/5 md:pr-4">
-                <ValidationProvider
-                  name="title"
-                  mode="eager"
-                  rules="required"
-                  v-slot="{ errors }"
+                <InputField
+                  id="title"
+                  type="text"
+                  label="Title"
+                  v-model="dataValue.title"
+                  :selectOptions="titleOptions"
+                  readonly
                 >
-                  <InputField
-                    id="title"
-                    type="text"
-                    label="Title"
-                    v-model="dataValue.title"
-                    :errors="errors"
-                    :selectOptions="titleOptions"
-                    useAs="select"
-                  >
-                    <template v-slot:label>
-                      <strong class="text-lg">Title</strong>
-                    </template>
-                  </InputField>
-                  <ErrorMessage v-if="errors.length > 0">
-                    {{ errors[0] }}
-                  </ErrorMessage>
-                </ValidationProvider>
+                  <template v-slot:label>
+                    <strong class="text-lg">Title</strong>
+                  </template>
+                </InputField>
               </div>
-              <div class="w-full md:w-2/5 md:pr-4">
-                <ValidationProvider
-                  name="first name"
-                  mode="eager"
-                  rules="required"
-                  v-slot="{ errors }"
+              <div class="w-full md:w-4/5 md:pr-4">
+                <InputField
+                  id="full-name"
+                  type="text"
+                  label="Full Name"
+                  v-model="dataValue.name"
+                  readonly
                 >
-                  <InputField
-                    id="first-name"
-                    type="text"
-                    label="First Name"
-                    v-model="dataValue.firstName"
-                    :errors="errors"
-                  >
-                    <template v-slot:label>
-                      <strong class="text-lg">First Name</strong>
-                    </template>
-                  </InputField>
-                  <ErrorMessage v-if="errors.length > 0">
-                    {{ errors[0] }}
-                  </ErrorMessage>
-                </ValidationProvider>
-              </div>
-              <div class="w-full md:w-2/5 md:pr-4">
-                <ValidationProvider
-                  name="last name"
-                  mode="eager"
-                  rules="required"
-                  v-slot="{ errors }"
-                >
-                  <InputField
-                    id="last-name"
-                    type="text"
-                    label="Last Name"
-                    v-model="dataValue.lastName"
-                    :errors="errors"
-                  >
-                    <template v-slot:label>
-                      <strong class="text-lg">Last Name</strong>
-                    </template>
-                  </InputField>
-                  <ErrorMessage v-if="errors.length > 0">
-                    {{ errors[0] }}
-                  </ErrorMessage>
-                </ValidationProvider>
+                  <template v-slot:label>
+                    <strong class="text-lg">Full Name</strong>
+                  </template>
+                </InputField>
               </div>
             </div>
             <span class="block mt-3 text-sm text-gray-500">
@@ -97,83 +53,39 @@
           <div class="mb-8">
             <div class="flex">
               <div class="w-full md:w-1/2 md:pr-4">
-                <ValidationProvider
-                  name="email address"
-                  mode="eager"
-                  rules="required"
-                  v-slot="{ errors }"
+                <InputField
+                  id="email"
+                  type="text"
+                  label="Email Address"
+                  v-model="dataValue.email"
+                  readonly
                 >
-                  <InputField
-                    id="email"
-                    type="text"
-                    label="Email Address"
-                    v-model="dataValue.address"
-                    :errors="errors"
-                  >
-                    <template v-slot:label>
-                      <strong class="text-lg">Email Address</strong>
-                    </template>
-                  </InputField>
-                  <ErrorMessage v-if="errors.length > 0">
-                    {{ errors[0] }}
-                  </ErrorMessage>
-                </ValidationProvider>
+                  <template v-slot:label>
+                    <strong class="text-lg">Email Address</strong>
+                  </template>
+                </InputField>
                 <span class="block mt-3 text-sm text-gray-500">
                   We'll send important information about your booking to this
                   email address
                 </span>
               </div>
               <div class="w-full md:w-1/2 md:pr-4">
-                <ValidationProvider
-                  name="phone number"
-                  mode="eager"
-                  rules="required"
-                  v-slot="{ errors }"
+                <InputField
+                  id="phone"
+                  type="text"
+                  label="Phone Number"
+                  v-model="dataValue.phone"
+                  readonly
                 >
-                  <InputField
-                    id="phone"
-                    type="text"
-                    label="Phone Number"
-                    v-model="dataValue.phone"
-                    :errors="errors"
-                  >
-                    <template v-slot:label>
-                      <strong class="text-lg">Phone Number</strong>
-                    </template>
-                  </InputField>
-                  <ErrorMessage v-if="errors.length > 0">
-                    {{ errors[0] }}
-                  </ErrorMessage>
-                </ValidationProvider>
+                  <template v-slot:label>
+                    <strong class="text-lg">Phone Number</strong>
+                  </template>
+                </InputField>
                 <span class="block mt-3 text-sm text-gray-500">
                   In case we need to contact you
                 </span>
               </div>
             </div>
-          </div>
-          <div class="m-0">
-            <div class="flex">
-              <InputField
-                id="note"
-                type="text"
-                label="Note"
-                v-model="dataValue.note"
-                :errors="errors"
-                useAs="textarea"
-              >
-                <template v-slot:label>
-                  <strong class="text-lg">
-                    Special requests for your stay
-                  </strong>
-                  <span class="">(optional)</span>
-                </template>
-              </InputField>
-            </div>
-            <span class="block mt-3 text-sm text-gray-500">
-              Eg. Non-smoking room, baby cot. Bed types are requests only and
-              may not be honoured at the hotel if availability does not permit.
-              Your hotel will try to fullfil these requests. Fees may apply.
-            </span>
           </div>
         </div>
         <Button type="submit" className="w-auto font-bold bg-red-0 px-6">
@@ -186,14 +98,12 @@
 
 <script>
 const Input = () => import("@/components/core-ui/field/Input");
-const ErrorMessage = () => import("@/components/core-ui/field/ErrorMessage");
 const Button = () => import("@/components/core-ui/button/Button");
 
 export default {
   name: "PersonalForm",
   components: {
     InputField: Input,
-    ErrorMessage,
     Button
   },
   props: {
@@ -202,11 +112,9 @@ export default {
       default: () => {
         return {
           title: "Mr",
-          firstName: "",
-          lastName: "",
-          address: "",
-          phone: "",
-          note: ""
+          name: "",
+          email: "",
+          phone: ""
         };
       }
     }
@@ -229,6 +137,12 @@ export default {
       set(val) {
         this.$emit("input", val);
       }
+    }
+  },
+  methods: {
+    onSubmit(e) {
+      e.preventDefault();
+      this.$emit("submit");
     }
   }
 };

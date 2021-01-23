@@ -5,7 +5,8 @@ export const API_URL = {
   HOTELS: "api/hotels",
   HOTEL: "api/hotel",
   BOOKING_DETAIL: "api/booking/detail",
-  BOOKING: "api/booking",
+  BOOKING: "api/booking/create-booking",
+  CONFIRM_BOOKING: "api/booking/confirm-booking",
   // user
   LOGIN: "api/user/login",
   CURRENT_USER: "api/user/current-user"

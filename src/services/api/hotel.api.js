@@ -110,3 +110,16 @@ export const booking = (payload) => {
     }
   });
 };
+
+export const confirmBooking = (payload) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const resp = await api.post(`${API_URL.CONFIRM_BOOKING}`, payload);
+      if (resp) {
+        resolve(resp);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

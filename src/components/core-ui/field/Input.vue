@@ -142,7 +142,7 @@ export default {
     value: {},
     errors: { type: Array },
     action: { type: Object },
-    disableKeyPress: {
+    disable: {
       type: Boolean,
       default: false
     },

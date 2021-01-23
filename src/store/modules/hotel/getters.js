@@ -24,5 +24,8 @@ export const getters = {
   },
   [GETTERS.GET_BOOKING_DETAIL]: (state) => {
     return state.bookingDetail;
+  },
+  [GETTERS.GET_PAYMENT]: (state) => {
+    return state.payment;
   }
 };

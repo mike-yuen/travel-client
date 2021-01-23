@@ -11,6 +11,7 @@
     "deploy": "npm run build && firebase deploy --project luxtraveldevelop"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^1.11.0",
     "axios": "^0.19.2",
     "copy-webpack-plugin": "^5.1.1",
     "core-js": "^3.4.4",
@@ -21,6 +22,7 @@
     "tailwindcss": "^1.1.4",
     "tailwindcss-animations": "^1.0.0",
     "tailwindcss-transforms": "^2.2.0",
+    "v-tooltip": "^2.1.2",
     "vee-validate": "^3.2.2",
     "vue": "^2.6.10",
     "vue-agile": "^1.0.11",
