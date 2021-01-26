@@ -12,7 +12,7 @@
             Let's review your booking and pay
           </h1>
           <PersonalForm v-model="user" @submit="handleBooking" />
-          <Stripe />
+          <Stripe :ready="readyToConfirm" />
         </div>
         <!-- Summary -->
         <div class="w-full lg:w-3/10">
@@ -47,6 +47,7 @@ export default {
   data() {
     return {
       hotelId: "",
+      readyToConfirm: false,
       dateData: {
         checkIn: new Date(),
         checkOut: new Date(new Date().valueOf() + 1000 * 3600 * 24)
@@ -138,7 +139,7 @@ export default {
         },
         roomCount: this.bookingDetail.roomCount
       };
-      this.booking(payload);
+      this.booking(payload).then(() => (this.readyToConfirm = true));
     }
   }
 };

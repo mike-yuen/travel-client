@@ -211,7 +211,7 @@ export default {
     handleSubmit(e) {
       e.preventDefault();
       const query = {
-        cityId: this.locationData.id,
+        cityId: this.locationData.id || this.cityList[0].id,
         date: JSON.stringify(this.dateData),
         guestCount: JSON.stringify(this.guestData)
       };

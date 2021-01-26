@@ -3,12 +3,12 @@
     <div class="relative w-full max-w-7xl mx-auto">
       <div class="block py-8 min-h-20">
         <h1 class="text-3xl font-bold m-0 mb-2">
-          Hotels in Saint-Aunes, France
+          Hotels in {{ city.name }}, VietNam
         </h1>
         <div class="css-d785tk-Box e5f71i10">
           <div class="css-l6j7gi-Box-Flex em8yo161">
             <div data-testid="result-count" class="css-bx7fxa-Box e5f71i10">
-              Showing 1 available out of 3 properties
+              Showing all available properties
             </div>
           </div>
           <div class="css-1ev36eu-Box e5f71i10">
@@ -62,22 +62,18 @@
           </div>
         </div>
         <div class="w-full lg:w-7/10">
-          <SortType
-            :optionsSelect="optionsSelectSort"
-            v-on:sortValue="(...value) => this.sortValue(...value)"
-          />
           <HotelCard
             v-for="(hotel, index) in hotels"
             :key="index"
             :hotel="hotel"
             :loading="loading"
           />
-          <Pagination
+          <!-- <Pagination
             v-model="page"
             :page-count="hotels.length"
             :margin-pages="2"
             :page-range="5"
-          />
+          /> -->
         </div>
       </div>
     </div>
@@ -90,10 +86,9 @@ const HotelRatingFilter = () =>
   import("@/components/advanced-filter/HotelRating");
 const HotelPropertyFilter = () =>
   import("@/components/advanced-filter/PropertyType");
-const SortType = () => import("@/components/advanced-filter/SortType");
 const PriceRangeSlider = () =>
   import("@/components/price-range-slider/PriceRangeSlider");
-const Pagination = () => import("@/components/pagination/Pagination");
+// const Pagination = () => import("@/components/pagination/Pagination");
 
 import { mapActions, mapGetters } from "vuex";
 import { ACTIONS, GETTERS } from "@/store/modules/hotel/const";
@@ -102,22 +97,14 @@ export default {
   name: "Hotels",
   components: {
     HotelCard,
-    Pagination,
+    // Pagination,
     PriceRangeSlider,
     HotelRatingFilter,
-    HotelPropertyFilter,
-    SortType
+    HotelPropertyFilter
   },
   data() {
     return {
       SortArray: null,
-      optionsSelectSort: [
-        { label: "Best Deal", value: "promotion" },
-        { label: "Popularity", value: "popularity" },
-        { label: "Highest Price", value: "price_desc" },
-        { label: "Lowest Price", value: "price_asc" },
-        { label: "TripAdvisor Rating", value: "tripadvisor" }
-      ],
       page: 1,
       loading: true,
       priceRange: null,
@@ -139,8 +126,15 @@ export default {
       hotels: GETTERS.GET_HOTELS,
       baseQuery: GETTERS.GET_BASE_QUERY,
       defaultFilterQuery: GETTERS.GET_DEFAULT_FILTER_QUERY,
-      filterQuery: GETTERS.GET_FILTER_QUERY
-    })
+      filterQuery: GETTERS.GET_FILTER_QUERY,
+      cityList: GETTERS.GET_CITIES
+    }),
+
+    city() {
+      return (
+        this.cityList.find((city) => city.id === this.baseQuery.cityId) || ""
+      );
+    }
   },
 
   methods: {
@@ -155,10 +149,6 @@ export default {
       this.priceRange = price;
       this.$set(this.query, "priceFrom", this.priceRange[0]);
       this.$set(this.query, "priceTo", this.priceRange[1]);
-    },
-
-    sortValue(...value) {
-      this.SortArray = value;
     },
 
     showFilter() {

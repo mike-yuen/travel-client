@@ -3,7 +3,10 @@
     class="mb-6 bg-white rounded-md"
     style="box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;"
   >
-    <div class="flex items-center justify-between py-4 px-8 border-b">
+    <div
+      class="flex items-center justify-between py-4 px-8 border-b"
+      @click="toggleStripe"
+    >
       <div class="flex items-center">
         <div
           class="w-8 h-8 border border-gray-700 rounded-full text-center mr-5"
@@ -21,7 +24,10 @@
         height="24"
       />
     </div>
-    <div class="p-8">
+    <div
+      :class="[isOpen ? 'h-auto py-8' : 'h-0 py-0', 'overflow-hidden px-8']"
+      style="transition: 0.8s ease all"
+    >
       <h4 class="text-2xl font-semi-bold">
         Enter your credit card details.
       </h4>
@@ -67,6 +73,12 @@ export default {
   components: {
     Button
   },
+  props: {
+    ready: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       stripe: null,
@@ -74,7 +86,8 @@ export default {
       cardNumber: null,
       cardExpiry: null,
       cardCvc: null,
-      cardErrors: null
+      cardErrors: null,
+      isOpen: false
     };
   },
 
@@ -105,6 +118,11 @@ export default {
     ...mapActions("hotel", {
       confirmBooking: ACTIONS.CONFIRM_BOOKING
     }),
+
+    toggleStripe() {
+      if (this.ready) this.isOpen = !this.isOpen;
+    },
+
     onChange({ error }) {
       this.cardErrors = error ? error.message : null;
     },
@@ -136,13 +154,19 @@ export default {
         paymentId: paymentIntentID || "",
         error: errorMessage
       };
-      this.confirmBooking(payload);
+      this.confirmBooking(payload).then(() => {
+        this.$router.push("/");
+      });
+    }
+  },
+  watch: {
+    ready(val) {
+      this.isOpen = !!val;
     }
   }
 };
 </script>
 
-//
 <style lang="scss">
 .payment-input {
   height: auto;
