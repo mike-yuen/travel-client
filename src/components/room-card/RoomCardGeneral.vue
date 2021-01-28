@@ -6,7 +6,7 @@
           class="relative bg-grey-300 rounded overflow-hidden w-full h-35 md:w-50"
         >
           <img
-            :src="roomData.image || placeholder"
+            :src="roomData.imageUrls[0] || placeholder"
             :alt="roomData.name"
             class="block absolute top-0 left-0 w-full h-full object-cover"
           />

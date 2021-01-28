@@ -22,7 +22,7 @@
           </h1>
           <div class="flex items-center md:mb-3">
             <div class="mr-3">
-              <StarRating :rating="rating" />
+              <StarRating :rating="hotel.avgRating" />
             </div>
 
             <button>
@@ -46,16 +46,20 @@
                 <span class="text-lg mr-2 text-gray-30">
                   1 Davey Street, Hobart Tasmania Australia
                 </span>
-                <span class="text-red-0 underline">
+                <a
+                  :href="hotel.url || '#'"
+                  target="_blank"
+                  class="text-red-0 underline"
+                >
                   View on map
-                </span>
+                </a>
               </span>
             </div>
           </div>
         </div>
         <div class="md:flex">
           <div class="w-full md:w-2/3">
-            <HotelPropertySlider />
+            <HotelPropertySlider :slides="hotel.imageUrls" />
 
             <div class="md:hidden">
               <h1 class="text-2xl md:text-2rem font-bold leading-none m-0 mb-4">
@@ -151,7 +155,7 @@
 
             <div class="css-96pr0p-Box-Flex e6hqxet0">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5315527332596!2d106.6922063141164!3d10.770540262249103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3e8eddf565%3A0x2ab6e5fe92c2e5d7!2sNew%20World%20Saigon%20Hotel!5e0!3m2!1svi!2s!4v1583578018837!5m2!1svi!2s"
+                :src="hotel.url || '#'"
                 width="100%"
                 height="100%"
                 frameborder="0"
@@ -245,7 +249,6 @@ export default {
   data() {
     return {
       hotelId: "",
-      rating: 3.5,
       dateData: {
         checkIn: new Date(),
         checkOut: new Date(new Date().valueOf() + 1000 * 3600 * 24)

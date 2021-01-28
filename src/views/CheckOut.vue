@@ -1,10 +1,12 @@
 <template>
   <div :id="'checkout' + hotelId" style="background-color: #f4f5f6">
     <div class="relative w-full max-w-7xl mx-auto">
-      <button type="button" class="py-4 focus:outline-none">
-        <i class="fa fa-chevron-left mr-2" />
-        Change your selection
-      </button>
+      <a @click="$router.go(-1)">
+        <button type="button" class="py-4 focus:outline-none">
+          <i class="fa fa-chevron-left mr-2" />
+          Change your selection
+        </button>
+      </a>
 
       <div class="lg:flex">
         <div class="w-full lg:w-7/10 p-0 lg:mr-12">

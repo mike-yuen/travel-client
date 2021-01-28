@@ -155,7 +155,17 @@ export default {
       this.filter = !this.filter;
     },
 
-    getHotelsQuery(query) {
+    async getHotelsQuery(query) {
+      const routeQuery = this.$route.query;
+      let cloneBaseQuery = Object.assign({}, this.baseQuery);
+      cloneBaseQuery.cityId =
+        routeQuery.cityId || this.baseQuery.cityId || this.cityList[0].id;
+      cloneBaseQuery.date = routeQuery.date || this.baseQuery.date;
+      cloneBaseQuery.guestCount =
+        routeQuery.guestCount || this.baseQuery.guestCount;
+
+      await this.setBaseQuery(cloneBaseQuery);
+
       const baseQueryAPI = { ...this.baseQuery };
       if (this.baseQuery.guestCount) {
         const guestData = JSON.parse(this.baseQuery.guestCount);
@@ -178,11 +188,6 @@ export default {
 
   async created() {
     const routeQuery = this.$route.query;
-    await this.setBaseQuery({
-      cityId: routeQuery.cityId,
-      date: routeQuery.date,
-      guestCount: routeQuery.guestCount
-    });
     this.query.roomTypeIds = routeQuery.roomTypeIds
       ? typeof routeQuery.roomTypeIds === "string"
         ? [routeQuery.roomTypeIds]

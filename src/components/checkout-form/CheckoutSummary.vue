@@ -13,7 +13,7 @@
           <div class="flex">
             <div class="flex flex-col w-full">
               <span class="text-lg font-bold">
-                {{ bookingData.hotelName }}
+                {{ bookingData.hotelName }} Hotel
               </span>
               <div class="flex mt-2">
                 <StarRating :rating="4" class="mr-3" />
@@ -21,16 +21,16 @@
               </div>
             </div>
           </div>
-          <div class="mt-2">
+          <div class="mt-2" v-if="bookingData.selectedRoom">
             <button type="button" class="cursor-pointer">
               <span class="font-bold text-lg underline">
-                Mountainside Room - King
+                {{ bookingData.selectedRoom.name }}
               </span>
             </button>
             -
             <button type="button" cclass="cursor-pointer">
               <span class="font-bold text-lg underline">
-                Daily Rate
+                {{ bookingData.selectedRoom.roomType }}
               </span>
             </button>
           </div>
