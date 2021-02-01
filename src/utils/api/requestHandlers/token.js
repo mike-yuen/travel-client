@@ -4,7 +4,7 @@ export const setTokenHeader = async (config, appStorage) => {
   // Get token from storage
   // set token to requests's header before sending to REST api
   const token = await appStorage.get(LUX_AUTH_INFO);
-  if (config.authorization && token) {
+  if (token) {
     const newConfig = {
       ...config,
       validateStatus(status) {
@@ -12,7 +12,7 @@ export const setTokenHeader = async (config, appStorage) => {
       },
       headers: {
         ...config.headers,
-        Authorization: `Bearer ${token.access}`
+        Authorization: `Bearer ${token}`
       }
     };
     return newConfig;

@@ -1,9 +1,9 @@
 <template>
-  <div class="lg:flex sm:block">
+  <div class="lg:flex sm:block px-2 my-3">
     <div class="lg:w-1/3 sm:w-1/1 self-center">
       Showing 1 - 20 of {{ pageCount }} available properties
     </div>
-    <div class="lg:w-2/3 sm:w-1/1 justify-end">
+    <div class="lg:w-2/3 sm:w-1/1">
       <ul :class="containerClass" v-if="!noLiSurround">
         <li
           v-if="firstLastButton"
@@ -198,7 +198,7 @@ export default {
     },
     containerClass: {
       type: String,
-      default: "flex list-reset rounded w-auto font-sans"
+      default: "flex list-reset rounded w-auto font-sans justify-end"
     },
     pageClass: {
       type: String

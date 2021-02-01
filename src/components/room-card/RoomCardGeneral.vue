@@ -6,7 +6,7 @@
           class="relative bg-grey-300 rounded overflow-hidden w-full h-35 md:w-50"
         >
           <img
-            :src="roomData.image || placeholder"
+            :src="roomData.imageUrls[0] || placeholder"
             :alt="roomData.name"
             class="block absolute top-0 left-0 w-full h-full object-cover"
           />
@@ -122,7 +122,6 @@
         </div>
       </div>
     </div>
-    <hr class="py-4" />
   </div>
 </template>
 
@@ -143,14 +142,12 @@ export default {
   data: () => {
     return {
       placeholder:
-        "https://i.travelapi.com/hotels/20000000/19480000/19473700/19473638/a07ad6ed_z.jpg"
+        "https://images-cdn.qantashotels.com/insecure/desktop_search/plain/media/7a9e19e0-6c14-419a-9e90-e22dcc8bbd38.jpg"
     };
   },
   methods: {
     selectRoom() {
-      // console.log("Selected babe !");
-      // Storage in state
-      this.$router.push("/");
+      this.$emit("select");
     }
   }
 };

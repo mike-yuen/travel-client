@@ -1,5 +1,5 @@
 <template>
-  <div :id="'hotel-properties' + hotelId">
+  <div :id="'hotel-properties-' + hotelId">
     <div class="relative w-full max-w-7xl mx-auto">
       <div class="pt-6 px-4">
         <div class="flex justify-center p-4 bg-cyan-150">
@@ -22,7 +22,7 @@
           </h1>
           <div class="flex items-center md:mb-3">
             <div class="mr-3">
-              <StarRating :rating="rating" />
+              <StarRating :rating="hotel.avgRating" />
             </div>
 
             <button>
@@ -34,7 +34,7 @@
                   class="block max-w-full"
                 />
                 <span class="ml-1 text-md underline">
-                  5660 reviews
+                  {{ hotel.reviewers }} reviews
                 </span>
               </div>
             </button>
@@ -44,18 +44,22 @@
               <span class="text-base cursor-pointer">
                 <i class="fa fa-map-marker-alt mr-2" />
                 <span class="text-lg mr-2 text-gray-30">
-                  1 Davey Street, Hobart Tasmania Australia
+                  {{ hotel.location }}
                 </span>
-                <span class="text-red-0 underline">
+                <a
+                  :href="hotel.url || '#'"
+                  target="_blank"
+                  class="text-red-0 underline"
+                >
                   View on map
-                </span>
+                </a>
               </span>
             </div>
           </div>
         </div>
         <div class="md:flex">
           <div class="w-full md:w-2/3">
-            <HotelPropertySlider />
+            <HotelPropertySlider :slides="hotel.imageUrls" />
 
             <div class="md:hidden">
               <h1 class="text-2xl md:text-2rem font-bold leading-none m-0 mb-4">
@@ -151,7 +155,7 @@
 
             <div class="css-96pr0p-Box-Flex e6hqxet0">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5315527332596!2d106.6922063141164!3d10.770540262249103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3e8eddf565%3A0x2ab6e5fe92c2e5d7!2sNew%20World%20Saigon%20Hotel!5e0!3m2!1svi!2s!4v1583578018837!5m2!1svi!2s"
+                :src="hotel.embedUrl || '#'"
                 width="100%"
                 height="100%"
                 frameborder="0"
@@ -166,43 +170,58 @@
         </div>
       </div>
     </div>
-    <hr />
-    <div class="css-htgaco-Box ewdbxdh2">
-      <span data-testid="property-name" class="css-cyw1xf-Text e7qkkfc0">
-        Grand Hyatt Melbourne
-      </span>
-      <h2
-        data-testid="property-availability-header"
-        class="css-jamh29-Heading-Heading-Text e1cffud32"
-      >
-        Choose your room
-      </h2>
-      <div class="css-bbc9qn-Box-Flex e6hqxet0">
-        <div class="css-1rorslp-Box-Flex ewdbxdh1">
-          <div
-            data-testid="available-room-type-count"
-            class="css-bx7fxa-Box e5f71i10"
-          >
-            Showing 4 available out of 10 rooms
-          </div>
-          <div class="css-1ev36eu-Box e5f71i10">&nbsp;for your stay</div>
+    <div class="relative w-full max-w-7xl mx-auto">
+      <hr class="my-10 mx-4" />
+    </div>
+    <div class="relative w-full max-w-7xl mx-auto">
+      <div class="text-center">
+        <span class="font-normal text-xl"> {{ hotel.hotelName }} Hotel </span>
+        <h2 class="font-bold text-3xl">
+          Choose your room
+        </h2>
+        <div class="text-sm">
+          Showing {{ hotel.availableRooms.length }} available out of
+          {{ hotel.availableRooms.length }} rooms for your stay
         </div>
-        <div class="css-1ys4q01-Box-Flex ewdbxdh0">
-          <div class="css-18aidf3-Box e1sqdzo10"></div>
-          <div class="css-iczpqk-Box e1sqdzo10"></div>
-          <div class="css-c4dzg2-Box e1sqdzo10"></div>
-          <div class="css-iczpqk-Box e1sqdzo10"></div>
-          <div class="css-smc3lk-Box e1sqdzo10"></div>
+      </div>
+      <div class="relative w-full max-w-4xl mx-auto mt-4 mb-8">
+        <div class="md:flex flex-wrap">
+          <div class="md:w-2/3">
+            <DatePicker
+              showYear
+              isExpanded
+              smallSize
+              :hoveringTooltip="false"
+              :maxNights="21"
+              v-model="dateData"
+            />
+          </div>
+          <div class="md:w-1/3">
+            <GuestInput
+              id="guest-input"
+              label="Guests"
+              isExpanded
+              v-model="guestData"
+            />
+          </div>
         </div>
       </div>
     </div>
     <div class="bg-gray-200 py-6">
       <div class="relative w-full max-w-7xl mx-auto">
-        <RoomCardGeneral
+        <div class="mb-4 mx-4 text-center">
+          <span class="font-bold text-2xl">
+            There are {{ hotel.availableRooms.length }} rooms available for your
+            stay
+          </span>
+        </div>
+        <div
           v-for="(room, index) in hotel.availableRooms"
           :key="`room-${index}`"
-          :roomData="room"
-        />
+        >
+          <hr class="my-8 mx-4" />
+          <RoomCardGeneral :roomData="room" @select="handleSelectRoom(room)" />
+        </div>
       </div>
     </div>
   </div>
@@ -211,6 +230,8 @@
 <script>
 import HotelPropertySlider from "@/components/slider/HotelPropertySlider";
 const StarRating = () => import("@/components/core-ui/rating/StarRating");
+const DatePicker = () => import("@/components/core-ui/datepicker/DatePicker");
+const GuestInput = () => import("@/components/search-tabs/GuestInput");
 const RoomCardGeneral = () => import("@/components/room-card/RoomCardGeneral");
 
 import { mapActions, mapGetters } from "vuex";
@@ -219,20 +240,37 @@ import { ACTIONS, GETTERS } from "@/store/modules/hotel/const";
 export default {
   name: "HotelProperties",
   components: {
+    DatePicker,
     HotelPropertySlider,
+    GuestInput,
     StarRating,
     RoomCardGeneral
   },
   data() {
     return {
       hotelId: "",
-      rating: 3.5
+      dateData: {
+        checkIn: new Date(),
+        checkOut: new Date(new Date().valueOf() + 1000 * 3600 * 24)
+      },
+      guestData: {
+        adults: 2,
+        children: 0,
+        infants: 0
+      }
     };
   },
 
   created() {
     const params = this.$route.params;
+    const query = this.$route.query;
     this.hotelId = params.hotelId;
+    if (query.date && query.date.length)
+      this.dateData = {
+        checkIn: new Date(JSON.parse(query.date).checkIn),
+        checkOut: new Date(JSON.parse(query.date).checkOut)
+      };
+    if (query.guestCount) this.guestData = JSON.parse(query.guestCount);
     this.getHotel(this.hotelId);
   },
 
@@ -245,7 +283,19 @@ export default {
   methods: {
     ...mapActions("hotel", {
       getHotel: ACTIONS.GET_HOTEL
-    })
+    }),
+    handleSelectRoom(room) {
+      const payload = {
+        hotelId: this.hotelId,
+        dateData: JSON.stringify(this.dateData),
+        guestData: JSON.stringify(this.guestData),
+        room: JSON.stringify(room)
+      };
+      this.$router.push({
+        path: `/checkout/${room.roomId}`,
+        query: payload
+      });
+    }
   }
 };
 </script>

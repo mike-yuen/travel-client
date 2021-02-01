@@ -74,8 +74,8 @@ const Input = () => import("../core-ui/field/Input");
 const ErrorMessage = () => import("../core-ui/field/ErrorMessage");
 const Button = () => import("../core-ui/button/Button");
 // const Checkbox = () => import("../core-ui/checkbox/Checkbox");
-import { mapActions } from "vuex";
-import { ACTIONS } from "@/store/modules/user/const";
+import { mapGetters, mapActions } from "vuex";
+import { GETTERS, ACTIONS } from "@/store/modules/user/const";
 
 const LoginWidget = styled.div`
   box-shadow: 0 0.5rem 0 #e40000 inset, 0 0.85rem 3rem rgba(0, 0, 0, 0.2);
@@ -110,27 +110,24 @@ export default {
       rememberValue: ""
     };
   },
-  computed: {},
+  computed: {
+    ...mapGetters("user", {
+      token: GETTERS.GET_TOKEN
+    })
+  },
   methods: {
     ...mapActions("user", {
-      auth: ACTIONS.SET_AUTH
+      login: ACTIONS.LOGIN
     }),
     handleSubmit() {
       const authInfo = {
-        username: this.username,
+        email: this.username,
         password: this.password
       };
-      this.auth(authInfo).then((response) => {
-        if (response.code === 200) {
-          // this.$router.push("/home");
-        } else {
-          // this.hasError = true;
-          // this.messageError = "Your username or password is incorrect.";
-        }
-      });
+      this.login(authInfo);
     },
     handleForgotPassword() {
-      // console.log("bbbbbbbbbbbbbbb");
+      // console.log("forgot password");
     }
   }
 };

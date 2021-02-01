@@ -93,7 +93,7 @@ export default {
   data() {
     return {
       minValue: 0,
-      maxValue: 100,
+      maxValue: 0,
       trackWidth: null,
       isDragging: false,
       pos: {
@@ -119,11 +119,7 @@ export default {
 
   computed: {
     priceArray() {
-      let priceArr = [];
-      this.$props.hotels.forEach((room) => {
-        priceArr.push(room.price);
-      });
-      return priceArr;
+      return [0, 200];
     },
     min() {
       return Math.min.apply(null, this.priceArray);
@@ -141,7 +137,7 @@ export default {
     },
 
     trackWidthMin() {
-      return "left: calc(" + this.valueToPercent(this.minValue) + "%  + 12px)";
+      return "left: calc(" + this.valueToPercent(this.minValue) + "% + 12px)";
     },
 
     trackWidthMax() {
@@ -200,7 +196,6 @@ export default {
         if (value <= this.minValue + this.step) return;
         this.maxValue = value;
       }
-      this.valueBack(this.minValue, this.maxValue);
       this.$refs[track].$el.style.left = moveInPercent + "%";
       this.setTrackHightlight();
     },
@@ -208,6 +203,7 @@ export default {
     mouseup() {
       if (!this.isDragging) return;
       this.isDragging = false;
+      this.valueBack(this.minValue, this.maxValue);
     },
 
     mousedown(track) {
@@ -239,10 +235,10 @@ export default {
   },
 
   mounted() {
-    this.minValue = this.min;
-    this.maxValue = this.max;
+    this.minValue = this.priceMin || this.min;
+    this.maxValue = this.priceMax || this.max;
     var self = this;
-
+    this.setTrackHightlight();
     ["mouseup", "mousemove"].forEach((type) => {
       document.body.addEventListener(type, () => {
         if (self.isDragging && self.pos.curTrack) {

@@ -40,7 +40,7 @@
         />
       </div>
     </div>
-    <datepicker :class="{ hidden: !isOpen }">
+    <datepicker :class="[smallSize ? 'md:p-0' : '', !isOpen ? 'hidden' : '']">
       <div class="md:hidden">
         <div
           class="flex mt-3"
@@ -75,15 +75,18 @@
           ></div>
         </div>
       </div>
-      <div class="py-3 px-0 md:px-8 md:pt-10 md:pb-8">
+      <div
+        :class="[smallSize ? 'md:px-0 md:py-4' : 'md:px-8 md:pt-10 md:pb-8']"
+        class="py-3 px-0"
+      >
         <div class="hidden">
           <span
             class="datepicker__month-button datepicker__month-button--prev -hide-up-to-tablet"
             @click="renderPreviousMonth"
             @keyup.enter.stop.prevent="renderPreviousMonth"
             :tabindex="isOpen ? 0 : -1"
-          ></span
-          ><span
+          ></span>
+          <span
             class="datepicker__month-button datepicker__month-button--next -hide-up-to-tablet"
             @click="renderNextMonth"
             @keyup.enter.stop.prevent="renderNextMonth"
@@ -227,6 +230,8 @@ const Datepicker = styled.div`
   z-index: 40;
   overflow: hidden;
   transition: all 0.2s ease-in-out;
+  border: 1px solid rgb(218, 218, 218);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px 0px;
   @media (max-width: 768px) {
     position: fixed;
     top: 0;
@@ -334,6 +339,10 @@ export default {
     isExpanded: {
       type: Boolean,
       default: false
+    },
+    smallSize: {
+      default: false,
+      type: Boolean
     }
   },
   data() {

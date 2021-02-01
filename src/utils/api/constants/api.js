@@ -1,13 +1,15 @@
 export const API_URL = {
-  // auth
-  TOKEN: "token/",
-  TOKEN_REFRESH: "token/refresh/",
   // hotel
   CITIES: "api/master-data/cities",
+  ROOM_TYPES: "api/master-data/room-types",
   HOTELS: "api/hotels",
   HOTEL: "api/hotel",
+  BOOKING_DETAIL: "api/booking/detail",
+  BOOKING: "api/booking/create-booking",
+  CONFIRM_BOOKING: "api/booking/confirm-booking",
   // user
-  USER: "profiles/full-profile/"
+  LOGIN: "api/user/login",
+  CURRENT_USER: "api/user/current-user"
 };
 
 export const REQUEST_ACTION = {
