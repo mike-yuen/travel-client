@@ -34,7 +34,7 @@
                   class="block max-w-full"
                 />
                 <span class="ml-1 text-md underline">
-                  5660 reviews
+                  {{ hotel.reviewers }} reviews
                 </span>
               </div>
             </button>
@@ -44,7 +44,7 @@
               <span class="text-base cursor-pointer">
                 <i class="fa fa-map-marker-alt mr-2" />
                 <span class="text-lg mr-2 text-gray-30">
-                  1 Davey Street, Hobart Tasmania Australia
+                  {{ hotel.location }}
                 </span>
                 <a
                   :href="hotel.url || '#'"
@@ -155,7 +155,7 @@
 
             <div class="css-96pr0p-Box-Flex e6hqxet0">
               <iframe
-                :src="hotel.url || '#'"
+                :src="hotel.embedUrl || '#'"
                 width="100%"
                 height="100%"
                 frameborder="0"
